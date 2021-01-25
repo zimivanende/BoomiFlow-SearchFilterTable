@@ -1,4 +1,4 @@
-This module provides table implementation with advanced sorting and filtering features.
+This module provides table implementation with advanced sorting and filtering features. 
 
 # Class Names
 
