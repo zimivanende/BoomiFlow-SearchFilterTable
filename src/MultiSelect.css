@@ -1,0 +1,59 @@
+.multiselect {
+    width: 200px;
+    height: 35px;
+    margin-right: 1rem;
+  }
+  
+  .selectBox {
+    position: relative;
+  }
+  
+  .selectBox select {
+    width: 100%;
+    font-weight: bold;
+  }
+  
+  .overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+  
+  .checkboxes {
+    display: none;
+    border: 1px #dadada solid;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    background-color: rgb(254, 254, 254);
+  }
+
+  .checkbox-row {
+      display: flex;
+      flex-direction: row;
+      flex-grow: 0;
+  }
+
+  .checkbox-checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .checkbox-label-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .checkbox-row-label {
+
+  }
+  
+  
