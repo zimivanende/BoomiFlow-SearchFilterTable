@@ -9,6 +9,7 @@ import './SearchFilterTable.css';
 import SearchFilterTableHeaders from './SearchFilterTableHeaders';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 import SearchFilterTableFooter from './SearchFilterTableFooter';
+import ModelExporter from './ModelExporter';
 
 
 //declare const manywho: IManywho;
@@ -95,6 +96,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.lastPage = this.lastPage.bind(this);
+
+        this.doExport = this.doExport.bind(this);
 
         this.maxPageRows = parseInt(this.getAttribute("PaginationSize",undefined) || "10" );
     }
@@ -431,6 +434,52 @@ export default class SearchFilterTable extends FlowComponent {
                     ));
                 }
             });
+
+            listItems.set("exportall",(
+                <li 
+                    className="sft-cm-item"
+                    title={"Export All"}
+                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.rowMap)}}
+                >
+                    <span
+                        className={"glyphicon glyphicon-floppy-save sft-cm-item-icon"} />
+                    <span
+                        className={"sft-cm-item-label"}
+                    >
+                        Export All
+                    </span>
+                </li>
+            ));
+            listItems.set("exportshown",(
+                <li 
+                    className="sft-cm-item"
+                    title={"Export Search Results"}
+                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.currentRowMap)}}
+                >
+                    <span
+                        className={"glyphicon glyphicon-floppy-save sft-cm-item-icon"} />
+                    <span
+                        className={"sft-cm-item-label"}
+                    >
+                        Export Search Results
+                    </span>
+                </li>
+            ));
+            listItems.set("exportselected",(
+                <li 
+                    className="sft-cm-item"
+                    title={"Export Selected Items"}
+                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.selectedRowMap)}}
+                >
+                    <span
+                        className={"glyphicon glyphicon-floppy-save sft-cm-item-icon"} />
+                    <span
+                        className={"sft-cm-item-label"}
+                    >
+                        Export Selected
+                    </span>
+                </li>
+            ));
             this.contextMenu.showContextMenu(e.clientX, e.clientY,listItems);   
             this.forceUpdate();
         }
@@ -510,7 +559,18 @@ export default class SearchFilterTable extends FlowComponent {
             );
         }
         this.forceUpdate();
-    }   
+    }  
+    
+    async doExport(data: Map<string,RowItem>) {
+        let opdata: Map<string,RowItem> = new Map();
+        data.forEach((item,key) => {
+            opdata.set(key,this.rowMap.get(key));
+        });
+        ModelExporter.export(this.colMap, opdata,"export.csv");
+        if(this.outcomes["OnExport"]) {
+            this.triggerOutcome("OnExport");
+        }
+    }
 
     render() {
         
