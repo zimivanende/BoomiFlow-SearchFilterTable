@@ -1,9 +1,10 @@
 import React, { Fragment } from "react";
-import { FlowDisplayColumn, FlowObjectData, modalDialogButton } from "flow-component-model";
+import { FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, modalDialogButton } from "flow-component-model";
 import ColumnFilter from "./ColumnFilter";
 import SearchFilterTable from "./SearchFilterTable";
 import FilterConfigForm from "./FilterConfigForm";
 import ColumnCriteria, { eColumnComparator } from "./ColumnCriteria";
+import RowItem from "./RowItem";
 
 export enum eFilterEvent {
     none = 0,
@@ -195,12 +196,20 @@ export default class ColumnFilters {
     }
 
     // this will filter the passed source map based on the current filters and return a new map of matches.
-    filter(source: Map<string,FlowObjectData>) : Map<string,FlowObjectData> {
-        return new Map(Array.from(source).filter(this.matchesCriteria));
+    filter(source: Map<string,RowItem>) : Map<string,RowItem> {
+        let matches: Map<string,RowItem> = new Map();
+        source.forEach((item: RowItem, key: string) => {
+            if(this.matchesCriteria(item)) {
+                matches.set(key,undefined);
+            }
+        });
+        
+        return matches;
+        //return new Map(Array.from(source).filter(this.matchesCriteria));
     }
 
-    matchesCriteria(value: any) : boolean {
-        let objData: FlowObjectData = value[1].objectData;
+    matchesCriteria(value: RowItem) : boolean {
+        let objData: FlowObjectData = value.objectData;
         let matches: boolean = true;
 
         // each item represents a column
@@ -266,13 +275,19 @@ export default class ColumnFilters {
     }
 
     // this will sort the passed map based on the current filter's sorts and return a new map
-    sort(source: Map<string,FlowObjectData>) : Map<string,FlowObjectData> {
+    sort(items: Map<string,RowItem>,source: Map<string,RowItem>) : Map<string,RowItem> {
         let sortColumn : ColumnFilter = this.getSortColumn();
+
+        let candidates: Map<string,RowItem> = new Map(Array.from(source).filter(item => {
+            if(items.has(item[0])){
+                return true;
+            }
+        }));
         
         if(sortColumn) {
             let colDef = this.parent.colMap.get(sortColumn.key);
             var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-            let sorted: any = Array.from(source).sort((a: any,b: any) => 
+            let sorted: any = Array.from(candidates).sort((a: any,b: any) => 
                 collator.compare(a[1].objectData.properties[sortColumn.key].value,b[1].objectData.properties[sortColumn.key].value)
             );
 
@@ -280,10 +295,14 @@ export default class ColumnFilters {
                 sorted = sorted.reverse();
             }
             
-            return new Map(sorted);
+            let results: Map<string,RowItem> = new Map(sorted);
+            results.forEach((item: RowItem, key: string) => {
+                results.set(key,undefined);
+            });
+            return results
         }
         else {
-            return source;
+            return items;
         }
     }
 }

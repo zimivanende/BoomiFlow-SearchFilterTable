@@ -144,8 +144,18 @@ export default class SearchFilterTable extends FlowComponent {
         this.footer = element;
     }
 
-    async flowMoved(msg: any) {
-        this.buildCoreTable();
+ 
+    async flowMoved(xhr: any, request: any) {
+        let me: any = this;
+        if(xhr.invokeType==="FORWARD") {
+            if(this.loadingState !== eLoadingState.ready){
+                window.setTimeout(function() {me.flowMoved(xhr, request)},500);
+            }
+            else {
+                this.buildCoreTable();
+            }
+        }
+        
     }
 
     async componentDidMount() {
@@ -254,7 +264,7 @@ export default class SearchFilterTable extends FlowComponent {
     sortRows() {
         
         if (this.currentRowMap.size > 0) {
-            this.currentRowMap = this.filters.sort(this.currentRowMap);
+            this.currentRowMap = this.filters.sort(this.currentRowMap, this.rowMap);
         }
     }
 
@@ -262,14 +272,14 @@ export default class SearchFilterTable extends FlowComponent {
     paginateRows() {
         this.currentRowPages = [];
         let currentPage: Map<string,RowItem> = new Map();
-        this.currentRowMap.forEach((item: RowItem) => {
+        this.currentRowMap.forEach((item: RowItem,key: string) => {
             if(currentPage.size < this.maxPageRows) {
-                currentPage.set(item.id, item);
+                currentPage.set(key,undefined);
             }
             else {
                 this.currentRowPages.push(currentPage);
                 currentPage = new Map();
-                currentPage.set(item.id, item);
+                currentPage.set(key,undefined);
             }
         });
         // add any stragglers
@@ -314,8 +324,8 @@ export default class SearchFilterTable extends FlowComponent {
     /////////////////////
     toggleSelectAll(event: any) {
         if(event.target.checked) {
-            this.currentRowMap.forEach((item: RowItem) => {
-                this.selectedRowMap.set(item.id,"");
+            this.currentRowMap.forEach((item: RowItem, key: string) => {
+                this.selectedRowMap.set(key,"");
             });
         }
         else {
@@ -359,13 +369,13 @@ export default class SearchFilterTable extends FlowComponent {
         this.rowElements = [];
         // loop over rowmap if defined
         if(this.currentRowPages && this.currentRowPages.length > 0 && this.currentRowPages[this.currentRowPage]) {
-            this.currentRowPages[this.currentRowPage].forEach((node: RowItem) => {
+            this.currentRowPages[this.currentRowPage].forEach((node: RowItem, key: string) => {
                 this.rowElements.push(
                     <SearchFilterTableRow  
-                        key={node.id}
+                        key={key}
                         root={this}
-                        id={node.id}
-                        ref={(element: SearchFilterTableRow) => {this.setRow(node.id ,element)}}
+                        id={key}
+                        ref={(element: SearchFilterTableRow) => {this.setRow(key ,element)}}
                     />
                 );
             });
