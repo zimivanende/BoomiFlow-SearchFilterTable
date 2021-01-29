@@ -67,6 +67,10 @@ If specified then these are applied as pixel values.
 
 ## Component Attributes
 
+### PaginationSize
+
+Sets the max number of rows to show per pagination page
+
 ### classes
 
 Like all components, adding a "classes" attribute will cause that string to be added to the base component's class value

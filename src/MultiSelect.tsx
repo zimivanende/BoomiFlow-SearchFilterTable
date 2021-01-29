@@ -69,11 +69,15 @@ export default class MultiSelect extends React.Component <any,any> {
                         className="overSelect"
                     />
                 </div>
-                <div 
-                    className="checkboxes"
-                    id="checkboxes"
+                <div
+                    className="checkboxScroller"
                 >
-                    {checkBoxes}
+                    <div 
+                        className="checkboxes"
+                        id="checkboxes"
+                    >
+                        {checkBoxes}
+                    </div>
                 </div>
             </div>
         );

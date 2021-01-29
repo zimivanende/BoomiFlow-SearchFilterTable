@@ -1,15 +1,18 @@
 
 .sft {
-    display: flex;
+    display: block;
     flex-direction: column;
+    position: relative;
 }
 
 .sft-header {
     display: flex;
-    min-height: 1rem;
-    flex-direction: row;
-    flex-grow: 0;
+    height: 2rem;
     background-color: rgb(50 82 138);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .sft-header-title-wrapper {
@@ -40,24 +43,25 @@
 }
 
 .sft-body {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+    display: block;
     background-color: #eee;
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    right: 0;
+    bottom: 2rem;
 }
 
 .sft-scroller {
-    overflow: scroll;
-    flex-grow: 1;
-    flex-shrink: 1;
+    overflow: auto;
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: block;
 }
 
 .sft-scroller-body {
-    flex-grow: 1;
-    flex-shrink: 1;
-    display: flex;
-    flex-direction: column;
+    display: block;
     overflow: visible;
     background-color: #fefefe;
 }
@@ -95,12 +99,18 @@
     background-color: #888;
     align-items: center;
     position: relative;
+    height: 3rem;
 }
 
 .sft-check-header {
     position: sticky;
     top: 0;
     cursor: default !important;
+    width: 3rem;
+    min-width: 3rem;
+    border-right: 1px solid #fefefe;
+    background-color: #888;
+    z-index: 1000;
 }
 
 .sft-checkbox {
@@ -123,7 +133,14 @@
 .sft-column-header {
     position: sticky;
     top: 0;
-    cursor: default !important;
+    cursor: default !important;padding-left: 5px !important;
+    border-right: 1px solid #fefefe;
+    background-color: #888;
+    z-index: 1000;
+}
+
+.sft-column-header:last-of-type {
+    border-right: none;
 }
 
 .sft-column-header:hover {
@@ -132,11 +149,25 @@
 
 .sft-column-header-wrapper {
     display: flex;
-    flex-direction: row; 
+    flex-direction: column; 
     flex-grow: 1;
     align-items: center;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+}
+
+.sft-column-header-top {
+    display: flex;
+    flex-direction: row; 
+    flex-grow: 1;
+}
+
+.sft-column-header-bottom {
+    display: flex;
+    flex-direction: row; 
+    flex-grow: 1;
+    margin-left: auto;
+    width: 100%;
 }
 
 .sft-column-header-title {
@@ -159,6 +190,7 @@
     flex-direction: row; 
     flex-grow: 0;
     align-items: center;
+    margin-right: auto;
 }
 
 .sft-column-header-flag {
@@ -182,6 +214,7 @@
     flex-direction: row; 
     flex-grow: 0;
     align-items: center;
+    margin-left: auto;
 }
 
 .sft-column-header-button {
@@ -208,6 +241,7 @@
 
 .sft-table-cell {
     border-right: 1px solid #ccc;
+    padding: 0.3rem !important;
 }
 .sft-table-cell:last-of-type {
     border-right: none;
@@ -216,7 +250,6 @@
 .sft-table-cell-text {
     font-size: 1rem;
     color: #111;
-    padding: 0.3rem;
 }
 
 /*  Footer */
@@ -226,6 +259,11 @@
     flex-direction: row;
     flex-grow: 0;
     background-color: #ccc;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2rem;
 }
 
 .sft-footer-summary {
@@ -238,6 +276,7 @@
 .sft-footer-summary-label {
     font-size: 1rem;
     color: #000;
+    padding: 1rem;
 }
 
 .sft-footer-pagination {
@@ -245,6 +284,7 @@
     flex-direction: row;
     flex-grow: 0;
     align-items: center;
+    padding: 1rem;
 }
 
 .sft-footer-pagination-label {

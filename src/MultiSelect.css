@@ -20,13 +20,22 @@
     top: 0;
     bottom: 0;
   }
+
+  .checkboxScroller{
+    overflow: auto;
+    width: fit-content;
+    max-width: 500px;
+    max-height: 400px;
+  }
   
   .checkboxes {
     display: none;
     border: 1px #dadada solid;
     flex-direction: column;
     position: relative;
-    width: 100%;
+    width: fit-content;
+    overflow: visible;
+    z-index: 1000;
     background-color: rgb(254, 254, 254);
   }
 
@@ -53,7 +62,7 @@
   }
   
   .checkbox-row-label {
-
+    white-space: nowrap;
   }
   
   

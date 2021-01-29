@@ -417,21 +417,23 @@ export default class SearchFilterTable extends FlowComponent {
             Object.keys(this.outcomes).forEach((key: string) => {
                 const outcome: FlowOutcome = this.outcomes[key];
                 if (outcome.isBulkAction === true && outcome.developerName !== "OnSelect" && outcome.developerName.toLowerCase().startsWith("cm")) {
-                    listItems.set(outcome.developerName,(
-                        <li 
-                            className="sft-cm-item"
-                            title={outcome.label || key}
-                            onClick={(e: any) => {e.stopPropagation(); this.cmClick(key)}}
-                        >
-                            <span
-                                className={"glyphicon glyphicon-" + (outcome.attributes["icon"]?.value || "plus") + " sft-cm-item-icon"} />
-                            <span
-                                className={"sft-cm-item-label"}
+                    if(! (outcome.attributes["RequiresSelected"]?.value === "true" && this.selectedRowMap.size < 1)) {
+                        listItems.set(outcome.developerName,(
+                            <li 
+                                className="sft-cm-item"
+                                title={outcome.label || key}
+                                onClick={(e: any) => {e.stopPropagation(); this.cmClick(key)}}
                             >
-                                {outcome.label || key}
-                            </span>
-                        </li>
-                    ));
+                                <span
+                                    className={"glyphicon glyphicon-" + (outcome.attributes["icon"]?.value || "plus") + " sft-cm-item-icon"} />
+                                <span
+                                    className={"sft-cm-item-label"}
+                                >
+                                    {outcome.label || key}
+                                </span>
+                            </li>
+                        ));
+                    }
                 }
             });
 
@@ -465,21 +467,23 @@ export default class SearchFilterTable extends FlowComponent {
                     </span>
                 </li>
             ));
-            listItems.set("exportselected",(
-                <li 
-                    className="sft-cm-item"
-                    title={"Export Selected Items"}
-                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.selectedRowMap)}}
-                >
-                    <span
-                        className={"glyphicon glyphicon-floppy-save sft-cm-item-icon"} />
-                    <span
-                        className={"sft-cm-item-label"}
+            if(this.selectedRowMap.size > 0) {
+                listItems.set("exportselected",(
+                    <li 
+                        className="sft-cm-item"
+                        title={"Export Selected Items"}
+                        onClick={(e: any) => {e.stopPropagation(); this.doExport(this.selectedRowMap)}}
                     >
-                        Export Selected
-                    </span>
-                </li>
-            ));
+                        <span
+                            className={"glyphicon glyphicon-floppy-save sft-cm-item-icon"} />
+                        <span
+                            className={"sft-cm-item-label"}
+                        >
+                            Export Selected
+                        </span>
+                    </li>
+                ));
+            }
             this.contextMenu.showContextMenu(e.clientX, e.clientY,listItems);   
             this.forceUpdate();
         }
@@ -584,6 +588,9 @@ export default class SearchFilterTable extends FlowComponent {
         //handle classes attribute and hidden and size
         let classes: string = "sft " + this.getAttribute("classes","");
         let style: CSSProperties = {};
+        style.width = "-webkit-fill-available";
+        style.height = "-webkit-fill-available";
+
         if(this.model.visible === false) {
             style.display = "none";
         }
