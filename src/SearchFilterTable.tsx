@@ -91,6 +91,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.buildFooter = this.buildFooter.bind(this);
 
         this.filtersChanged = this.filtersChanged.bind(this);
+        this.toggleSelect = this.toggleSelect.bind(this);
 
         this.firstPage = this.firstPage.bind(this);
         this.previousPage = this.previousPage.bind(this);
