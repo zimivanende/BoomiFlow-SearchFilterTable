@@ -216,24 +216,39 @@ export default class ColumnFilters {
         this.items.forEach((item: ColumnFilter) => {
             // each criteria needs to pass
             item.criteria.forEach((criteria: ColumnCriteria) => {
+                let val: string = (objData.properties[item.key].value as string).toLowerCase();
+                let crit: string;
+                if(typeof criteria.value === "string") {
+                    crit = (criteria.value as string).toLowerCase();
+                }
                 switch(criteria.comparator) {
                     case eColumnComparator.equalTo:
-                        if(objData.properties[item.key].value !== criteria.value) {
+                        if(val !== crit) {
                             matches=false; 
                         }
                         break;
                     case eColumnComparator.notEqualTo:
-                        if(objData.properties[item.key].value === criteria.value) {
+                        if(val === crit) {
                             matches=false; 
                         }
                         break;
                     case eColumnComparator.contains:
-                        if((objData.properties[item.key].value as string).indexOf(criteria.value) < 0) {
+                        if(val.indexOf(crit) < 0) {
+                            matches=false; 
+                        }
+                        break;
+                    case eColumnComparator.startsWith:
+                        if(!val.startsWith(crit)) {
+                            matches=false; 
+                        }
+                        break;
+                    case eColumnComparator.endsWith:
+                        if(!val.endsWith(crit)) {
                             matches=false; 
                         }
                         break;
                     case eColumnComparator.notContains:
-                        if((objData.properties[item.key].value as string).indexOf(criteria.value) >= 0) {
+                        if(val.indexOf(crit) >= 0) {
                             matches=false; 
                         }
                         break;

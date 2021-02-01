@@ -141,6 +141,7 @@
 
 .sft-column-header:last-of-type {
     border-right: none;
+    width: 1000px;
 }
 
 .sft-column-header:hover {

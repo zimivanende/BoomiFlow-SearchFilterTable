@@ -52,6 +52,18 @@ export default class FilterConfigForm extends React.Component<any,any> {
                 Does Not Contain
             </option>,
             <option
+                value={eColumnComparator.startsWith}
+                selected={criteria.comparator===eColumnComparator.startsWith}
+            >
+                Starts With
+            </option>,
+            <option
+                value={eColumnComparator.endsWith}
+                selected={criteria.comparator===eColumnComparator.endsWith}
+            >
+                Ends With
+            </option>,
+            <option
                 value={eColumnComparator.in}
                 selected={criteria.comparator===eColumnComparator.in}
             >
@@ -109,7 +121,9 @@ export default class FilterConfigForm extends React.Component<any,any> {
                 break;
 
             default:
-                criteria.value="";
+                if(typeof criteria.value !== "string") {
+                    criteria.value="";
+                }
                 break;
         }
     }

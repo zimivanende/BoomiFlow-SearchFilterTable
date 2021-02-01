@@ -2,6 +2,8 @@
 export enum eColumnComparator {
     equalTo,
     notEqualTo,
+    startsWith,
+    endsWith,
     contains,
     notContains,
     in,
