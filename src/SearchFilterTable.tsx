@@ -10,6 +10,7 @@ import SearchFilterTableHeaders from './SearchFilterTableHeaders';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 import SearchFilterTableFooter from './SearchFilterTableFooter';
 import ModelExporter from './ModelExporter';
+import SearchFilterTableHeaderButtons from './SearchFilterTableHeaderButtons';
 
 
 //declare const manywho: IManywho;
@@ -52,6 +53,12 @@ export default class SearchFilterTable extends FlowComponent {
     // this is the column value map, it conatins all possible values for each column, it doesn't change unless data reloaded
     colValMap: Map<string,Map<any,any>> = new Map();
 
+    // this is the title header buttons React component
+    headerButtons: SearchFilterTableHeaderButtons;
+
+    // this is the title header buttons html element
+    headerButtonsElement: any;
+
     // this is the table headers React component
     headers: SearchFilterTableHeaders;
 
@@ -73,9 +80,6 @@ export default class SearchFilterTable extends FlowComponent {
     // content holder to avoid blank pages during moves 
     lastContent: any = (<div></div>);
 
-    // holds top header buttons, , it doesn't change unless data reloaded
-    headerButtons: any[];
-
     // these are the filter & sort controllers
     filters: ColumnFilters = new ColumnFilters(this);
 
@@ -88,6 +92,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.hideContextMenu = this.hideContextMenu.bind(this);     
         
         this.buildCoreTable = this.buildCoreTable.bind(this);
+        this.buildHeaderButtons = this.buildHeaderButtons.bind(this);
         this.buildFooter = this.buildFooter.bind(this);
 
         this.filtersChanged = this.filtersChanged.bind(this);
@@ -133,6 +138,11 @@ export default class SearchFilterTable extends FlowComponent {
                 this.rows.delete(key);
             }
         }
+    }
+
+    // stores / deletes a ref to the column headers
+    setHeaderButtons(element: SearchFilterTableHeaderButtons) {
+        this.headerButtons = element;
     }
 
     // stores / deletes a ref to the column headers
@@ -206,6 +216,12 @@ export default class SearchFilterTable extends FlowComponent {
             this.colValMap.set(col.developerName, new Map());
         })
         
+        this.headerButtonsElement = (
+            <SearchFilterTableHeaderButtons 
+                root={this}
+                ref={(element: SearchFilterTableHeaderButtons) => {this.setHeaderButtons(element)}}
+            />
+        );
 
         this.headersElement = (
             <SearchFilterTableHeaders 
@@ -336,7 +352,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.rows.forEach((row: SearchFilterTableRow) => {
             row.forceUpdate();
         });
-
+        this.buildHeaderButtons();
         this.buildFooter();
         this.saveSelected();
     }
@@ -349,6 +365,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.selectedRowMap.delete(key);
         }
         this.rows.get(key).forceUpdate();
+        this.buildHeaderButtons();
         this.buildFooter();
         this.saveSelected();
     }
@@ -389,25 +406,7 @@ export default class SearchFilterTable extends FlowComponent {
     // builds title bar buttons based on attached outcomes
     //////////////////////////////////////////////////////
     buildHeaderButtons() {
-        this.headerButtons = [];
-
-        let lastOrder: number = 0;
-        let addedExpand: boolean = false;
-        let addedContract: boolean = false;
-        Object.keys(this.outcomes).forEach((key: string) => {
-            const outcome: FlowOutcome = this.outcomes[key];
-            
-            if (outcome.isBulkAction && outcome.developerName !== "OnSelect" && outcome.developerName !== "OnChange" && !outcome.developerName.toLowerCase().startsWith("cm")) {
-                this.headerButtons.push(
-                    <span 
-                        key={key}
-                        className={"glyphicon glyphicon-" + (outcome.attributes["icon"]?.value || "plus") + " sft-header-button"} 
-                        title={outcome.label || key}
-                        onClick={(e: any) => {this.doOutcome(key, undefined)}}
-                    />
-                );
-            }
-        });
+        this.headerButtons?.forceUpdate();
     }
 
     //////////////////////////////////////////////////////
@@ -640,11 +639,7 @@ export default class SearchFilterTable extends FlowComponent {
                             {title}
                         </span>
                     </div>
-                    <div
-                        className="sft-header-buttons"
-                    >
-                        {this.headerButtons}
-                    </div>
+                    {this.headerButtonsElement}
                 </div>
                 <div
                     className="sft-body"
