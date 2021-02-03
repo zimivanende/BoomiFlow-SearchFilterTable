@@ -28,6 +28,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     // this contains the display time subset of rowMap which is filtered & sorted, it changes with each query etc,  Used to build the actual rows
     currentRowMap: Map<string,any> = new Map();
+    //currentRowMap: Array<string> = [];//Map<string,any> = new Map();
 
     // this holds the max items per page
     maxPageRows: number = 5;
@@ -240,6 +241,9 @@ export default class SearchFilterTable extends FlowComponent {
         
         this.model.dataSource.items.forEach((item: FlowObjectData) => {
             //construct Item
+            if(item.isSelected === true) {
+                this.selectedRowMap.set(item.internalId,undefined);
+            }
             let node = new RowItem();
             node.id = item.internalId;
 
@@ -270,9 +274,9 @@ export default class SearchFilterTable extends FlowComponent {
         }
 
         // remove any selected items not in the currentRowMap
-        this.selectedRowMap.forEach((item: RowItem) => {
-            if(!this.currentRowMap.has(item.id)) {
-                this.selectedRowMap.delete(item.id);
+        this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
+            if(!this.currentRowMap.has(internalId)) {
+                this.selectedRowMap.delete(internalId);
             }
         });
     }
@@ -373,6 +377,17 @@ export default class SearchFilterTable extends FlowComponent {
     // store the selected items to state
     async saveSelected() {
         let selectedItems : FlowObjectDataArray = new FlowObjectDataArray();
+        this.selectedRowMap.forEach((item: FlowObjectData, key: string) => {
+            let tItem: FlowObjectData = this.rowMap.get(key).objectData;
+            tItem.isSelected = true;
+            selectedItems.addItem(tItem);
+        });
+        await this.setStateValue(selectedItems);
+    }
+
+    // store the selected items to state
+    async loadSelected() {
+        let selectedItems : FlowObjectDataArray = this.getStateValue() as FlowObjectDataArray;
         this.selectedRowMap.forEach((item: FlowObjectData, key: string) => {
             let tItem: FlowObjectData = this.rowMap.get(key).objectData;
             tItem.isSelected = true;
