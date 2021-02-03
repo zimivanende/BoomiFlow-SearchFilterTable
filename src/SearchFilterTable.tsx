@@ -165,6 +165,10 @@ export default class SearchFilterTable extends FlowComponent {
             }
             else {
                 this.buildCoreTable();
+                this.filterRows();
+                this.sortRows();
+                this.buildTableRows();
+                this.forceUpdate();
             }
         }
         
