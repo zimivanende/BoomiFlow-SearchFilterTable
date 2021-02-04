@@ -144,7 +144,7 @@
 }
 
 .sft-column-header:hover {
-    background: none !important;
+    background-color: #888 !important;
 }
 
 .sft-column-header-wrapper {
