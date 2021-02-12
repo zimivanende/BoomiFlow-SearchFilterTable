@@ -11,6 +11,7 @@ import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 import SearchFilterTableFooter from './SearchFilterTableFooter';
 import ModelExporter from './ModelExporter';
 import SearchFilterTableHeaderButtons from './SearchFilterTableHeaderButtons';
+import SearchFilterTableRibbon from './SearchFilterTableRibbon';
 
 
 //declare const manywho: IManywho;
@@ -54,17 +55,24 @@ export default class SearchFilterTable extends FlowComponent {
     // this is the column value map, it conatins all possible values for each column, it doesn't change unless data reloaded
     colValMap: Map<string,Map<any,any>> = new Map();
 
+    /*
     // this is the title header buttons React component
     headerButtons: SearchFilterTableHeaderButtons;
 
     // this is the title header buttons html element
     headerButtonsElement: any;
-
+*/
     // this is the table headers React component
     headers: SearchFilterTableHeaders;
 
     // this is the table headers html element
     headersElement: any;
+
+    // this is the footer React component
+    ribbon: SearchFilterTableRibbon;
+
+    // this is the footer html element
+    ribbonElement: any;
 
     // this is the footer React component
     footer: SearchFilterTableHeaders;
@@ -93,7 +101,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.hideContextMenu = this.hideContextMenu.bind(this);     
         
         this.buildCoreTable = this.buildCoreTable.bind(this);
-        this.buildHeaderButtons = this.buildHeaderButtons.bind(this);
+        this.buildRibbon = this.buildRibbon.bind(this);
         this.buildFooter = this.buildFooter.bind(this);
 
         this.filtersChanged = this.filtersChanged.bind(this);
@@ -142,8 +150,8 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     // stores / deletes a ref to the column headers
-    setHeaderButtons(element: SearchFilterTableHeaderButtons) {
-        this.headerButtons = element;
+    setRibbon(element: SearchFilterTableRibbon) {
+        this.ribbon = element;
     }
 
     // stores / deletes a ref to the column headers
@@ -221,10 +229,10 @@ export default class SearchFilterTable extends FlowComponent {
             this.colValMap.set(col.developerName, new Map());
         })
         
-        this.headerButtonsElement = (
-            <SearchFilterTableHeaderButtons 
+        this.ribbonElement = (
+            <SearchFilterTableRibbon 
                 root={this}
-                ref={(element: SearchFilterTableHeaderButtons) => {this.setHeaderButtons(element)}}
+                ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element)}}
             />
         );
 
@@ -266,7 +274,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.sortRows();
         this.paginateRows();
 
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
 
     }
@@ -315,7 +323,7 @@ export default class SearchFilterTable extends FlowComponent {
     firstPage() {
         this.currentRowPage = 0;
         this.buildTableRows();
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.forceUpdate();
     }
@@ -323,7 +331,7 @@ export default class SearchFilterTable extends FlowComponent {
     previousPage() {
         if(this.currentRowPage > 1) { this.currentRowPage -= 1 } else { this.currentRowPage = 0 };
         this.buildTableRows();
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.forceUpdate();
     }
@@ -331,7 +339,7 @@ export default class SearchFilterTable extends FlowComponent {
     nextPage() {
         if(this.currentRowPage < (this.currentRowPages.length - 1)) { this.currentRowPage += 1 } else { this.currentRowPage = this.currentRowPages.length - 1 };
         this.buildTableRows();
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.forceUpdate();
     }
@@ -339,7 +347,7 @@ export default class SearchFilterTable extends FlowComponent {
     lastPage() {
         this.currentRowPage = this.currentRowPages.length - 1 ;
         this.buildTableRows();
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.forceUpdate();
     }
@@ -360,7 +368,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.rows.forEach((row: SearchFilterTableRow) => {
             row.forceUpdate();
         });
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.saveSelected();
     }
@@ -373,7 +381,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.selectedRowMap.delete(key);
         }
         this.rows.get(key).forceUpdate();
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
         this.saveSelected();
     }
@@ -417,15 +425,15 @@ export default class SearchFilterTable extends FlowComponent {
                 );
             });
         }
-        this.buildHeaderButtons();
+        this.buildRibbon();
         this.buildFooter();
     }
 
     //////////////////////////////////////////////////////
     // builds title bar buttons based on attached outcomes
     //////////////////////////////////////////////////////
-    buildHeaderButtons() {
-        this.headerButtons?.forceUpdate();
+    buildRibbon() {
+        this.ribbon?.forceUpdate();
     }
 
     //////////////////////////////////////////////////////
@@ -646,20 +654,7 @@ export default class SearchFilterTable extends FlowComponent {
                     parent={this}
                     ref={(element: FlowContextMenu) => {this.contextMenu = element}}
                 />
-                <div
-                    className="sft-header"
-                >
-                    <div
-                        className="sft-header-title-wrapper"
-                    >
-                        <span
-                            className="sft-header-title"
-                        >
-                            {title}
-                        </span>
-                    </div>
-                    {this.headerButtonsElement}
-                </div>
+                {this.ribbonElement}
                 <div
                     className="sft-body"
                 >

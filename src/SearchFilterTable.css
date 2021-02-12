@@ -4,48 +4,87 @@
     position: relative;
 }
 
-.sft-header {
+.sft-ribbon {
     display: flex;
-    height: 2rem;
-    background-color: rgb(50 82 138);
+    height: 6rem;
+    background-color: #222;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
 }
 
-.sft-header-title-wrapper {
+.sft-ribbon-left-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: 1rem;
+    margin-right: auto;
+    align-items: flex-start;
+}
+
+.sft-ribbon-right-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: auto;
+    margin-right: 1rem;
+    align-items: flex-end;
+}
+
+.sft-ribbon-title-wrapper {
     display: flex;
     flex-direction: row;
     flex-grow: 1;
 }
 
-.sft-header-title {
-    margin-left: 0.5rem;
+.sft-ribbon-hbuttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+.sft-ribbon-title {
     margin-right: auto;
     color: #fff;
     font-size: 0.9rem;
 }
 
-.sft-header-buttons {
+.sft-ribbon-buttons {
     display: flex;
     flex-direction: row;
     margin-right: 0.5rem;
     align-items: center;
 }
 
-.sft-header-button {
-    color: #fefefe;
-    font-size: 1rem;
-    margin-right: 0.5em;
+
+.sft-ribbon-button-wrapper {
+    display: flex;
+    flex-direction: column;
     cursor: pointer;
+    margin-right: 0.5em;
+    align-items: center;
+    width: 4rem;
+}
+
+.sft-ribbon-button-icon {
+    color: #fefefe;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.sft-ribbon-button-label {
+    color: #fefefe;
+    font-size: 0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
 }
 
 .sft-body {
     display: block;
     background-color: #eee;
     position: absolute;
-    top: 2rem;
+    top: 6rem;
     left: 0;
     right: 0;
     bottom: 2rem;
