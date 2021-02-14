@@ -291,6 +291,27 @@
     color: #111;
 }
 
+.sft-table-cell-button {
+    cursor: pointer;
+    background-color: #ccc;
+    padding: 0.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+}
+
+.sft-table-cell-button-icon {
+    color: #fefefe;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+}
+
+.sft-table-cell-button-label {
+    color: #fefefe;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
 /*  Footer */
 
 .sft-footer {

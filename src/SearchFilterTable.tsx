@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import { eLoadingState, FlowComponent, FlowObjectDataArray, FlowObjectData, FlowOutcome,  FlowDisplayColumn, FlowMessageBox, modalDialogButton } from 'flow-component-model';
+import { eLoadingState, FlowComponent, FlowObjectDataArray, FlowObjectData, FlowOutcome,  FlowDisplayColumn, FlowMessageBox, modalDialogButton, eContentType, FlowObjectDataProperty } from 'flow-component-model';
 import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
 import RowItem from './RowItem';
 import CellItem from './CellItem';
@@ -535,58 +535,45 @@ export default class SearchFilterTable extends FlowComponent {
         this.doOutcome(key);
     }
 
-    async doOutcome(outcomeName: string, selectedItem? : string) {
-        //if there's a selectedItem then this must be being triggered at a row level.
-        //set the single item field if defined
-        /*
-        if(selectedItem) {
-            //we should set the component's single selected item by adding it to the emptied list
-            this.selectedRows.clear();
-            if(selectedItem) {
-                this.selectedRows.set(selectedItem,selectedItem);
-            }
-            //now if there's a RowLevelState attribute defined, get it and update it with the selected item's object data
-            if(this.getAttribute("RowLevelState","").length>0) {
-                let val: FlowField = await this.loadValue(this.getAttribute("RowLevelState"));
-                if (val) {
-                    val.value = this.rowMap.get(selectedItem).objectData as FlowObjectData;
-                    await this.updateValues(val);
+    getTextValue(property: FlowObjectDataProperty) : string {
+        switch(property.contentType) {
+            case eContentType.ContentBoolean:
+                if(property.value === true) {
+                    return "True";
                 }
-            }
-        }
-        
-        
-        //if it's on select, change or the outcome should save values then store something to the state
-        if(outcomeName === "OnSelect" || 
-            outcomeName === "OnChange" || 
-            this.outcomes[outcomeName]?.pageActionBindingType !== ePageActionBindingType.NoSave) {
-                //the model's type & multiselect defines what we save to the state
-                //if it's a list type state
-                if(this.getStateValueType() === eContentType.ContentList){
-                    //if it's OnChange then add item to modified list
-                    if(outcomeName === "OnChange"){
-                        this.modifiedRows.set(selectedItem,selectedItem);
-                    }
-                    //if multi select then we are working on a selected subset
-                    if(this.model.multiSelect === true) {
-                        //we only store the modified rows subset
-                        await this.pushModifiedToState();
-                    }
-                    else {
-                        // we store entire model to state
-                        await this.pushModelToState();
-                    }
-                } 
                 else {
-                    // its a single object state
-                    
-                    await this.pushSelectedToState();
+                    return "False";
                 }
-        }
-        */
+            case eContentType.ContentNumber:
+                return property.value.toString();
 
+            default:
+                return property.value as string;
+        }
+    }
+    
+    async doOutcome(outcomeName: string, selectedItem? : string) {
+        let objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
         if(this.outcomes[outcomeName]) {
-            await this.triggerOutcome(outcomeName);
+            //if the outcome has a uri then we are opening something in a new tab
+            if(this.outcomes[outcomeName].attributes["uri"]) {
+                let href: string = this.outcomes[outcomeName].attributes["uri"].value;
+                let match: any;
+                while( match = RegExp(/{{([^}]*)}}/).exec(href)) {
+                    href=href.replace(match[0],(objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ""));
+                }
+                if(this.outcomes[outcomeName].attributes["target"]?.value==="_self") {
+                    window.location.href = href;
+                }
+                else {
+                    var tab = window.open();
+                    tab.location.href = href;
+                }
+            }
+            else {
+                await this.triggerOutcome(outcomeName);
+            }
+            
         }
         else {
             manywho.component.handleEvent(
