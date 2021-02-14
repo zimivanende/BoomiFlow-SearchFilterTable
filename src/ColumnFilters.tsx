@@ -176,7 +176,7 @@ export default class ColumnFilters {
                         className="sft-column-header-button sft-column-header-button-hot glyphicon glyphicon-search"
                         onClick={(e: any) => {this.filterClicked(key)}}
                         title="Change filter"
-                    />,
+                    />
                     <span 
                         className="sft-column-header-button sft-column-header-button-hot glyphicon glyphicon-remove"
                         onClick={(e: any) => {this.filterClear(key)}}
