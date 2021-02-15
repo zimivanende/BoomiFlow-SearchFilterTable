@@ -112,6 +112,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.nextPage = this.nextPage.bind(this);
         this.lastPage = this.lastPage.bind(this);
 
+        this.maxPerPageChanged = this.maxPerPageChanged.bind(this);
+
         this.doExport = this.doExport.bind(this);
 
         this.maxPageRows = parseInt(this.getAttribute("PaginationSize",undefined) || "10" );
@@ -135,6 +137,13 @@ export default class SearchFilterTable extends FlowComponent {
                 this.forceUpdate();
                 break;
         }
+    }
+
+    maxPerPageChanged(max: number) {
+        this.maxPageRows = max || 10;
+        this.paginateRows();
+        this.buildTableRows();
+        this.forceUpdate();
     }
 
     // stores / deletes a ref to a table row as it's created or destroyed

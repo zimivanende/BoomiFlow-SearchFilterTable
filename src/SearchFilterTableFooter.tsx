@@ -4,8 +4,16 @@ import SearchFilterTable from "./SearchFilterTable";
 
 export default class SearchFilterTableFooter extends React.Component<any,any> {
 
+    maxPerPage: any;
+
     componentDidMount() {
         this.forceUpdate();
+        this.maxPerPageChanged = this.maxPerPageChanged.bind(this);
+    }
+
+    maxPerPageChanged(e: any){
+        const root: SearchFilterTable = this.props.root;
+        root.maxPerPageChanged(parseInt(this.maxPerPage.options[this.maxPerPage.selectedIndex].value));
     }
 
     render() {
@@ -78,6 +86,37 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
             );
         }
 
+        let options: number[] = [];
+        options.push(10,20,50,100);
+        if(options.indexOf(root.maxPageRows) <0 ) {
+            options.push(root.maxPageRows);
+        }
+        options=options.sort((a,b) => {
+            return a-b;
+        });
+
+        let opts: any[] = [];
+        options.forEach((a: number) => {
+            opts.push(
+                <option
+                    value={a}
+                    selected={root.maxPageRows===a}
+                >
+                    {a}
+                </option> 
+            );
+        });
+
+        let perPage: any = (
+            <select
+                className={"sft-footer-select"}
+                onChange={this.maxPerPageChanged}
+                ref={(element: any) => {this.maxPerPage = element}}
+            >
+               {opts} 
+            </select>
+        );
+
         return (
             <div
                 className="sft-footer"
@@ -90,6 +129,23 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
                     >
                         {summary}
                     </span>
+                </div>
+                <div
+                    className="sft-footer-spacer"
+                />
+                <div
+                    className="sft-footer-perpage"
+                >
+                    <div
+                        className="sft-footer-perpage-label"
+                    >
+                        {"Items per page"}
+                    </div>
+                    <div
+                        className="sft-footer-perpage-dropdown"
+                    >
+                        {perPage}
+                    </div>
                 </div>
                 <div
                     className="sft-footer-pagination"
