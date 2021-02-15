@@ -230,6 +230,7 @@
     flex-grow: 0;
     align-items: center;
     margin-right: auto;
+    padding-right: 2rem;
 }
 
 .sft-column-header-flag {
