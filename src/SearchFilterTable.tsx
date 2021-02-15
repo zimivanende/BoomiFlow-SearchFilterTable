@@ -116,13 +116,14 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.doExport = this.doExport.bind(this);
 
-        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || this.getAttribute("PaginationSize",undefined) || "10" );
-        sessionStorage.setItem("sft-max",this.maxPageRows.toString());
+        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max-" + this.componentId) || this.getAttribute("PaginationSize",undefined) || "10" );
+        sessionStorage.setItem("sft-max-" + this.componentId,this.maxPageRows.toString());
     }
 
+    
     filtersChanged(key: string, event: eFilterEvent) {
         this.headers.forceUpdate();
-        sessionStorage.setItem("sft-filters",this.filters.getForStorage());
+        sessionStorage.setItem("sft-filters-" + this.componentId,this.filters.getForStorage());
         switch(event) {
             case eFilterEvent.sort:
                 this.sortRows();
@@ -143,7 +144,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     maxPerPageChanged(max: number) {
         this.maxPageRows = max || 10;
-        sessionStorage.setItem("sft-max",this.maxPageRows.toString());
+        sessionStorage.setItem("sft-max-" + this.componentId,this.maxPageRows.toString());
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate();
@@ -185,7 +186,7 @@ export default class SearchFilterTable extends FlowComponent {
             }
             else {
                 this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || "20");
-                this.filters.loadFromStorage(sessionStorage.getItem("sft-filters"));
+                this.filters.loadFromStorage(sessionStorage.getItem("sft-filters-" + this.componentId));
                 this.buildCoreTable();
                 this.filterRows();
                 this.sortRows();
@@ -201,8 +202,8 @@ export default class SearchFilterTable extends FlowComponent {
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
         // build tree
-        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || "20");
-        this.filters.loadFromStorage(sessionStorage.getItem("sft-filters"));
+        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max-" + this.componentId || "20"));
+        this.filters.loadFromStorage(sessionStorage.getItem("sft-filters-" + this.componentId));
         this.buildCoreTable();
         this.filterRows();
         this.sortRows();
