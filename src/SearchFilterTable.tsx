@@ -116,11 +116,13 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.doExport = this.doExport.bind(this);
 
-        this.maxPageRows = parseInt(this.getAttribute("PaginationSize",undefined) || "10" );
+        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || this.getAttribute("PaginationSize",undefined) || "10" );
+        sessionStorage.setItem("sft-max",this.maxPageRows.toString());
     }
 
     filtersChanged(key: string, event: eFilterEvent) {
         this.headers.forceUpdate();
+        sessionStorage.setItem("sft-filters",this.filters.getForStorage());
         switch(event) {
             case eFilterEvent.sort:
                 this.sortRows();
@@ -141,6 +143,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     maxPerPageChanged(max: number) {
         this.maxPageRows = max || 10;
+        sessionStorage.setItem("sft-max",this.maxPageRows.toString());
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate();
@@ -181,6 +184,8 @@ export default class SearchFilterTable extends FlowComponent {
                 window.setTimeout(function() {me.flowMoved(xhr, request)},500);
             }
             else {
+                this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || "20");
+                this.filters.loadFromStorage(sessionStorage.getItem("sft-filters"));
                 this.buildCoreTable();
                 this.filterRows();
                 this.sortRows();
@@ -196,6 +201,8 @@ export default class SearchFilterTable extends FlowComponent {
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
         // build tree
+        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || "20");
+        this.filters.loadFromStorage(sessionStorage.getItem("sft-filters"));
         this.buildCoreTable();
         this.filterRows();
         this.sortRows();

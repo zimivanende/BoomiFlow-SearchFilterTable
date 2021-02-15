@@ -9,9 +9,14 @@ export default class ColumnFilter {
     parent: ColumnFilters;
     criteria: Array<ColumnCriteria> = [];
 
-    constructor(key: string, parent: ColumnFilters){
+    constructor(key: string, parent: ColumnFilters, sort: eSortDirection = eSortDirection.none, criteria: Array<ColumnCriteria> = []){
         this.key = key;
         this.parent = parent;
+        this.sort=sort;
+        criteria.forEach((crit: any) => {
+            crit=JSON.parse(crit);
+            this.criteria.push(new ColumnCriteria(crit.comparator, crit.value));
+        });
         this.notify = this.notify.bind(this);
     }
 
@@ -50,5 +55,17 @@ export default class ColumnFilter {
     sortNone () {
         this.sort = eSortDirection.none;
         this.notify(eFilterEvent.sort);
+    }
+
+    getForStorage() : string {
+        let filter: any = {};
+        filter.key = this.key;
+        filter.sort = this.sort;
+        filter.criteria = [];
+        this.criteria.forEach((crit: ColumnCriteria) => {
+            filter.criteria.push(crit.getForStorage());
+        });
+        
+        return JSON.stringify(filter);
     }
 }

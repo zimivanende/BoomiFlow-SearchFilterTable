@@ -320,4 +320,26 @@ export default class ColumnFilters {
             return items;
         }
     }
+
+    getForStorage() : string {
+        let filters: any[] = [];
+        this.items.forEach((item: ColumnFilter) => {
+            filters.push(item.getForStorage());
+        });
+        return JSON.stringify(filters);
+    }
+
+    loadFromStorage(filters: string) {
+        this.items=new Map();
+        let src: any[] = JSON.parse(filters);
+        if(src){
+            src.forEach((filter: any) => {
+                filter = JSON.parse(filter);
+                if(filter.key){
+                    this.items.set(filter.key,new ColumnFilter(filter.key,this,filter.sort, filter.criteria));
+                }
+            });
+        }
+
+    }
 }
