@@ -410,15 +410,17 @@
 .sft-fcf-buttons {
     display: flex;
     flex-direction: row;
+    margin-top: 1.5rem;
 }
 
 .sft-fcf-button {
     font-size: 1.5rem;
-    color: #000;
+    color: #4c4444;
     margin-right: 0.5rem;
     cursor: pointer;
     top: 0px !important;
     margin-left: auto;
+    margin-right: auto;
 }
 
 .sft-fcf-row {

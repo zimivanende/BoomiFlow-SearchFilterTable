@@ -6,11 +6,13 @@
   
   .selectBox {
     position: relative;
+    margin: auto;
+    top: 0.4rem;
   }
   
   .selectBox select {
     width: 100%;
-    font-weight: bold;
+    font-weight: 500;
   }
   
   .overSelect {
@@ -26,6 +28,8 @@
     width: fit-content;
     max-width: 500px;
     max-height: 400px;
+    top: 0.4rem;
+    position: relative;
   }
   
   .checkboxes {
