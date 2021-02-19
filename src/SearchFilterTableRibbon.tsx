@@ -19,27 +19,31 @@ export default class SearchFilterTableRibbon extends React.Component<any,any> {
         let addedExpand: boolean = false;
         let addedContract: boolean = false;
 
-        // ad export
-        rightButtons.push(
-            <div 
-                className="sft-ribbon-button-wrapper"
-                onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap)}}
-            >
-                <span 
-                    key={"exportAll"}
-                    className={"glyphicon glyphicon-floppy-save sft-ribbon-button-icon"} 
-                    title={"Export All"}
-                    
-                />
-                <span
-                    className="sft-ribbon-button-label"
+        let canExport: boolean = (root.getAttribute("canExport","true").toLowerCase() === "true");
+
+        // ad export if allowed
+        if(canExport === true) {
+            rightButtons.push(
+                <div 
+                    className="sft-ribbon-button-wrapper"
+                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap)}}
                 >
-                    {"Export All"}
-                </span>
-            </div>
-        );
+                    <span 
+                        key={"exportAll"}
+                        className={"glyphicon glyphicon-floppy-save sft-ribbon-button-icon"} 
+                        title={"Export All"}
+                        
+                    />
+                    <span
+                        className="sft-ribbon-button-label"
+                    >
+                        {"Export All"}
+                    </span>
+                </div>
+            );
+        }
         
-        if(root.rowMap.size > root.currentRowMap.size) {
+        if(root.rowMap.size > root.currentRowMap.size && canExport === true) {
             rightButtons.push(
                 <div 
                     className="sft-ribbon-button-wrapper"
@@ -91,27 +95,27 @@ export default class SearchFilterTableRibbon extends React.Component<any,any> {
                 else {
                     rightButtons.push(
                         <div 
-                                className="sft-ribbon-button-wrapper"
-                                onClick={(e: any) => {root.doOutcome(key, undefined)}}
+                            className="sft-ribbon-button-wrapper"
+                            onClick={(e: any) => {root.doOutcome(key, undefined)}}
+                        >
+                            <span 
+                                key={key}
+                                className={"glyphicon glyphicon-" + (outcome.attributes["icon"]?.value || "plus") + " sft-ribbon-button-icon"} 
+                                title={outcome.label || key}
+                                
+                            />
+                            <span
+                                className="sft-ribbon-button-label"
                             >
-                                <span 
-                                    key={key}
-                                    className={"glyphicon glyphicon-" + (outcome.attributes["icon"]?.value || "plus") + " sft-ribbon-button-icon"} 
-                                    title={outcome.label || key}
-                                    
-                                />
-                                <span
-                                    className="sft-ribbon-button-label"
-                                >
-                                    {outcome.label || key}
-                                </span>
-                            </div>
+                                {outcome.label || key}
+                            </span>
+                        </div>
                     );
                 }
             }
         });
 
-        if(root.selectedRowMap.size > 0) {
+        if(root.selectedRowMap.size > 0 && canExport === true) {
             leftButtons.push(
                 <div 
                     className="sft-ribbon-button-wrapper"

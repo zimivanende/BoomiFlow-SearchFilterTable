@@ -50,6 +50,11 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 Sets the glyphicon to show for the outcome.
 
+### RequiresSelected
+
+Only shows the outcome button if there are selected rows
+"true" / "false" - default is "false"
+
 
 ## Settings
 
@@ -75,6 +80,9 @@ Sets the max number of rows to show per pagination page
 
 Like all components, adding a "classes" attribute will cause that string to be added to the base component's class value
 
+### canExport
+
+enables or disables the export to csv options.  defaults to "true".  Set to "false" to remove the feature.
 
 ## Styling
 
