@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, modalDialogButton } from "flow-component-model";
+import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, modalDialogButton } from "flow-component-model";
 import ColumnFilter from "./ColumnFilter";
 import SearchFilterTable from "./SearchFilterTable";
 import FilterConfigForm from "./FilterConfigForm";
@@ -300,11 +300,27 @@ export default class ColumnFilters {
         }));
         
         if(sortColumn) {
-            let colDef = this.parent.colMap.get(sortColumn.key);
-            var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-            let sorted: any = Array.from(candidates).sort((a: any,b: any) => 
-                collator.compare(a[1].objectData.properties[sortColumn.key].value,b[1].objectData.properties[sortColumn.key].value)
-            );
+            let colDef: FlowDisplayColumn = this.parent.colMap.get(sortColumn.key);
+            
+            let sorted: any
+            
+            switch(colDef.contentType) {
+
+                case eContentType.ContentDateTime:
+                    sorted = Array.from(candidates).sort((a: any,b: any) => 
+                        a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value
+                    );
+                    break;
+
+                default:
+                    let collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+                    sorted = Array.from(candidates).sort((a: any,b: any) => 
+                        collator.compare(a[1].objectData.properties[sortColumn.key].value,b[1].objectData.properties[sortColumn.key].value)
+                    );
+                    break;
+
+            }
+            
 
             if(sortColumn.sort === eSortDirection.descending) {
                 sorted = sorted.reverse();

@@ -55,13 +55,6 @@ export default class SearchFilterTable extends FlowComponent {
     // this is the column value map, it conatins all possible values for each column, it doesn't change unless data reloaded
     colValMap: Map<string,Map<any,any>> = new Map();
 
-    /*
-    // this is the title header buttons React component
-    headerButtons: SearchFilterTableHeaderButtons;
-
-    // this is the title header buttons html element
-    headerButtonsElement: any;
-*/
     // this is the table headers React component
     headers: SearchFilterTableHeaders;
 
@@ -298,6 +291,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     // filters the currentRowMap
     filterRows() {
+        this.currentRowMap = new Map();
         if (this.rowMap.size > 0) {
             this.currentRowMap = this.filters.filter(this.rowMap);
         }

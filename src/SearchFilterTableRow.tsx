@@ -9,7 +9,7 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
 
 
         const root: SearchFilterTable = this.props.root;
-        const objData:  FlowObjectData = root.rowMap.get(this.props.id).objectData;
+        const objData:  FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
 
         let buttons: any[] = [];
         Object.keys(root.outcomes).forEach((key: string) => {
