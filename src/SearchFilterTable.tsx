@@ -178,7 +178,7 @@ export default class SearchFilterTable extends FlowComponent {
                 window.setTimeout(function() {me.flowMoved(xhr, request)},500);
             }
             else {
-                this.maxPageRows = parseInt(sessionStorage.getItem("sft-max") || "20");
+                this.maxPageRows = parseInt(sessionStorage.getItem("sft-max-" + this.componentId) || this.getAttribute("PaginationSize",undefined) || "10");
                 this.filters.loadFromStorage(sessionStorage.getItem("sft-filters-" + this.componentId));
                 this.buildCoreTable();
                 this.filterRows();
@@ -195,7 +195,7 @@ export default class SearchFilterTable extends FlowComponent {
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
         // build tree
-        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max-" + this.componentId || "20"));
+        this.maxPageRows = parseInt(sessionStorage.getItem("sft-max-" + this.componentId || this.getAttribute("PaginationSize",undefined) || "10"));
         this.filters.loadFromStorage(sessionStorage.getItem("sft-filters-" + this.componentId));
         this.buildCoreTable();
         this.filterRows();
