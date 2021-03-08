@@ -37,6 +37,7 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
                 buttons.push(
                     <div
                         className="sft-table-cell-button"
+                        title={root.outcomes[key].label}
                         onClick={(event: any) => {
                             root.doOutcome(key,objData.internalId)
                         }}
