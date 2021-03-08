@@ -20,7 +20,7 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
                 if((!root.outcomes[key].attributes["display"]) || root.outcomes[key].attributes["display"].value.indexOf("text")>=0) {
                     label=(
                         <span
-                            className="sft-table-cell-button-label"
+                            className="sft-table-cell-button-element sft-table-cell-button-label"
                         >
                             {root.outcomes[key].label}
                         </span>
@@ -29,7 +29,7 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
                 if((root.outcomes[key].attributes["display"]) && root.outcomes[key].attributes["display"].value.indexOf("icon")>=0) {
                     icon=(
                         <span
-                            className={"sft-table-cell-button-icon glyphicon glyphicon-" + (root.outcomes[key].attributes["icon"].value || "plus")}
+                            className={"sft-table-cell-button-element sft-table-cell-button-icon glyphicon glyphicon-" + (root.outcomes[key].attributes["icon"].value || "plus")}
                         />
                     );
                 }

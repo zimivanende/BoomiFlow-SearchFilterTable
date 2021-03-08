@@ -311,10 +311,18 @@
     margin-right: 0;
 }
 
+.sft-table-cell-button-element {
+    margin: auto;
+    margin-right: 0.4rem
+}
+
+.sft-table-cell-button-element:last-of-type {
+    margin: auto;
+}
+
 .sft-table-cell-button-icon {
     color: #fefefe;
     font-size: 0.9rem;
-    margin-right: 0.1rem;
     top: 0 !important;
 }
 
