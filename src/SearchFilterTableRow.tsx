@@ -70,7 +70,11 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
                 <td
                     className="sft-table-cell"
                 >
-                    {buttons}
+                    <div
+                        className="sft-table-cell-buttons"
+                    >
+                        {buttons}
+                    </div>
                 </td>
             );
         }

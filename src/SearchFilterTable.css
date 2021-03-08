@@ -292,6 +292,11 @@
     color: #111;
 }
 
+.sft-table-cell-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
 .sft-table-cell-button {
     cursor: pointer;
     background-color: #ccc;
@@ -299,12 +304,18 @@
     border-radius: 8px;
     display: flex;
     flex-direction: row;
+    margin-right: 0.5rem;
+}
+
+.sft-table-cell-button:last-of-type {
+    margin-right: 0;
 }
 
 .sft-table-cell-button-icon {
     color: #fefefe;
-    font-size: 1rem;
-    margin-right: 0.5rem;
+    font-size: 0.9rem;
+    margin-right: 0.1rem;
+    top: 0 !important;
 }
 
 .sft-table-cell-button-label {
