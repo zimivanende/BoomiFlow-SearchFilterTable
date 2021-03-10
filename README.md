@@ -19,7 +19,9 @@ Set the datasource to a list of objects
 
 ## State
 
-Create a State LIST object of the type of the model data items.
+Create a State LIST object of the type of the model data items.  
+
+This will hold the list of selected / tagged items
 
 
 ## Outcomes
@@ -44,7 +46,7 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 * Outcome order is respected.  
 
-* The expand and contract default buttons in the title bar are given order 10 & 20 respectively to allow for controlling button display order and injecting your outcome around them.
+* If the outcome has an attribute of "RequireSelected"="true" then it will only be shown if one or more items are tagged.
 
 ## Outcome Attributes
 
@@ -56,6 +58,16 @@ Sets the glyphicon to show for the outcome.
 
 Only shows the outcome button if there are selected rows
 "true" / "false" - default is "false"
+
+### uri
+
+Will launch a uri when clicked rather than trigger an outcome.
+
+Uri can contain {{FiledName}} elements which will be substituted with values from that column in the row.
+
+### target
+
+_blank for opening uri in new window (default if ommitted) or _seld to reuse current tab
 
 
 ## Settings
