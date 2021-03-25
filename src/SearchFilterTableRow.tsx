@@ -1,4 +1,4 @@
-import { FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from "flow-component-model";
+import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from "flow-component-model";
 import React from "react";
 import SearchFilterTable from "./SearchFilterTable";
 
@@ -81,6 +81,19 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
         }
 
         root.colMap.forEach((col: FlowDisplayColumn) => {
+            let val: any;
+            switch(col.contentType) {
+                case eContentType.ContentDateTime:
+                    let dt: Date = new Date(objData.properties[col.developerName].value as string);
+                    if((dt instanceof Date && !isNaN(dt.getTime())) === true) {
+                        val=dt.toLocaleString();
+                    }
+                    break;
+                
+                default:
+                    val =objData.properties[col.developerName].value;
+                    break;
+            }
             cols.push(
                 <td
                     className="sft-table-cell"
@@ -88,7 +101,7 @@ export default class SearchFilterTableRow extends React.Component<any,any> {
                     <span
                         className="sft-table-cell-text"
                     >
-                        {objData.properties[col.developerName].value}
+                        {val}
                     </span>
                 </td>
             );

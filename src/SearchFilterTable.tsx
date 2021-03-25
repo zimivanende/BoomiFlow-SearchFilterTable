@@ -260,7 +260,7 @@ export default class SearchFilterTable extends FlowComponent {
             />
         );
         
-        
+        let start: Date = new Date();
         this.model.dataSource.items.forEach((item: FlowObjectData) => {
             //construct Item
             if(item.isSelected === true) {
@@ -278,6 +278,8 @@ export default class SearchFilterTable extends FlowComponent {
 
             this.rowMap.set(node.id,node);
         });
+        let end: Date = new Date();
+        console.log("build rowmap: " + (end.getTime() - start.getTime()));
 
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
@@ -291,6 +293,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     // filters the currentRowMap
     filterRows() {
+        let start: Date = new Date();
         this.currentRowMap = new Map();
         if (this.rowMap.size > 0) {
             this.currentRowMap = this.filters.filter(this.rowMap);
@@ -302,18 +305,23 @@ export default class SearchFilterTable extends FlowComponent {
                 this.selectedRowMap.delete(internalId);
             }
         });
+        let end: Date = new Date();
+        console.log("filter: " + (end.getTime() - start.getTime()));
     }
 
     // sorts the currentRowMap by getting the current sort column from filters
     sortRows() {
-        
+        let start: Date = new Date();
         if (this.currentRowMap.size > 0) {
             this.currentRowMap = this.filters.sort(this.currentRowMap, this.rowMap);
         }
+        let end: Date = new Date();
+        console.log("sort: " + (end.getTime() - start.getTime()));
     }
 
     // this goes through currentRowMap and splits them into pages based on maxPageRows
     paginateRows() {
+        let start: Date = new Date();
         this.currentRowPages = [];
         let currentPage: Map<string,RowItem> = new Map();
         this.currentRowMap.forEach((item: RowItem,key: string) => {
@@ -329,6 +337,8 @@ export default class SearchFilterTable extends FlowComponent {
         // add any stragglers
         this.currentRowPages.push(currentPage);
         this.currentRowPage = 0;
+        let end: Date = new Date();
+        console.log("paginate: " + (end.getTime() - start.getTime()));
     }
 
     firstPage() {
