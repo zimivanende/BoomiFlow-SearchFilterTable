@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import { eLoadingState, FlowComponent, FlowObjectDataArray, FlowObjectData, FlowOutcome,  FlowDisplayColumn, FlowMessageBox, modalDialogButton, eContentType, FlowObjectDataProperty } from 'flow-component-model';
+import { eLoadingState, FlowComponent, FlowObjectDataArray, FlowObjectData, FlowOutcome,  FlowDisplayColumn, FlowMessageBox, modalDialogButton, eContentType, FlowObjectDataProperty, FlowField } from 'flow-component-model';
 import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
 import RowItem from './RowItem';
 import CellItem from './CellItem';
@@ -574,10 +574,20 @@ export default class SearchFilterTable extends FlowComponent {
     }
     
     async doOutcome(outcomeName: string, selectedItem? : string) {
-        let objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
+        
+        // if there's a row level state then set it
+        if(selectedItem && this.getAttribute("RowLevelState","").length>0) {
+            let objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
+            let val: FlowField = await this.loadValue(this.getAttribute("RowLevelState"));
+            if (val) {
+                val.value = objData;
+                await this.updateValues(val);
+            }
+        }
         if(this.outcomes[outcomeName]) {
             //if the outcome has a uri then we are opening something in a new tab
-            if(this.outcomes[outcomeName].attributes["uri"]) {
+            if(selectedItem && this.outcomes[outcomeName].attributes["uri"]) {
+                let objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
                 let href: string = this.outcomes[outcomeName].attributes["uri"].value;
                 let match: any;
                 while( match = RegExp(/{{([^}]*)}}/).exec(href)) {
