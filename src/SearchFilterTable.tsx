@@ -591,7 +591,18 @@ export default class SearchFilterTable extends FlowComponent {
                 let href: string = this.outcomes[outcomeName].attributes["uri"].value;
                 let match: any;
                 while( match = RegExp(/{{([^}]*)}}/).exec(href)) {
-                    href=href.replace(match[0],(objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ""));
+                    //could be a property of the selected item or a global variable 
+                    if(objData.properties[match[1]]){
+                        //objdata had this prop
+                        href=href.replace(match[0],(objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ""));
+                    }
+                    else {
+                        //no prop found, try to get the value
+                        let val: FlowField = await this.loadValue(match[1]);
+                        if(val){
+                            href=href.replace(match[0],val.value as string);
+                        }
+                    }
                 }
                 if(this.outcomes[outcomeName].attributes["target"]?.value==="_self") {
                     window.location.href = href;
