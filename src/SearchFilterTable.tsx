@@ -585,14 +585,20 @@ export default class SearchFilterTable extends FlowComponent {
             }
         }
         if(this.outcomes[outcomeName]) {
-            //if the outcome has a uri then we are opening something in a new tab
-            if(selectedItem && this.outcomes[outcomeName].attributes["uri"]) {
-                let objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
-                let href: string = this.outcomes[outcomeName].attributes["uri"].value;
+            let outcome: FlowOutcome = this.outcomes[outcomeName];
+            // does it have a uri attribute ?
+            if(outcome.attributes["uri"]) {
+                let href: string = outcome.attributes["uri"].value;
                 let match: any;
+                let objData: FlowObjectData;
                 while( match = RegExp(/{{([^}]*)}}/).exec(href)) {
-                    //could be a property of the selected item or a global variable 
-                    if(objData.properties[match[1]]){
+                    //could be a property of the selected item or a global variable - depends also on isBulkAction
+                     // if it's not bulk then grab selected row objdata
+                    if(outcome.isBulkAction === false) {
+                        objData = this.rowMap.get(selectedItem)?.objectData;
+                    }
+               
+                    if(objData && objData.properties[match[1]]){
                         //objdata had this prop
                         href=href.replace(match[0],(objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ""));
                     }
@@ -604,6 +610,7 @@ export default class SearchFilterTable extends FlowComponent {
                         }
                     }
                 }
+                
                 if(this.outcomes[outcomeName].attributes["target"]?.value==="_self") {
                     window.location.href = href;
                 }
@@ -615,7 +622,6 @@ export default class SearchFilterTable extends FlowComponent {
             else {
                 await this.triggerOutcome(outcomeName);
             }
-            
         }
         else {
             manywho.component.handleEvent(
