@@ -55,7 +55,7 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 * If the outcome has an attribute of "RequireSelected"="true" then it will only be shown if one or more items are tagged.
 
-* OUtcomes flagged as "RequireSelected" are placed at the left end of the ribbon bar, others are placed on the right end.
+* Outcomes flagged as "RequireSelected" are placed at the left end of the ribbon bar, others are placed on the right end.
 
 
 
