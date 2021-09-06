@@ -75,11 +75,11 @@ Only shows the outcome button if there are selected rows
 
 Will launch a uri when clicked rather than trigger an outcome.
 
-Uri can contain {{FiledName}} elements which will be substituted with values from that column in the row.
+Uri can contain {{FieldName}} elements which will be substituted with values from that column in the row.
 
 ### target
 
-_blank for opening uri in new window (default if ommitted) or _seld to reuse current tab
+_blank for opening uri in new window (default if ommitted) or _self to reuse current tab
 
 
 ## Settings
@@ -100,7 +100,7 @@ If specified then these are applied as pixel values.
 
 ### PaginationSize
 
-Sets the max number of rows to show per pagination page
+Sets the default max number of rows to show per pagination page if the user hasn't selected a different page size.
 
 ### classes
 
@@ -119,7 +119,7 @@ the RowLevelState value will always hold the value of any row which triggered an
 
 ## Styling
 
-All elements of the tree can be styled by adding the specific style names to your player.
+All elements of the component can be styled by adding the specific style names to your player.
 
 
 ## Page Conditions
