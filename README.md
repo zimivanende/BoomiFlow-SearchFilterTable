@@ -110,6 +110,13 @@ Like all components, adding a "classes" attribute will cause that string to be a
 
 enables or disables the export to csv options.  defaults to "true".  Set to "false" to remove the feature.
 
+### RowLevelState
+
+The name of a value in Flow to use for the single row level state.
+
+As opposed to the main state value which is a list containing all/any selected rows, 
+the RowLevelState value will always hold the value of any row which triggered an outcome.
+
 ## Styling
 
 All elements of the tree can be styled by adding the specific style names to your player.
@@ -118,5 +125,6 @@ All elements of the tree can be styled by adding the specific style names to you
 ## Page Conditions
 
 The component respects the show / hide rules applied by the containing page.
+
 
 
