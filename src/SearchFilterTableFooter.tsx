@@ -1,8 +1,8 @@
-import { FlowDisplayColumn } from "flow-component-model";
-import React from "react";
-import SearchFilterTable from "./SearchFilterTable";
+import { FlowDisplayColumn } from 'flow-component-model';
+import React from 'react';
+import SearchFilterTable from './SearchFilterTable';
 
-export default class SearchFilterTableFooter extends React.Component<any,any> {
+export default class SearchFilterTableFooter extends React.Component<any, any> {
 
     maxPerPage: any;
 
@@ -11,7 +11,7 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
         this.maxPerPageChanged = this.maxPerPageChanged.bind(this);
     }
 
-    maxPerPageChanged(e: any){
+    maxPerPageChanged(e: any) {
         const root: SearchFilterTable = this.props.root;
         root.maxPerPageChanged(parseInt(this.maxPerPage.options[this.maxPerPage.selectedIndex].value));
     }
@@ -19,16 +19,15 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
     render() {
         const root: SearchFilterTable = this.props.root;
 
-        let summary: string = "Selected " + root.selectedRowMap.size + " of " + root.currentRowMap.size + " items from a total dataset of " + root.rowMap.size;
-        let pag: string = "page " + (root.currentRowPage + 1) + " of " + root.currentRowPages.length;
+        const summary: string = 'Selected ' + root.selectedRowMap.size + ' of ' + root.currentRowMap.size + ' items from a total dataset of ' + root.rowMap.size;
+        const pag: string = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
 
-        
         let firstPage: any;
         let prevPage: any;
         let nextPage: any;
         let lastPage: any;
 
-        if(root.currentRowPage > 0){
+        if (root.currentRowPage > 0) {
             firstPage = (
                 <span
                     className="glyphicon glyphicon-fast-backward sft-footer-pagination-button"
@@ -43,8 +42,7 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
                     onClick={root.previousPage}
                 />
             );
-        }
-        else {
+        } else {
             firstPage = (
                 <span
                     className="glyphicon glyphicon-fast-backward sft-footer-pagination-button sft-footer-pagination-button-disabled"
@@ -57,7 +55,7 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
             );
         }
 
-        if(root.currentRowPage < (root.currentRowPages.length -1)){
+        if (root.currentRowPage < (root.currentRowPages.length - 1)) {
             lastPage = (
                 <span
                     className="glyphicon glyphicon-fast-forward sft-footer-pagination-button"
@@ -72,8 +70,7 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
                     onClick={root.nextPage}
                 />
             );
-        }
-        else {
+        } else {
             lastPage = (
                 <span
                     className="glyphicon glyphicon-fast-forward sft-footer-pagination-button sft-footer-pagination-button-disabled"
@@ -87,33 +84,33 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
         }
 
         let options: number[] = [];
-        options.push(10,20,50,100);
-        if(options.indexOf(root.maxPageRows) <0 ) {
+        options.push(10, 20, 50, 100);
+        if (options.indexOf(root.maxPageRows) < 0) {
             options.push(root.maxPageRows);
         }
-        options=options.sort((a,b) => {
-            return a-b;
+        options = options.sort((a, b) => {
+            return a - b;
         });
 
-        let opts: any[] = [];
+        const opts: any[] = [];
         options.forEach((a: number) => {
             opts.push(
                 <option
                     value={a}
-                    selected={root.maxPageRows===a}
+                    selected={root.maxPageRows === a}
                 >
                     {a}
-                </option> 
+                </option>,
             );
         });
 
-        let perPage: any = (
+        const perPage: any = (
             <select
-                className={"sft-footer-select"}
+                className={'sft-footer-select'}
                 onChange={this.maxPerPageChanged}
-                ref={(element: any) => {this.maxPerPage = element}}
+                ref={(element: any) => {this.maxPerPage = element; }}
             >
-               {opts} 
+               {opts}
             </select>
         );
 
@@ -139,7 +136,7 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
                     <div
                         className="sft-footer-perpage-label"
                     >
-                        {"Items per page"}
+                        {'Items per page'}
                     </div>
                     <div
                         className="sft-footer-perpage-dropdown"
@@ -152,10 +149,10 @@ export default class SearchFilterTableFooter extends React.Component<any,any> {
                 >
                     {firstPage}
                     {prevPage}
-                    <span className="sft-footer-pagination-label">{pag}</span> 
+                    <span className="sft-footer-pagination-label">{pag}</span>
                     {nextPage}
                     {lastPage}
-                </div>              
+                </div>
             </div>
         );
     }

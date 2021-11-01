@@ -1,39 +1,39 @@
-import { FlowDisplayColumn, FlowOutcome } from "flow-component-model";
-import React from "react";
-import SearchFilterTable from "./SearchFilterTable";
+import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
+import React from 'react';
+import SearchFilterTable from './SearchFilterTable';
 
-export default class SearchFilterTableHeaders extends React.Component<any,any> {
+export default class SearchFilterTableHeaders extends React.Component<any, any> {
 
     componentDidMount() {
         this.forceUpdate();
     }
 
     render() {
-        let headers: any[] = [];
+        const headers: any[] = [];
 
         const root: SearchFilterTable = this.props.root;
 
-        let buttons: any[] = [];
+        const buttons: any[] = [];
         Object.keys(root.outcomes).forEach((key: string) => {
-            if(root.outcomes[key].isBulkAction === false) {
+            if (root.outcomes[key].isBulkAction === false) {
                 buttons.push(key);
             }
         });
 
-        if(root.colMap.size > 0) {
+        if (root.colMap.size > 0) {
             headers.push(
                 <th
                     className="sft-check-header"
                 >
-                    <input 
+                    <input
                         className="sft-checkbox"
                         type="checkbox"
-                        onClick={(event: any) => {root.toggleSelectAll(event)}}
+                        onClick={(event: any) => {root.toggleSelectAll(event); }}
                     />
-                </th>
+                </th>,
             );
 
-            if(buttons.length>0) {
+            if (buttons.length > 0) {
                 headers.push(
                     <th
                         className="sft-column-header"
@@ -44,17 +44,17 @@ export default class SearchFilterTableHeaders extends React.Component<any,any> {
                                     <span
                                         className="sft-column-header-title-label"
                                     >
-                                        {"Actions"}
+                                        {'Actions'}
                                     </span>
                                 </div>
-                    </th>
-                ); 
+                    </th>,
+                );
             }
 
             root.colMap.forEach((col: FlowDisplayColumn) => {
 
-                let sortIcon: any = root.filters.getSortIcon(col.developerName);
-                let filterIcon: any = root.filters.getFilterIcon(col.developerName);
+                const sortIcon: any = root.filters.getSortIcon(col.developerName);
+                const filterIcon: any = root.filters.getFilterIcon(col.developerName);
 
                 headers.push(
                     <th
@@ -91,7 +91,7 @@ export default class SearchFilterTableHeaders extends React.Component<any,any> {
                                 </div>
                             </div>
                         </div>
-                    </th>
+                    </th>,
                 );
             });
         }
@@ -100,7 +100,7 @@ export default class SearchFilterTableHeaders extends React.Component<any,any> {
             <tr
                 className="sft-column-headers"
             >
-                {headers}                
+                {headers}
             </tr>
         );
     }

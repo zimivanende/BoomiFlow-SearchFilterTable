@@ -1,20 +1,20 @@
-import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray } from "flow-component-model";
-import RowItem from "./RowItem";
+import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray } from 'flow-component-model';
+import RowItem from './RowItem';
 
 export default class ModelExporter {
-    
-    static export(columns: Map<string,FlowDisplayColumn>, data: Map<string,RowItem>, fileName: string) {
+
+    static export(columns: Map<string, FlowDisplayColumn>, data: Map<string, RowItem>, fileName: string) {
         let file: string = '';
         let body: string = '';
         let headers: string = '';
         let row: string = '';
-        
+
         data.forEach((item: RowItem) => {
-            
-            if(headers.length === 0){
-                headers = this.buildHeaders(columns,item.objectData);
+
+            if (headers.length === 0) {
+                headers = this.buildHeaders(columns, item.objectData);
             }
-            row = this.buildRow(columns,item.objectData)
+            row = this.buildRow(columns, item.objectData);
             body += row;
         });
 
@@ -38,19 +38,19 @@ export default class ModelExporter {
         }
     }
 
-    static buildHeaders(cols: Map<string,FlowDisplayColumn>, values: FlowObjectData) : string {
-        let headers: string = "";
+    static buildHeaders(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
+        let headers: string = '';
         cols.forEach((col: FlowDisplayColumn) => {
-            switch(col.contentType){
+            switch (col.contentType) {
                 case eContentType.ContentList:
-                    let children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
+                    const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
                     children.items.forEach((item: FlowObjectData) => {
                         if (headers.length > 0) {
                             headers += ',';
                         }
-                        headers += '"' + item.properties["ATTRIBUTE_DISPLAY_NAME"].value + '"';
+                        headers += '"' + item.properties['ATTRIBUTE_DISPLAY_NAME'].value + '"';
                     });
-                    
+
                     break;
 
                 default:
@@ -60,25 +60,25 @@ export default class ModelExporter {
                     headers += '"' + col.label + '"';
                     break;
             }
-           
+
         });
         headers += '\r\n';
         return headers;
     }
 
-    static buildRow(cols: Map<string,FlowDisplayColumn>, values: FlowObjectData) : string { 
-        let row: string = ""
+    static buildRow(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
+        let row: string = '';
         cols.forEach((col: FlowDisplayColumn) => {
-            switch(col.contentType){
+            switch (col.contentType) {
                 case eContentType.ContentList:
-                    let children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
+                    const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
                     children.items.forEach((item: FlowObjectData) => {
                         if (row.length > 0) {
                             row += ',';
                         }
-                        row += '"' + item.properties["ATTRIBUTE_VALUE"].value + '"';
+                        row += '"' + item.properties['ATTRIBUTE_VALUE'].value + '"';
                     });
-                    
+
                     break;
 
                 default:
@@ -88,7 +88,7 @@ export default class ModelExporter {
                     row += '"' + values.properties[col.developerName].value + '"';
                     break;
             }
-           
+
         });
         row += '\r\n';
         return row;

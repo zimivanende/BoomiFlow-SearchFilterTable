@@ -1,4 +1,4 @@
-import { eContentType } from "flow-component-model";
+import { eContentType } from 'flow-component-model';
 
 export default class CellItem {
     id: string;
@@ -8,7 +8,7 @@ export default class CellItem {
     originalValue: any;
     newValue: any;
 
-    constructor(name: string, value: string ) {
+    constructor(name: string, value: string) {
         this.name = name;
         this.originalValue = value;
         this.newValue = value;

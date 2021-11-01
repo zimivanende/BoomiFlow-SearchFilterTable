@@ -1,30 +1,30 @@
-import React from "react";
+import React from 'react';
 import './MultiSelect.css';
 
-export default class MultiSelect extends React.Component <any,any> {
+export default class MultiSelect extends React.Component <any, any> {
 
     expanded: boolean = false;
 
-    constructor(props : any) {
+    constructor(props: any) {
         super(props);
         this.showCheckboxes = this.showCheckboxes.bind(this);
     }
 
     showCheckboxes() {
-        let checkboxes = document.getElementById("checkboxes");
+        const checkboxes = document.getElementById('checkboxes');
         if (!this.expanded) {
-            checkboxes.style.display = "flex";
+            checkboxes.style.display = 'flex';
             this.expanded = true;
         } else {
-            checkboxes.style.display = "none";
+            checkboxes.style.display = 'none';
             this.expanded = false;
         }
     }
 
-    render () {
-        let checkBoxes: any[] = [];
-        var collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-        let sorted: Array<any> = Array.from(this.props.allItems.keys()).sort((a: any,b: any) => collator.compare(a, b));
+    render() {
+        const checkBoxes: any[] = [];
+        const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+        const sorted: any[] = Array.from(this.props.allItems.keys()).sort((a: any, b: any) => collator.compare(a, b));
         sorted.forEach((item: string) => {
             checkBoxes.push(
                 <div
@@ -33,20 +33,19 @@ export default class MultiSelect extends React.Component <any,any> {
                     <div
                         className="checkbox-checkbox-wrapper"
                     >
-                        <input 
-                            type="checkbox" 
-                            id={item} 
+                        <input
+                            type="checkbox"
+                            id={item}
                             key={item}
                             className="sft-checkbox"
                             checked={
                                 this.props.selectedItems.has(item)
                             }
                             onClick={(e: any) => {
-                                if(this.props.selectedItems.has(item)) {
+                                if (this.props.selectedItems.has(item)) {
                                     this.props.selectedItems.delete(item);
-                                }
-                                else {
-                                    this.props.selectedItems.set(item,item);
+                                } else {
+                                    this.props.selectedItems.set(item, item);
                                 }
                                 this.forceUpdate();
                             }}
@@ -61,27 +60,27 @@ export default class MultiSelect extends React.Component <any,any> {
                             {item}
                         </span>
                     </div>
-                    
-                </div>
+
+                </div>,
             );
         });
         return (
             <div className="multiselect">
-                <div 
-                    className="selectBox" 
+                <div
+                    className="selectBox"
                     onClick={this.showCheckboxes}
                 >
                     <select>
                         <option>Select an option</option>
                     </select>
-                    <div 
+                    <div
                         className="overSelect"
                     />
                 </div>
                 <div
                     className="checkboxScroller"
                 >
-                    <div 
+                    <div
                         className="checkboxes"
                         id="checkboxes"
                     >

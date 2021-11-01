@@ -1,11 +1,11 @@
-import React from "react";
-import ColumnCriteria, { eColumnComparator } from "./ColumnCriteria";
-import ColumnFilter from "./ColumnFilter";
-import MultiSelect from "./MultiSelect";
-import SearchFilterTable from "./SearchFilterTable";
+import React from 'react';
+import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
+import ColumnFilter from './ColumnFilter';
+import MultiSelect from './MultiSelect';
+import SearchFilterTable from './SearchFilterTable';
 
-export default class FilterConfigForm extends React.Component<any,any> {
-    
+export default class FilterConfigForm extends React.Component<any, any> {
+
     filter: ColumnFilter;
     newCriteria: ColumnCriteria[];
 
@@ -20,67 +20,67 @@ export default class FilterConfigForm extends React.Component<any,any> {
     }
 
     addCriteria() {
-        this.newCriteria.push(new ColumnCriteria(eColumnComparator.equalTo,""));
+        this.newCriteria.push(new ColumnCriteria(eColumnComparator.equalTo, ''));
         this.forceUpdate();
     }
 
-    getOptions(criteria: ColumnCriteria) : any {
-        let options: any[] = [];
+    getOptions(criteria: ColumnCriteria): any {
+        const options: any[] = [];
         options.push(
             <option
                 value={eColumnComparator.equalTo}
-                selected={criteria.comparator===eColumnComparator.equalTo}
+                selected={criteria.comparator === eColumnComparator.equalTo}
             >
                 Equals
             </option>,
             <option
                 value={eColumnComparator.notEqualTo}
-                selected={criteria.comparator===eColumnComparator.notEqualTo}
+                selected={criteria.comparator === eColumnComparator.notEqualTo}
             >
                 Not Equal To
             </option>,
             <option
                 value={eColumnComparator.contains}
-                selected={criteria.comparator===eColumnComparator.contains}
+                selected={criteria.comparator === eColumnComparator.contains}
             >
                 Contains
             </option>,
             <option
                 value={eColumnComparator.notContains}
-                selected={criteria.comparator===eColumnComparator.notContains}
+                selected={criteria.comparator === eColumnComparator.notContains}
             >
                 Does Not Contain
             </option>,
             <option
                 value={eColumnComparator.startsWith}
-                selected={criteria.comparator===eColumnComparator.startsWith}
+                selected={criteria.comparator === eColumnComparator.startsWith}
             >
                 Starts With
             </option>,
             <option
                 value={eColumnComparator.endsWith}
-                selected={criteria.comparator===eColumnComparator.endsWith}
+                selected={criteria.comparator === eColumnComparator.endsWith}
             >
                 Ends With
             </option>,
             <option
                 value={eColumnComparator.in}
-                selected={criteria.comparator===eColumnComparator.in}
+                selected={criteria.comparator === eColumnComparator.in}
             >
                 Is one of
             </option>,
             <option
                 value={eColumnComparator.notIn}
-                selected={criteria.comparator===eColumnComparator.notIn}
+                selected={criteria.comparator === eColumnComparator.notIn}
             >
                 Is Not One Of
-            </option>
+            </option>,
         );
         return options;
     }
 
-    getColumnUniques(name: string, criteria: ColumnCriteria) : any {
-        let options: any[] = [];
+    getColumnUniques(name: string, criteria: ColumnCriteria): any {
+        const options: any[] = [];
         const root: SearchFilterTable = this.props.root;
 
         /*
@@ -97,16 +97,16 @@ export default class FilterConfigForm extends React.Component<any,any> {
 */
         return (
             /*
-            <select 
+            <select
                 className="sft-fcf-select"
                 onChange={(e: any) => {
-                    
+
                 }}
             >
-                {options}    
+                {options}
             </select>
             */
-           <MultiSelect 
+           <MultiSelect
                 allItems={root.colValMap.get(name)}
                 selectedItems={criteria.value}
            />
@@ -114,15 +114,15 @@ export default class FilterConfigForm extends React.Component<any,any> {
     }
 
     prepCriteriaValue(criteria: ColumnCriteria) {
-        switch(criteria.comparator) {
+        switch (criteria.comparator) {
             case eColumnComparator.in:
             case eColumnComparator.notIn:
                 criteria.value = new Map();
                 break;
 
             default:
-                if(typeof criteria.value !== "string") {
-                    criteria.value="";
+                if (typeof criteria.value !== 'string') {
+                    criteria.value = '';
                 }
                 break;
         }
@@ -130,36 +130,35 @@ export default class FilterConfigForm extends React.Component<any,any> {
 
     render() {
 
-        let rows: any[] = [];
-        if(this.newCriteria.length === 0) {
+        const rows: any[] = [];
+        if (this.newCriteria.length === 0) {
             rows.push(
                 <div
                     className="sft-fcf-row"
                 >
-                    <span 
+                    <span
                         className="sft-fcf-label">
                             No Criteria defined
                     </span>
-                </div> 
-            ); 
-        }
-        else {
+                </div>,
+            );
+        } else {
             this.newCriteria.forEach((criteria: ColumnCriteria) => {
-                let options: any[] = this.getOptions(criteria);
+                const options: any[] = this.getOptions(criteria);
                 let critBox: any;
-                switch(criteria.comparator) {
+                switch (criteria.comparator) {
                     case eColumnComparator.in:
                     case eColumnComparator.notIn:
-                        critBox = this.getColumnUniques(this.props.developerName,criteria);
+                        critBox = this.getColumnUniques(this.props.developerName, criteria);
                         break;
 
                     default:
-                        critBox=(
-                            <input 
+                        critBox = (
+                            <input
                                 type="text"
                                 className="sft-fcf-input"
                                 defaultValue={criteria.value}
-                                onChange={(e: any) => {criteria.value = e.target.value}}
+                                onChange={(e: any) => {criteria.value = e.target.value; }}
                             />
                         );
                         break;
@@ -169,7 +168,7 @@ export default class FilterConfigForm extends React.Component<any,any> {
                     <div
                         className="sft-fcf-row"
                     >
-                        <select 
+                        <select
                             className="sft-fcf-select"
                             onChange={(e: any) => {
                                 criteria.comparator = parseInt(e.target.options[e.target.selectedIndex].value);
@@ -177,20 +176,20 @@ export default class FilterConfigForm extends React.Component<any,any> {
                                 this.forceUpdate();
                             }}
                         >
-                            {options}    
+                            {options}
                         </select>
                         {critBox}
-                        <span 
+                        <span
                             className="sft-fcf-button glyphicon glyphicon-remove-sign"
                             title="Remove criteria"
                             onClick={(e: any) => {
                                 this.newCriteria = this.newCriteria.filter(
-                                    item => item !== criteria
+                                    (item) => item !== criteria,
                                 );
-                                this.forceUpdate()
+                                this.forceUpdate();
                             }}
                         />
-                    </div> 
+                    </div>,
                 );
             });
         }
@@ -198,12 +197,12 @@ export default class FilterConfigForm extends React.Component<any,any> {
             <div
                 className="sft-fcf-buttons"
             >
-                <span 
+                <span
                     className="sft-fcf-button glyphicon glyphicon-plus-sign"
                     title="Add criteria"
                     onClick={this.addCriteria}
                 />
-            </div>
+            </div>,
         );
         return (
             <div
