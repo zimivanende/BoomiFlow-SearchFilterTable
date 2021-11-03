@@ -89,6 +89,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                 default:
                     val = objData?.properties[col.developerName]?.value;
+                    val = this.formatValue(val);
                     break;
             }
             cols.push(
@@ -110,5 +111,58 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 {cols}
             </tr>
         );
+    }
+
+    // handles special contents like uris & dataUri
+    formatValue(value: any): any {
+        let result: any;
+        if (typeof value === 'string') {
+            switch (true) {
+                case value.startsWith('http:'):
+                case value.startsWith('http:'):
+                    result = (
+                        <a href={value} target="_blank">Open Link</a>
+                    );
+                    break;
+
+                case value.startsWith('data:'):
+                    const mime = value.split(';')[0].split(':')[1];
+                    switch (true) {
+                        case mime.startsWith('audio/'):
+                            result = (
+                                <audio
+                                    controls={true}
+                                    style={{width: '100%', minWidth: '10rem'}}>
+                                    <source src={value} type={mime}/>
+                            </audio>
+                            );
+                            break;
+
+                        default:
+                            const dnld: string = this.makeFileName('file', mime);
+                            result = (
+                                <a href={value} target="_blank" download={dnld}>Download File</a>
+                            );
+                            break;
+                    }
+
+                    break;
+
+                default:
+                    result = value;
+                    break;
+            }
+
+        }
+        return result;
+    }
+
+    makeFileName(name: string, mimeType: string): string {
+        const fileName: string = name;
+        switch (mimeType) {
+            case 'audio/webm': return fileName + '.webm';
+
+            default: return fileName;
+        }
     }
 }

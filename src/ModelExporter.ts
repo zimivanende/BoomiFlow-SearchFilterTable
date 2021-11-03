@@ -21,11 +21,11 @@ export default class ModelExporter {
         file = headers + body;
 
         const blob = new Blob([file], { type: 'text/csv' });
-        if (navigator.msSaveBlob) { // IE 10+
-            navigator.msSaveBlob(blob, fileName);
-        } else {
-            const link = document.createElement('a');
-            if (link.download !== undefined) { // feature detection
+        // if (navigator.msSaveBlob) { // IE 10+
+        //    navigator.msSaveBlob(blob, fileName);
+        // } else {
+        const link = document.createElement('a');
+        if (link.download !== undefined) { // feature detection
                 // Browsers that support HTML5 download attribute
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
@@ -35,7 +35,7 @@ export default class ModelExporter {
                 link.click();
                 document.body.removeChild(link);
             }
-        }
+        // }
     }
 
     static buildHeaders(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
