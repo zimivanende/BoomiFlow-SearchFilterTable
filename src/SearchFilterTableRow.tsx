@@ -1,9 +1,10 @@
-import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import React from 'react';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRow extends React.Component<any, any> {
 
+    
     render() {
 
         const root: SearchFilterTable = this.props.root;
@@ -89,7 +90,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                 default:
                     val = objData?.properties[col.developerName]?.value;
-                    val = this.formatValue(val);
+                    val = this.formatValue(root, val);
                     break;
             }
             cols.push(
@@ -114,7 +115,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     // handles special contents like uris & dataUri
-    formatValue(value: any): any {
+    formatValue(root: SearchFilterTable, value: any): any {
         let result: any;
         if (typeof value === 'string') {
             switch (true) {
@@ -138,6 +139,17 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             );
                             break;
 
+                        case mime.startsWith('video/'):
+                            result = (
+                                <button
+                                    className="sft-table-cell-button"
+                                    onClick={(e: any) => {root.playVideo("Video",value,mime)}}
+                                >
+                                    Play Video
+                                </button>
+                            );
+                            break;
+
                         default:
                             const dnld: string = this.makeFileName('file', mime);
                             result = (
@@ -156,6 +168,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         }
         return result;
     }
+
+    
 
     makeFileName(name: string, mimeType: string): string {
         const fileName: string = name;

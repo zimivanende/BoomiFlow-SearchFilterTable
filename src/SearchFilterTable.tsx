@@ -646,6 +646,18 @@ export default class SearchFilterTable extends FlowComponent {
         }
     }
 
+    playVideo(title: string, dataUri: string, mimetype: string) {
+        this.messageBox.showMessageBox(
+            title,
+            (
+                <video width="320" height="240" controls>
+                    <source src={dataUri} type={mimetype}/>
+                    Your browser does not support the video tag.
+                </video>
+            ),[new modalDialogButton("Close",this.messageBox.hideMessageBox)]
+        );
+    }
+
     render() {
 
         if (this.loadingState !== eLoadingState.ready) {
