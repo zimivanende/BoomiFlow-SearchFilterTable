@@ -110,6 +110,9 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.doExport = this.doExport.bind(this);
 
+        this.playAudio = this.playAudio.bind(this);
+        this.playVideo = this.playVideo.bind(this);
+
         this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
     }
@@ -650,11 +653,31 @@ export default class SearchFilterTable extends FlowComponent {
         this.messageBox.showMessageBox(
             title,
             (
-                <video width="320" height="240" controls>
+                <video
+                    style={{width: '100%', minWidth: '10rem', height: '97%'}}
+                    autoPlay={true}
+                    controls={true}
+                >
                     <source src={dataUri} type={mimetype}/>
                     Your browser does not support the video tag.
                 </video>
-            ),[new modalDialogButton("Close",this.messageBox.hideMessageBox)]
+            ), [new modalDialogButton('Close', this.messageBox.hideMessageBox)],
+        );
+    }
+
+    playAudio(title: string, dataUri: string, mimetype: string) {
+        this.messageBox.showMessageBox(
+            title,
+            (
+                <audio
+                    controls={true}
+                    autoPlay={true}
+                    style={{width: '100%', minWidth: '10rem', height: '97%'}}
+                >
+                    <source src={dataUri} type={mimetype}/>
+                    Your browser does not support the audio tag.
+                </audio>
+            ), [new modalDialogButton('Close', this.messageBox.hideMessageBox)],
         );
     }
 

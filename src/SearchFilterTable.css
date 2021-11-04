@@ -282,7 +282,10 @@
 .sft-table-cell {
     border-right: 1px solid #ccc;
     padding: 0.3rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
 }
+
 .sft-table-cell:last-of-type {
     border-right: none;
 }
@@ -304,11 +307,12 @@
     border-radius: 8px;
     display: flex;
     flex-direction: row;
+    margin: auto;
     margin-right: 0.5rem;
 }
 
 .sft-table-cell-button:last-of-type {
-    margin-right: 0;
+    margin: auto;
 }
 
 .sft-table-cell-button-element {

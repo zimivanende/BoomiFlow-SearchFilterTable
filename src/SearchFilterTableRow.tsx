@@ -4,7 +4,6 @@ import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRow extends React.Component<any, any> {
 
-    
     render() {
 
         const root: SearchFilterTable = this.props.root;
@@ -97,11 +96,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 <td
                     className="sft-table-cell"
                 >
-                    <span
-                        className="sft-table-cell-text"
-                    >
-                        {val}
-                    </span>
+                    {val}
                 </td>,
             );
         });
@@ -133,9 +128,9 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             result = (
                                 <audio
                                     controls={true}
-                                    style={{width: '100%', minWidth: '10rem'}}>
+                                    style={{width: '100%', minWidth: '9rem'}}>
                                     <source src={value} type={mime}/>
-                            </audio>
+                                </audio>
                             );
                             break;
 
@@ -143,7 +138,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             result = (
                                 <button
                                     className="sft-table-cell-button"
-                                    onClick={(e: any) => {root.playVideo("Video",value,mime)}}
+                                    onClick={(e: any) => {root.playVideo('Video', value, mime); }}
                                 >
                                     Play Video
                                 </button>
@@ -161,15 +156,19 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                     break;
 
                 default:
-                    result = value;
+                    result = (
+                        <span
+                            className="sft-table-cell-text"
+                        >
+                            {value}
+                        </span>
+                    );
                     break;
             }
 
         }
         return result;
     }
-
-    
 
     makeFileName(name: string, mimeType: string): string {
         const fileName: string = name;
