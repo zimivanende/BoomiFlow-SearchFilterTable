@@ -5,11 +5,14 @@ import SearchFilterTable from './SearchFilterTable';
 export default class SearchFilterTableRibbonSearch extends React.Component<any, any> {
 
     searchInput: HTMLInputElement;
+    previousFilter: string = '';
 
     constructor(props: any) {
         super(props);
         this.clearSearch = this.clearSearch.bind(this);
         this.showSearch = this.showSearch.bind(this);
+        this.filterKeyDown = this.filterKeyDown.bind(this);
+        this.filterChanged = this.filterChanged.bind(this);
     }
 
     componentDidMount() {
@@ -18,10 +21,49 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
     clearSearch(e: any) {
         this.searchInput.value = '';
+        this.filterChanged();
+    }
+
+    filterChanged() {
+        const newFilter: string = this.searchInput.value;
+        if (newFilter !== this.previousFilter) {
+            this.previousFilter = newFilter;
+            const root: SearchFilterTable = this.props.root;
+            root.globalFilterChanged(newFilter);
+        }
+    }
+
+    filterKeyDown(e: any) {
+        // e.preventDefault();
+
+        switch (e.key) {
+            case 'Enter':
+                e.preventDefault();
+                e.stopPropagation();
+                this.filterChanged();
+                return false;
+                break;
+
+            case 'Escape':
+                e.preventDefault();
+                e.stopPropagation();
+                this.searchInput.value = this.previousFilter;
+                return false;
+                break;
+
+            case 'Tab':
+                this.filterChanged();
+                return false;
+                break;
+
+            default:
+                break;
+        }
     }
 
     showSearch(e: any) {
-
+        const root: SearchFilterTable = this.props.root;
+        root.manageFilters();
     }
 
     render() {
@@ -157,10 +199,15 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     <div
                         className="sft-ribbon-search-wrapper"
                     >
-                        <span className="glyphicon glyphicon-search sft-ribbon-search-icon" />
+                        <span
+                            className="glyphicon glyphicon-search sft-ribbon-search-icon"
+                            onClick={this.filterChanged}
+                        />
                         <input
                             className="sft-ribbon-search-input"
                             ref={(element: HTMLInputElement) => {this.searchInput = element; }}
+                            onKeyDown={this.filterKeyDown}
+                            onKeyUp={(e: any) => {e.stopPropagation(); e.preventDefault(); }}
                         />
                         <span
                             className="glyphicon glyphicon-remove sft-ribbon-search-icon"
@@ -170,7 +217,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     </div>
                     <div
                         className="sft-ribbon-search-button-wrapper"
-                        onClick={(e: any) => {e.stopPropagation(); this.showSearch(e); }}
+                        onClick={this.showSearch}
                     >
                         <span
                             key={'showSearch'}

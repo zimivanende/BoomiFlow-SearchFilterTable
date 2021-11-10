@@ -62,6 +62,16 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 ## Outcome Attributes
 
+### display
+
+Tells the ribbons how to display the buttons.
+text or iconandtext will cause the outcome's label to be displayed. 
+
+### classes
+
+Any class names in this value are added to the button's class attribute
+
+
 ### icon
 
 Sets the glyphicon to show for the outcome.

@@ -4,6 +4,7 @@ import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowFiel
 import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
 import CellItem from './CellItem';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
+import FilterManagementForm from './FilterManagementForm';
 import ModelExporter from './ModelExporter';
 import RowItem from './RowItem';
 import './SearchFilterTable.css';
@@ -23,6 +24,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     contextMenu: FlowContextMenu;
     messageBox: FlowMessageBox;
+    form: any;  // this is the form being shown by the message box
 
     // this contains the master copy of the model data, it doesn't change unless data reloaded
     rowMap: Map<string, any> = new Map();
@@ -99,6 +101,11 @@ export default class SearchFilterTable extends FlowComponent {
         this.buildFooter = this.buildFooter.bind(this);
 
         this.filtersChanged = this.filtersChanged.bind(this);
+        this.globalFilterChanged = this.globalFilterChanged.bind(this);
+        this.manageFilters = this.manageFilters.bind(this);
+        this.applyFilters = this.applyFilters.bind(this);
+        this.cancelFilters = this.cancelFilters.bind(this);
+
         this.toggleSelect = this.toggleSelect.bind(this);
         this.toggleSelectAll = this.toggleSelectAll.bind(this);
 
@@ -137,6 +144,35 @@ export default class SearchFilterTable extends FlowComponent {
                 this.forceUpdate();
                 break;
         }
+    }
+
+    globalFilterChanged(value: string) {
+        // do some other search
+        console.log(value);
+    }
+
+    manageFilters() {
+
+        const content = (
+            <FilterManagementForm
+                parent={this}
+                filters={this.filters}
+                columns={this.colMap}
+                ref={(form: FilterManagementForm) => {this.form = form; }}
+            />
+        );
+        this.messageBox.showMessageBox('Manage Filters', content, [new modalDialogButton('Apply', this.applyFilters), new modalDialogButton('Cancel', this.cancelFilters)]);
+    }
+
+    cancelFilters() {
+        this.form = undefined;
+        this.messageBox.hideMessageBox();
+    }
+
+    applyFilters() {
+
+        this.form = undefined;
+        this.messageBox.hideMessageBox();
     }
 
     maxPerPageChanged(max: number) {
