@@ -488,3 +488,92 @@
     margin-right: 1rem !important;
     line-height: 1.5rem !important;
 }
+
+/* Added for new simple search style ribbon */
+
+.sft-ribbon-search {
+    background: transparent;
+    display: flex;
+
+    height: 4rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.sft-ribbon-search-left-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    margin: auto;
+    margin-left: 1rem;
+    margin-right: auto;
+    align-items: flex-start;
+}
+
+.sft-ribbon-search-right-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    margin: auto;
+    margin-left: auto;
+    margin-right: 1rem;
+    align-items: flex-end;
+}
+
+.sft-ribbon-search-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    border: 2px solid #aaa;
+    padding: 0.2rem 0.6rem 0.2rem 0.6rem ;
+}
+
+.sft-ribbon-search-icon {
+    font-size: 1.1rem;
+    color: #666;
+    margin: auto;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.sft-ribbon-search-icon:last-of-type {
+    margin-right: 0;
+}
+
+.sft-ribbon-search-input {
+    border: none;
+    padding: 0.3rem;
+    font-size: 1rem !important;
+    line-height: 1rem !important;
+    margin-right: 0.5rem !important;
+}
+
+.sft-ribbon-search-buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    margin-left: auto;
+}
+
+.sft-ribbon-search-button-wrapper {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #666;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.sft-ribbon-search-button-icon {
+    font-size: 1.1rem;
+    color: #666;
+    margin: auto;
+}
+
+.sft-ribbon-search-button-label {
+    margin-top: 0.2rem;
+    font-size: 1rem;
+    color: #666;
+}

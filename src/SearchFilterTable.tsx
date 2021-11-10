@@ -11,6 +11,7 @@ import SearchFilterTableFooter from './SearchFilterTableFooter';
 import SearchFilterTableHeaderButtons from './SearchFilterTableHeaderButtons';
 import SearchFilterTableHeaders from './SearchFilterTableHeaders';
 import SearchFilterTableRibbon from './SearchFilterTableRibbon';
+import SearchFilterTableRibbonSearch from './SearchFilterTableRibbonSearch';
 import SearchFilterTableRow from './SearchFilterTableRow';
 
 // declare const manywho: IManywho;
@@ -238,12 +239,27 @@ export default class SearchFilterTable extends FlowComponent {
             this.colValMap.set(col.developerName, new Map());
         });
 
-        this.ribbonElement = (
-            <SearchFilterTableRibbon
-                root={this}
-                ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element); }}
-            />
-        );
+        switch (this.getAttribute('RibbonStyle', 'ribbon')) {
+
+            case 'search':
+                this.ribbonElement = (
+                    <SearchFilterTableRibbonSearch
+                        root={this}
+                        ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element); }}
+                    />
+                );
+                break;
+
+            case 'ribbon':
+            default:
+                this.ribbonElement = (
+                    <SearchFilterTableRibbon
+                        root={this}
+                        ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element); }}
+                    />
+                );
+                break;
+        }
 
         this.headersElement = (
             <SearchFilterTableHeaders
@@ -705,6 +721,19 @@ export default class SearchFilterTable extends FlowComponent {
 
         const title: string = this.model.label || '';
 
+        let top: string = '6rem';
+        switch (this.getAttribute('RibbonStyle', 'ribbon')) {
+
+            case 'search':
+                top = '4rem';
+                break;
+
+            case 'ribbon':
+            default:
+                top = '6rem';
+                break;
+        }
+
         this.lastContent = (
             <div
                 className={classes}
@@ -723,6 +752,7 @@ export default class SearchFilterTable extends FlowComponent {
                 {this.ribbonElement}
                 <div
                     className="sft-body"
+                    style={{top}}
                 >
                     <div
                         className="sft-scroller"

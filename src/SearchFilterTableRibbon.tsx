@@ -113,8 +113,8 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             }
         });
 
-        if (root.selectedRowMap.size > 0 && canExport === true) {
-            leftButtons.push(
+        // if (root.selectedRowMap.size > 0 && canExport === true) {
+        leftButtons.push(
                 <div
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
@@ -132,7 +132,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     </span>
                 </div>,
             );
-        }
+        // }
 
         return (
             <div

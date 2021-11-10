@@ -117,6 +117,12 @@ The name of a value in Flow to use for the single row level state.
 As opposed to the main state value which is a list containing all/any selected rows, 
 the RowLevelState value will always hold the value of any row which triggered an outcome.
 
+### RibbonStyle
+
+This tells the component which ribbon style to use.
+
+The options are "ribbon" (default) or "search"
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.
