@@ -56,6 +56,7 @@ export default class FilterManagementForm extends React.Component<any, any> {
         return (
             <div
                 className="modal-dialog-content"
+                style={{width: '910px'}}
             >
                 {rows}
             </div>
