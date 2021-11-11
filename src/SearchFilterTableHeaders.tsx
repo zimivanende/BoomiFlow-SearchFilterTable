@@ -39,14 +39,14 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                         className="sft-column-header"
                     >
                         <div
-                                    className="sft-column-header-title"
-                                >
-                                    <span
-                                        className="sft-column-header-title-label"
-                                    >
-                                        {'Actions'}
-                                    </span>
-                                </div>
+                            className="sft-column-header-title"
+                        >
+                            <span
+                                className="sft-column-header-title-label"
+                            >
+                                {'Actions'}
+                            </span>
+                        </div>
                     </th>,
                 );
             }
@@ -54,7 +54,10 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
             root.colMap.forEach((col: FlowDisplayColumn) => {
 
                 const sortIcon: any = root.filters.getSortIcon(col.developerName);
-                const filterIcon: any = root.filters.getFilterIcon(col.developerName);
+                let filterIcon: any;
+                if (this.props.inlineSearch === true) {
+                    filterIcon = root.filters.getFilterIcon(col.developerName);
+                }
 
                 headers.push(
                     <th
@@ -67,6 +70,11 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                                 className="sft-column-header-top"
                             >
                                 <div
+                                    className="sft-column-header-flags"
+                                >
+                                    {sortIcon}
+                                </div>
+                                <div
                                     className="sft-column-header-title"
                                 >
                                     <span
@@ -75,21 +83,15 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                                         {col.label}
                                     </span>
                                 </div>
-                            </div>
-                            <div
-                                className="sft-column-header-bottom"
-                            >
-                                <div
-                                    className="sft-column-header-flags"
-                                >
-                                    {sortIcon}
-                                </div>
                                 <div
                                     className="sft-column-header-buttons"
                                 >
                                     {filterIcon}
                                 </div>
                             </div>
+                            <div
+                                className="sft-column-header-bottom"
+                            />
                         </div>
                     </th>,
                 );

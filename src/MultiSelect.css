@@ -1,18 +1,17 @@
 .multiselect {
-    width: 200px;
-    height: 35px;
-    margin-right: 1rem;
+    width: 100%;
+    height: 100%;
   }
   
   .selectBox {
     position: relative;
     margin: auto;
-    top: 0.4rem;
   }
   
   .selectBox select {
     width: 100%;
     font-weight: 500;
+    box-shadow: none;
   }
   
   .overSelect {

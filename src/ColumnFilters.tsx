@@ -23,7 +23,7 @@ export default class ColumnFilters {
 
     dialog: any;
 
-    private items: Map<string, ColumnFilter> = new Map();
+    items: Map<string, ColumnFilter> = new Map();
 
     constructor(parent: SearchFilterTable) {
         this.parent = parent;
@@ -40,6 +40,14 @@ export default class ColumnFilters {
         this.cancelFilter = this.cancelFilter.bind(this);
 
         this.matchesCriteria = this.matchesCriteria.bind(this);
+    }
+
+    clone(): ColumnFilters {
+        const clone = new ColumnFilters(this.parent);
+        this.items.forEach((item: ColumnFilter, key: string) => {
+            clone.items.set(key, item.clone());
+        });
+        return clone;
     }
 
     // stores / deletes a ref to the child dialog component
@@ -130,28 +138,53 @@ export default class ColumnFilters {
             switch (this.items.get(key).sort) {
                 case eSortDirection.none:
                     return (
-                        <span
-                            className="sft-column-header-flag glyphicon glyphicon-ban-circle"
+                        <div
                             onClick={(e: any) => {this.sortClicked(key); }}
                             title="Not sorted - click to toggle"
-                        />
+                            style={{display: 'flex', flexDirection: 'column'}}
+                        >
+                            <span
+                                className="sft-column-header-flag  glyphicon glyphicon-triangle-top"
+
+                            />
+                            <span
+                                className="sft-column-header-flag  glyphicon glyphicon-triangle-bottom"
+                            />
+                        </div>
+
                     );
                     // return undefined;
                 case eSortDirection.ascending:
                     return (
-                        <span
-                            className="sft-column-header-flag sft-column-header-flag-hot glyphicon glyphicon-arrow-up"
+                        <div
                             onClick={(e: any) => {this.sortClicked(key); }}
                             title="Ascending - click to toggle"
-                        />
+                            style={{display: 'flex', flexDirection: 'column'}}
+                        >
+                            <span
+                                className="sft-column-header-flag sft-column-header-flag-hot glyphicon glyphicon-triangle-top"
+
+                            />
+                            <span
+                                className="sft-column-header-flag   glyphicon glyphicon-triangle-bottom"
+                            />
+                        </div>
                     );
                 case eSortDirection.descending:
                     return (
+                        <div
+                        onClick={(e: any) => {this.sortClicked(key); }}
+                        title="Descending - click to toggle"
+                        style={{display: 'flex', flexDirection: 'column'}}
+                    >
                         <span
-                            className="sft-column-header-flag sft-column-header-flag-hot glyphicon glyphicon-arrow-down"
-                            onClick={(e: any) => {this.sortClicked(key); }}
-                            title="Descending - click to toggle"
+                            className="sft-column-header-flag  glyphicon glyphicon-triangle-top"
+
                         />
+                        <span
+                            className="sft-column-header-flag sft-column-header-flag-hot glyphicon glyphicon-triangle-bottom"
+                        />
+                    </div>
                     );
             }
         } else {

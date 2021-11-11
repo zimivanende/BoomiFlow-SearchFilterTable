@@ -3,9 +3,11 @@ import React, { CSSProperties } from 'react';
 import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowField,  FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
 import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
 import CellItem from './CellItem';
+import ColumnCriteria from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 import FilterManagementForm from './FilterManagementForm';
 import ModelExporter from './ModelExporter';
+import MultiSelect from './MultiSelect';
 import RowItem from './RowItem';
 import './SearchFilterTable.css';
 import SearchFilterTableFooter from './SearchFilterTableFooter';
@@ -125,6 +127,17 @@ export default class SearchFilterTable extends FlowComponent {
         sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
     }
 
+    getColumnUniques(name: string, criteria: ColumnCriteria): any {
+        const options: any[] = [];
+
+        return (
+           <MultiSelect
+                allItems={this.colValMap.get(name)}
+                selectedItems={criteria.value}
+           />
+        );
+    }
+
     filtersChanged(key: string, event: eFilterEvent) {
         this.headers.forceUpdate();
         sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
@@ -156,8 +169,6 @@ export default class SearchFilterTable extends FlowComponent {
         const content = (
             <FilterManagementForm
                 parent={this}
-                filters={this.filters}
-                columns={this.colMap}
                 ref={(form: FilterManagementForm) => {this.form = form; }}
             />
         );
@@ -170,9 +181,10 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     applyFilters() {
-
+        this.filters = this.form.newFilters;
         this.form = undefined;
         this.messageBox.hideMessageBox();
+        this.filtersChanged('', eFilterEvent.filter);
     }
 
     maxPerPageChanged(max: number) {
@@ -275,6 +287,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.colValMap.set(col.developerName, new Map());
         });
 
+        let inlineSearch: boolean = true;
         switch (this.getAttribute('RibbonStyle', 'ribbon')) {
 
             case 'search':
@@ -284,6 +297,7 @@ export default class SearchFilterTable extends FlowComponent {
                         ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element); }}
                     />
                 );
+                inlineSearch = false;
                 break;
 
             case 'ribbon':
@@ -300,6 +314,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.headersElement = (
             <SearchFilterTableHeaders
                 root={this}
+                inlineSearch={inlineSearch}
                 ref={(element: SearchFilterTableHeaders) => {this.setHeaders(element); }}
             />
         );

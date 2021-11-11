@@ -2,29 +2,33 @@ import { FlowDisplayColumn } from 'flow-component-model';
 import React from 'react';
 import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
 import ColumnFilter from './ColumnFilter';
-import ColumnFilters from './ColumnFilters';
+import ColumnFilters, { eSortDirection } from './ColumnFilters';
+import FilterManagementFormAddRow from './FilterFormManagementAddRow';
+import FilterManagementFormRow from './FilterManagementFormRow';
 import MultiSelect from './MultiSelect';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class FilterManagementForm extends React.Component<any, any> {
-
-    filters: ColumnFilters;
-    columns: FlowDisplayColumn;
+    parent: SearchFilterTable;
+    columns: Map<string, FlowDisplayColumn>;
+    newFilters: ColumnFilters;
 
     constructor(props: any) {
         super(props);
-        this.filters = this.props.filters;
+        this.parent = this.props.parent;
+        this.columns = this.parent.colMap;
         this.addCriteria = this.addCriteria.bind(this);
         this.removeCriteria = this.removeCriteria.bind(this);
+        this.newFilters = this.parent.filters.clone();
     }
 
-    addCriteria() {
-        // this.newCriteria.push(new ColumnCriteria(eColumnComparator.equalTo, ''));
+    addCriteria(fieldName: string) {
+        this.newFilters.items.set(fieldName, new ColumnFilter(fieldName, this.newFilters, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, '')]));
         this.forceUpdate();
     }
 
-    removeCriteria() {
-        // this.newCriteria.push(new ColumnCriteria(eColumnComparator.equalTo, ''));
+    removeCriteria(key: string) {
+        this.newFilters.items.delete(key);
         this.forceUpdate();
     }
 
@@ -32,16 +36,22 @@ export default class FilterManagementForm extends React.Component<any, any> {
 
         const rows: any[] = [];
 
+        this.newFilters.items.forEach((filter: ColumnFilter, key: string) => {
+            filter.criteria.forEach((criteria: ColumnCriteria) => {
+                rows.push(
+                    <FilterManagementFormRow
+                        parent={this}
+                        filterId={key}
+                        criteria={criteria}
+                    />,
+                );
+            });
+        });
+
         rows.push(
-            <div
-                className="sft-fcf-buttons"
-            >
-                <span
-                    className="sft-fcf-button glyphicon glyphicon-plus-sign"
-                    title="Add criteria"
-                    onClick={this.addCriteria}
-                />
-            </div>,
+            <FilterManagementFormAddRow
+                parent={this}
+            />,
         );
         return (
             <div

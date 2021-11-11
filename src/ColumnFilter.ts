@@ -7,15 +7,22 @@ export default class ColumnFilter {
     parent: ColumnFilters;
     criteria: ColumnCriteria[] = [];
 
-    constructor(key: string, parent: ColumnFilters, sort: eSortDirection = eSortDirection.none, criteria: ColumnCriteria[] = []) {
+    constructor(key: string, parent: ColumnFilters, sort: eSortDirection = eSortDirection.none, criteria: any[] = []) {
         this.key = key;
         this.parent = parent;
         this.sort = sort;
         criteria.forEach((crit: any) => {
-            crit = JSON.parse(crit);
+            if (crit instanceof ColumnCriteria === false) {
+                crit = JSON.parse(crit);
+            }
             this.criteria.push(new ColumnCriteria(crit.comparator, crit.value));
         });
         this.notify = this.notify.bind(this);
+    }
+
+    clone(): ColumnFilter {
+        const clone = new ColumnFilter(this.key, this.parent, this.sort, this.criteria);
+        return clone;
     }
 
     clearFilters() {

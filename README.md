@@ -133,6 +133,13 @@ This tells the component which ribbon style to use.
 
 The options are "ribbon" (default) or "search"
 
+### RibbonDisplay
+
+Tells the ribbons how to display the standard buttons.
+text or iconandtext will cause the outcome's label to be displayed.
+
+Default is "iconandtext"
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.

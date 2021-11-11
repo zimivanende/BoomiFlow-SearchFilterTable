@@ -230,15 +230,13 @@
     flex-grow: 0;
     align-items: center;
     margin-right: auto;
-    padding-right: 2rem;
+    padding-right: 0.5rem;
+    cursor: pointer;
 }
 
 .sft-column-header-flag {
     font-size: 1rem;
-    color: #fefefe;
-    cursor: pointer;
-    pointer-events: all;
-    margin-left: 0.5rem;
+    color: #ddd;
 }
 
 .sft-column-header-flag-hot {
@@ -576,4 +574,125 @@
     margin-top: 0.2rem;
     font-size: 1rem;
     color: #666;
+}
+
+
+.sft-fmf-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+}
+
+.sft-fmf-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.sft-fmf-row-labels {
+    display: flex;
+    flex-direction: row;
+}
+
+.sft-fmf-row-caption {
+    width: 15rem;
+    margin-right: 2rem;
+    text-align: start;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.sft-fmf-row-caption:first-of-type {
+    margin-left: 2rem;
+}
+
+.sft-fmf-row-caption-criteria {
+    width: 15rem;
+    margin-right: 2rem;
+    text-align: start;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.sft-fmf-row-values {
+    display: flex;
+    flex-direction: row;
+}
+
+.sft-fmf-row-title {
+    border: 1px solid #666;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    font-size: 1rem;
+    line-height: 1.7rem;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    width: 15rem;
+    text-align: start;
+}
+
+.sft-fmf-row-buttons {
+    text-align: start;
+}
+
+.sft-fmf-row-criteria {
+    border: 1px solid #666;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    font-size: 1rem;
+    line-height: 1.7rem;
+    margin-right: 2rem;
+    width: 15rem;
+    text-align: start;
+}
+
+.sft-fmf-row-criteria-text {
+    width: 100%;
+    margin: auto;
+    box-shadow: none !important;
+    font-size: 1rem;
+}
+
+.sft-fmf-row-criteria-date {
+    width: 100%;
+    margin: auto;
+    box-shadow: none !important;
+    font-size: 1rem;
+}
+
+.sft-fmf-row-criteria-number {
+    width: 100%;
+    margin: auto;
+    box-shadow: none !important;
+    font-size: 1rem;
+}
+
+.sft-fmf-row-criteria-checkbox {
+
+}
+
+.sft-fmf-row-criteria-text:focus,
+.sft-fmf-row-criteria-date:focus,
+.sft-fmf-row-criteria-number:focus,
+.sft-fmf-row-criteria-checkbox:focus,
+.sft-fmf-row-criteria-select:focus {
+    outline: none;
+}
+
+.sft-fmf-row-value {
+    border: 1px solid #666;
+    padding: 0.2rem 1rem 0.2rem 1rem;
+    font-size: 1rem;
+    line-height: 1.7rem;
+    width: 15rem;
+    text-align: start;
+    display: flex;
+    margin-right: 2rem;
+}
+
+.sft-fmf-row-criteria-select {
+    width: 100%;
+    margin: auto;
+    box-shadow: none !important;
+    font-size: 1rem;
+}
+
+.sft-fmf-row-criteria-select-option {
+    text-indent: 1rem;
 }

@@ -28,17 +28,23 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap); }}
                 >
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('icon') >= 0 ?
                     <span
                         key={'exportAll'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
                         title={'Export All'}
 
-                    />
-                    <span
+                    /> :
+                    null
+                    }
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
                         className="sft-ribbon-button-label"
                     >
                         {'Export All'}
-                    </span>
+                    </span> :
+                        null
+                    }
                 </div>,
             );
         }
@@ -49,17 +55,23 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.currentRowMap); }}
                 >
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('icon') >= 0 ?
                     <span
                         key={'exportShown'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
                         title={'Export Shown'}
 
-                    />
-                    <span
-                        className="sft-ribbon-button-label"
-                    >
-                        {'Export Shown'}
-                    </span>
+                    /> :
+                    null
+                    }
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-button-label"
+                        >
+                            {'Export Shown'}
+                        </span> :
+                        null
+                    }
                 </div>,
             );
         }
@@ -75,17 +87,23 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                                 className="sft-ribbon-button-wrapper"
                                 onClick={(e: any) => {root.doOutcome(key, undefined); }}
                             >
-                                <span
-                                    key={key}
-                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
-                                    title={outcome.label || key}
+                                {outcome.attributes?.icon ?
+                                    <span
+                                        key={key}
+                                        className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
+                                        title={outcome.label || key}
 
-                                />
-                                <span
-                                    className="sft-ribbon-button-label"
-                                >
-                                    {outcome.label || key}
-                                </span>
+                                    /> :
+                                    null
+                                }
+                                {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
+                                    <span
+                                        className="sft-ribbon-button-label"
+                                    >
+                                        {outcome.label}
+                                    </span> :
+                                    null
+                                }
                             </div>,
 
                         );
@@ -96,17 +114,23 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                             className="sft-ribbon-button-wrapper"
                             onClick={(e: any) => {root.doOutcome(key, undefined); }}
                         >
-                            <span
-                                key={key}
-                                className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
-                                title={outcome.label || key}
+                            {outcome.attributes?.icon ?
+                                <span
+                                    key={key}
+                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
+                                    title={outcome.label || key}
 
-                            />
-                            <span
-                                className="sft-ribbon-button-label"
-                            >
-                                {outcome.label || key}
-                            </span>
+                                /> :
+                                null
+                            }
+                            {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
+                                <span
+                                    className="sft-ribbon-button-label"
+                                >
+                                    {outcome.label}
+                                </span> :
+                                null
+                            }
                         </div>,
                     );
                 }
@@ -119,17 +143,23 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
                 >
-                    <span
-                        key={'exportSelected'}
-                        className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
-                        title={'Export Selected'}
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('icon') >= 0 ?
+                        <span
+                            key={'exportSelected'}
+                            className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
+                            title={'Export Selected'}
 
-                    />
-                    <span
-                        className="sft-ribbon-button-label"
-                    >
-                        {'Export Selected'}
-                    </span>
+                        /> :
+                        null
+                    }
+                    {!root.attributes?.ButtonDisplay || root.attributes?.ButtonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-button-label"
+                        >
+                            {'Export Selected'}
+                        </span> :
+                        null
+                    }
                 </div>,
             );
         // }
