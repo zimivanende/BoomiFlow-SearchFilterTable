@@ -18,7 +18,7 @@ export default class ColumnCriteria {
         switch (criteria) {
             case eColumnComparator.equalTo: return 'Equals';
             case eColumnComparator.notEqualTo: return 'Not Equal To';
-            case eColumnComparator.startsWith: return 'Strarts With';
+            case eColumnComparator.startsWith: return 'Starts With';
             case eColumnComparator.endsWith: return 'Does Not Start With';
             case eColumnComparator.contains: return 'Contains';
             case eColumnComparator.notContains: return 'Does Not Contain';
