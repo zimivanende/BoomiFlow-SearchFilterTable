@@ -189,11 +189,19 @@ export default class ColumnFilters {
             }
         } else {
             return (
-                <span
-                    className="sft-column-header-flag glyphicon glyphicon-ban-circle"
+                <div
                     onClick={(e: any) => {this.sortClicked(key); }}
                     title="Not sorted - click to toggle"
-                />
+                    style={{display: 'flex', flexDirection: 'column'}}
+                >
+                    <span
+                        className="sft-column-header-flag  glyphicon glyphicon-triangle-top"
+
+                    />
+                    <span
+                        className="sft-column-header-flag  glyphicon glyphicon-triangle-bottom"
+                    />
+                </div>
             );
         }
     }

@@ -149,6 +149,7 @@ export default class FilterConfigForm extends React.Component<any, any> {
         return (
             <div
                 className="modal-dialog-content"
+                style={{width: '910px', display: 'flex', flexDirection: 'column', margin: 'auto', padding: '2rem'}}
             >
                 {rows}
             </div>
