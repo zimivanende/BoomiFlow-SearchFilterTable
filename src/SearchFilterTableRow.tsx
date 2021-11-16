@@ -126,6 +126,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                 <img
                                     src={value.value as string}
                                     style={{height: '2rem', width: 'auto'}}
+                                    alt={value.value as string}
+                                    title={value.value as string}
                                 />
                             );
                         } else {
