@@ -119,9 +119,22 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             case eContentType.ContentString:
                 switch (true) {
                     case (value.value as string).startsWith('http:'):
-                    case (value.value as string).startsWith('http:'):
+                    case (value.value as string).startsWith('https:'):
+                        let inner: any;
+                        if (this.isUrlImage(value.value as string)) {
+                            inner = (
+                                <img
+                                    src={value.value as string}
+                                    style={{height: '2rem', width: 'auto'}}
+                                />
+                            );
+                        } else {
+                            inner = value.value;
+                        }
                         result = (
-                            <a href={(value.value as string)} target="_blank">Open Link</a>
+                            <a href={(value.value as string)} target="_blank">
+                                {inner}
+                            </a>
                         );
                         break;
 
@@ -188,6 +201,21 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                     );
                 }
                 break;
+            case eContentType.ContentBoolean:
+                if (((value as any).Value as string)?.toLowerCase() === 'true') {
+                    result = (
+                        <span
+                            className="sft-table-cell-text glyphicon glyphicon-ok"
+                        />
+                    );
+                } else {
+                    result = (
+                        <span
+                            className="sft-table-cell-text glyphicon glyphicon-remove"
+                        />
+                    );
+                }
+                break;
 
             default:
                 result = (
@@ -200,6 +228,20 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 break;
         }
         return result;
+    }
+
+    isUrlImage(url: string): boolean {
+        if (
+            url.endsWith('jpg') ||
+            url.endsWith('jpeg') ||
+            url.endsWith('jfif') ||
+            url.endsWith('png') ||
+            url.endsWith('bmp') ||
+            url.endsWith('ico') ||
+            url.endsWith('gif')
+        ) { return true; } else {
+            return false;
+        }
     }
 
     makeFileName(name: string, mimeType: string): string {
