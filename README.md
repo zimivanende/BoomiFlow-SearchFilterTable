@@ -140,6 +140,14 @@ text or iconandtext will cause the outcome's label to be displayed.
 
 Default is "iconandtext"
 
+### IsSelectedColumn
+
+Tells the component on load which column in the model should be used (if any) to pre-select rows when the component is in multi-select mode.
+
+Must be a boolean or number field.
+
+Supply the developerName of the column and the checkboxes for rows where the value is true or > 0 will be checked.
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.

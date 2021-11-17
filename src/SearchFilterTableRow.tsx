@@ -207,13 +207,13 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 if (((value as any).Value as string)?.toLowerCase() === 'true') {
                     result = (
                         <span
-                            className="sft-table-cell-text glyphicon glyphicon-ok"
+                            className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-true glyphicon glyphicon-ok"
                         />
                     );
                 } else {
                     result = (
                         <span
-                            className="sft-table-cell-text glyphicon glyphicon-remove"
+                            className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-false glyphicon glyphicon-remove"
                         />
                     );
                 }

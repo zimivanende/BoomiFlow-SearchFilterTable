@@ -329,6 +329,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.selectedRowMap.clear();
         const start: Date = new Date();
         const stateSelectedItems: Map<string, any> = await this.loadSelected();
+        const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
         this.model.dataSource.items.forEach((item: FlowObjectData) => {
             // construct Item
             if (stateSelectedItems) {
@@ -336,7 +337,15 @@ export default class SearchFilterTable extends FlowComponent {
                     this.selectedRowMap.set(item.internalId, undefined);
                 }
             } else {
-                if (item.isSelected === true) {
+                // if it's selected in the model or we have an IsSelectedField attribute then pre-select it
+                if (
+                    item.isSelected === true || (
+                        isSelectedColumn && (
+                            item.properties[isSelectedColumn].value as boolean === true ||
+                            item.properties[isSelectedColumn].value as number > 0
+                        )
+                    )
+                ) {
                     this.selectedRowMap.set(item.internalId, undefined);
                 }
             }
@@ -492,9 +501,10 @@ export default class SearchFilterTable extends FlowComponent {
 
     // load selected items from state
     async loadSelected(): Promise<Map<string, any>> {
-        const stateSelected: Map<string, any> = new Map();
+        let stateSelected: Map<string, any>;
         const selectedItems: FlowObjectDataArray = this.getStateValue() as FlowObjectDataArray;
         if (selectedItems && selectedItems.items) {
+            stateSelected = new Map();
             for (let pos = 0 ; pos < selectedItems.items.length ; pos++) {
                 stateSelected.set(selectedItems.items[pos].internalId, selectedItems.items[pos]);
             }
