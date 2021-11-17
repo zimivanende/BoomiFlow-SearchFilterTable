@@ -142,6 +142,8 @@ Default is "iconandtext"
 
 ### IsSelectedColumn
 
+Optional
+
 Tells the component on load which column in the model should be used (if any) to pre-select rows when the component is in multi-select mode.
 
 Must be a boolean or number field.
