@@ -41,7 +41,7 @@ export default class FilterManagementFormAddRow extends React.Component<any, any
             </option>,
         );
         parent.columns.forEach((field: FlowDisplayColumn) => {
-            if (!parent.newFilters.has(field.developerName)) {
+            if (!parent.newFilters.isFilteredOn(field.developerName)) {
                 fieldOptions.push(
                     <option
                         className="sft-fmf-row-criteria-select-option"

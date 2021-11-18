@@ -143,6 +143,7 @@ export default class SearchFilterTable extends FlowComponent {
         sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
         switch (event) {
             case eFilterEvent.sort:
+                this.buildRibbon();
                 this.sortRows();
                 this.paginateRows();
                 this.buildTableRows();
@@ -150,6 +151,7 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
 
             case eFilterEvent.filter:
+                this.buildRibbon();
                 this.filterRows();
                 this.sortRows();
                 this.paginateRows();
@@ -161,7 +163,8 @@ export default class SearchFilterTable extends FlowComponent {
 
     globalFilterChanged(value: string) {
         // do some other search
-        console.log(value);
+        this.filters.globalCriteria = value;
+        this.filtersChanged('', eFilterEvent.filter);
     }
 
     manageFilters() {

@@ -1,5 +1,6 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, modalDialogButton } from 'flow-component-model';
 import React, { Fragment } from 'react';
+import CellItem from './CellItem';
 import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
 import ColumnFilter from './ColumnFilter';
 import FilterConfigForm from './FilterConfigForm';
@@ -24,6 +25,7 @@ export default class ColumnFilters {
     dialog: any;
 
     items: Map<string, ColumnFilter> = new Map();
+    globalCriteria: string;
 
     constructor(parent: SearchFilterTable) {
         this.parent = parent;
@@ -44,6 +46,7 @@ export default class ColumnFilters {
 
     clone(): ColumnFilters {
         const clone = new ColumnFilters(this.parent);
+        clone.globalCriteria = this.globalCriteria;
         this.items.forEach((item: ColumnFilter, key: string) => {
             clone.items.set(key, item.clone());
         });
@@ -74,6 +77,35 @@ export default class ColumnFilters {
         } else {
             return false;
         }
+    }
+
+    isFiltered(): boolean {
+        let filtered: boolean = false;
+
+        this.items.forEach((item: ColumnFilter) => {
+            if (item.criteria.length > 0) {
+                filtered = true;
+            }
+        });
+        return filtered;
+    }
+
+    isFilteredOn(columnName: string): boolean {
+        let filtered: boolean = false;
+
+        if (this.items.has(columnName)) {
+            if (this.items.get(columnName).criteria.length > 0) {
+                filtered = true;
+            }
+        }
+        return filtered;
+    }
+
+    clearAll() {
+        this.items.forEach((item: ColumnFilter) => {
+            item.clearFilters();
+        });
+        this.notify('', eFilterEvent.filter);
     }
 
     sortClicked(key: string) {
@@ -248,10 +280,22 @@ export default class ColumnFilters {
     matchesCriteria(value: RowItem): boolean {
         const objData: FlowObjectData = value.objectData;
         let matches: boolean = true;
+        let globalMatches: boolean;
 
+        // each criteria needs to pass including global one
+        if (this.globalCriteria && this.globalCriteria.length > 0) {
+            globalMatches = false;
+            const comparator: string = this.globalCriteria.toLowerCase();
+            value.columns.forEach((col: CellItem) => {
+                const val: string = (objData.properties[col.name].value as string).toLowerCase();
+                if (val.indexOf(comparator) >= 0) {
+                    globalMatches = true;
+                }
+            });
+        }
         // each item represents a column
         this.items.forEach((item: ColumnFilter) => {
-            // each criteria needs to pass
+
             item.criteria.forEach((criteria: ColumnCriteria) => {
                 const val: string = (objData.properties[item.key].value as string).toLowerCase();
                 let crit: string;
@@ -309,7 +353,16 @@ export default class ColumnFilters {
             });
         });
 
-        return matches;
+        // if matches = true or globalMatches = true
+        if (this.globalCriteria?.length > 0) {
+            if (globalMatches === true && matches === true) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return matches;
+        }
     }
 
     getSortColumn(): ColumnFilter {
