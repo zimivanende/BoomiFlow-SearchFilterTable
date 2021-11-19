@@ -60,6 +60,13 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 return false;
                 break;
 
+            case 'Escape':
+                e.preventDefault();
+                e.stopPropagation();
+                this.searchInput.value = '';
+                return false;
+                break;
+
             case 'Tab':
                 this.filterCommitted();
                 return false;
@@ -188,7 +195,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             }
         });
 
-        // if (root.selectedRowMap.size > 0 && canExport === true) {
+        if (root.selectedRowMap.size > 0 && canExport === true) {
         leftButtons.push(
                 <div
                     className="sft-ribbon-search-button-wrapper"
@@ -202,7 +209,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     />
                 </div>,
             );
-        // }
+        }
         let clearFiltersButton;
         if (root.filters.isFiltered()) {
             clearFiltersButton = (

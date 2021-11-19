@@ -17,7 +17,18 @@ SearchFilterTable
 
 The component will display a paginated table with per column sorting and complex filtering tools.
 
-It allows outcomes to be attached at table and row level
+It allows outcomes to be attached at table and row level.
+
+Columns are auto formatted based on type.
+
+Text columns containing a url are handled as specials: -
+   Url's detected as an image are displayed as a thumbnail which clicked opens in a new tab.
+   Others are simply hyperlinks.
+
+Text columns containing a dataUri are handled as specials: -
+   Audio data uris display an in place <audio> component to allow playing,
+   Image data uris display an inplace <img> which when clicked opens a new tab.
+   Others are displayed with a hyperlink.
 
 ## Datasource
 
@@ -28,7 +39,9 @@ Set the datasource to a list of objects
 
 Create a State LIST object of the type of the model data items.  
 
-This will hold the list of selected / tagged items
+This will hold the list of selected / tagged items.
+
+It must be a list, single object state is handled by the "RowLevelState" attribute.
 
 
 ## Outcomes
@@ -64,8 +77,13 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 ### display
 
-Tells the ribbons how to display the buttons.
-text or iconandtext will cause the outcome's label to be displayed. 
+Tells the table how to display the buttons.
+
+Valid options are "text" or "iconandtext" or "icon".
+
+Default is text only.
+
+ 
 
 ### classes
 
@@ -98,13 +116,13 @@ _blank for opening uri in new window (default if ommitted) or _self to reuse cur
 
 Sets the display columns for the table.
 
-### Label
-
-The Label of the component is used as the title bar
 
 ### Width & Height
 
 If specified then these are applied as pixel values.
+
+Always provide a height or the component will have a 0 height table area.
+
 
 ## Component Attributes
 
@@ -136,19 +154,22 @@ The options are "ribbon" (default) or "search"
 ### RibbonDisplay
 
 Tells the ribbons how to display the standard buttons.
-text or iconandtext will cause the outcome's label to be displayed.
 
-Default is "iconandtext"
+Valid options are "text" or "iconandtext" or "icon".
+
+Default is text only.
+
 
 ### IsSelectedColumn
 
 Optional
 
-Tells the component on load which column in the model should be used (if any) to pre-select rows when the component is in multi-select mode.
+Tells the component on load which column in the model should be used (if any) to pre-select rows when the component loads.
 
 Must be a boolean or number field.
 
 Supply the developerName of the column and the checkboxes for rows where the value is true or > 0 will be checked.
+
 
 ## Styling
 
