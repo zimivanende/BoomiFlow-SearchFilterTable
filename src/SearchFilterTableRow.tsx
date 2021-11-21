@@ -1,8 +1,11 @@
 import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import React from 'react';
+import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRow extends React.Component<any, any> {
+    
+    
 
     render() {
 
@@ -12,39 +15,43 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const buttons: any[] = [];
         Object.keys(root.outcomes).forEach((key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
-                let icon: any;
-                let label: any;
+                let showOutcome: boolean = CommonFunctions.assessRowOutcomeRule(root.outcomes[key],objData);
 
-                if ((!root.outcomes[key].attributes['display']) || root.outcomes[key].attributes['display'].value.indexOf('text') >= 0) {
-                    label = (
-                        <span
-                            className="sft-table-cell-button-element sft-table-cell-button-label"
+                if(showOutcome===true){
+                    let icon: any;
+                    let label: any;
+
+                    if ((!root.outcomes[key].attributes['display']) || root.outcomes[key].attributes['display'].value.indexOf('text') >= 0) {
+                        label = (
+                            <span
+                                className="sft-table-cell-button-element sft-table-cell-button-label"
+                            >
+                                {root.outcomes[key].label}
+                            </span>
+                        );
+                    }
+                    if ((root.outcomes[key].attributes['display']) && root.outcomes[key].attributes['display'].value.indexOf('icon') >= 0) {
+                        icon = (
+                            <span
+                                className={'sft-table-cell-button-element sft-table-cell-button-icon glyphicon glyphicon-' + (root.outcomes[key].attributes['icon'].value || 'plus')}
+                            />
+                        );
+                    }
+
+                    buttons.push(
+                        <div
+                            className="sft-table-cell-button"
+                            title={root.outcomes[key].label}
+                            onClick={(event: any) => {
+                                root.doOutcome(key, objData.internalId);
+                            }}
                         >
-                            {root.outcomes[key].label}
-                        </span>
+                            {icon}
+                            {label}
+
+                        </div>,
                     );
                 }
-                if ((root.outcomes[key].attributes['display']) && root.outcomes[key].attributes['display'].value.indexOf('icon') >= 0) {
-                    icon = (
-                        <span
-                            className={'sft-table-cell-button-element sft-table-cell-button-icon glyphicon glyphicon-' + (root.outcomes[key].attributes['icon'].value || 'plus')}
-                        />
-                    );
-                }
-
-                buttons.push(
-                    <div
-                        className="sft-table-cell-button"
-                        title={root.outcomes[key].label}
-                        onClick={(event: any) => {
-                            root.doOutcome(key, objData.internalId);
-                        }}
-                    >
-                        {icon}
-                        {label}
-
-                    </div>,
-                );
             }
         });
 

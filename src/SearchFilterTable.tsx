@@ -261,6 +261,8 @@ export default class SearchFilterTable extends FlowComponent {
         (manywho as any).eventManager.removeDoneListener(this.componentId);
     }
 
+    
+
     ///////////////////////////////////////////////////////////////////////////////////////////
     // reads the model
     // constructs the a flat a map of rows ready for searching, sorting and direct access

@@ -1,5 +1,6 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
 import React from 'react';
+import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRibbon extends React.Component<any, any> {
@@ -80,35 +81,10 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             const outcome: FlowOutcome = root.outcomes[key];
 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
-                if (outcome.attributes['RequiresSelected']?.value === 'true') {
-                    if (root.selectedRowMap.size > 0) {
-                        leftButtons.push(
-                            <div
-                                className="sft-ribbon-button-wrapper"
-                                onClick={(e: any) => {root.doOutcome(key, undefined); }}
-                            >
-                                {outcome.attributes?.icon ?
-                                    <span
-                                        key={key}
-                                        className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
-                                        title={outcome.label || key}
-
-                                    /> :
-                                    null
-                                }
-                                {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
-                                    <span
-                                        className="sft-ribbon-button-label"
-                                    >
-                                        {outcome.label}
-                                    </span> :
-                                    null
-                                }
-                            </div>,
-
-                        );
-                    }
-                } else {
+                
+                let showOutcome: boolean = CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+                
+                if(showOutcome===true) {
                     rightButtons.push(
                         <div
                             className="sft-ribbon-button-wrapper"
