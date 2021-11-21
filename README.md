@@ -83,7 +83,37 @@ Valid options are "text" or "iconandtext" or "icon".
 
 Default is text only.
 
- 
+### rule
+Row level outcomes allow for adding rules which will control if the outcome should be displayed for the current row.
+
+The attribute value string should be in JSON format like this: -
+{
+   "field":"fieldDeveloperName",
+   "comparator":"enumeratedComparator",
+   "value":"valueToTest"
+}
+
+The "field" is set to the developerName of the column to test.
+
+The "comparator" must be one of the following: - 
+
+"equals"          Value must match
+"not equals"      Value must not match
+"contains"        Value must contain
+"not contains"    Value must contain
+"starts with"     Value must start with 
+"ends with"       Value must end with
+"in"              Value must appear in the comma/space separated opions
+"not in"          Value must not appear in the comma/space separated opions
+"lt"              Value must be less than - number columns only
+"lte"             Value must be less than or equal to - number columns only
+"gt"              Value must be greater than - number columns only
+"gte"             Value must be greater than or equal to - number columns only
+
+The value should be a string, if "in" or "not in" then supply a list of values space, comma, semi-colon or pipe delimited,
+
+For boolean values just use "true" or "false".
+
 
 ### classes
 

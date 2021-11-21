@@ -81,10 +81,10 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             const outcome: FlowOutcome = root.outcomes[key];
 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
-                
-                let showOutcome: boolean = CommonFunctions.assessGlobalOutcomeRule(outcome, root);
-                
-                if(showOutcome===true) {
+
+                const showOutcome: boolean = CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+
+                if (showOutcome === true) {
                     rightButtons.push(
                         <div
                             className="sft-ribbon-button-wrapper"

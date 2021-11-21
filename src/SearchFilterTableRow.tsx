@@ -4,8 +4,6 @@ import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRow extends React.Component<any, any> {
-    
-    
 
     render() {
 
@@ -15,9 +13,9 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const buttons: any[] = [];
         Object.keys(root.outcomes).forEach((key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
-                let showOutcome: boolean = CommonFunctions.assessRowOutcomeRule(root.outcomes[key],objData);
+                const showOutcome: boolean = CommonFunctions.assessRowOutcomeRule(root.outcomes[key], objData);
 
-                if(showOutcome===true){
+                if (showOutcome === true) {
                     let icon: any;
                     let label: any;
 
