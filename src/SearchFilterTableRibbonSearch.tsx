@@ -145,13 +145,13 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 if (showOutcome === true) {
                     rightButtons.push(
                         <div
-                            className="sft-ribbon-button-wrapper"
+                            className="sft-ribbon-search-button-wrapper"
                             onClick={(e: any) => {root.doOutcome(key, undefined); }}
                         >
                             {outcome.attributes?.icon ?
                                 <span
                                     key={key}
-                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
+                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
                                     title={outcome.label || key}
 
                                 /> :
@@ -159,7 +159,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                             }
                             {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
                                 <span
-                                    className="sft-ribbon-button-label"
+                                    className="sft-ribbon-search-button-label"
                                 >
                                     {outcome.label}
                                 </span> :
