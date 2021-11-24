@@ -287,7 +287,7 @@ export default class ColumnFilters {
             globalMatches = false;
             const comparator: string = this.globalCriteria.toLowerCase();
             value.columns.forEach((col: CellItem) => {
-                const val: string = (objData.properties[col.name].value as string)?.toLowerCase();
+                const val: string = ('' + (objData.properties[col.name].value as string))?.toLowerCase();
                 if (val.indexOf(comparator) >= 0) {
                     globalMatches = true;
                 }

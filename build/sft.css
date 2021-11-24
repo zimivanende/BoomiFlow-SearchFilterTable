@@ -826,6 +826,7 @@
     content: unset !important;
     margin: auto !important;
     transform: scale(1.5); 
+    width: auto !important;
 }
 
 .sft-checkbox::after,.sft-checkbox::before {
