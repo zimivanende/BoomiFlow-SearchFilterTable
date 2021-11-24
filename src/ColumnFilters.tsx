@@ -287,7 +287,7 @@ export default class ColumnFilters {
             globalMatches = false;
             const comparator: string = this.globalCriteria.toLowerCase();
             value.columns.forEach((col: CellItem) => {
-                const val: string = (objData.properties[col.name].value as string).toLowerCase();
+                const val: string = (objData.properties[col.name].value as string)?.toLowerCase();
                 if (val.indexOf(comparator) >= 0) {
                     globalMatches = true;
                 }
@@ -297,7 +297,7 @@ export default class ColumnFilters {
         this.items.forEach((item: ColumnFilter) => {
 
             item.criteria.forEach((criteria: ColumnCriteria) => {
-                const val: string = (objData.properties[item.key].value as string).toLowerCase();
+                const val: string = (objData.properties[item.key].value as string)?.toLowerCase();
                 let crit: string;
                 if (typeof criteria.value === 'string') {
                     crit = (criteria.value as string).toLowerCase();
@@ -334,8 +334,8 @@ export default class ColumnFilters {
                         }
                         break;
                     case eColumnComparator.in:
-                        // criteria.value will be a map of allowable valued
-                        if (! criteria.value.has(objData.properties[item.key].value as string)) {
+                        // criteria.value will be a map
+                        if (!criteria.value.has(objData.properties[item.key].value as string)) {
                             matches = false;
                         }
                         break;

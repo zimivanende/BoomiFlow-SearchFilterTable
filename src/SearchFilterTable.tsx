@@ -131,20 +131,22 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     getColumnUniques(name: string, criteria: ColumnCriteria): any {
-        const options: any[] = [];
-
         return (
            <MultiSelect
                 allItems={this.colValMap.get(name)}
-                selectedItems={criteria.value}
+                selectedItems={criteria}
            />
         );
     }
 
     filtersChanged(key: string, event: eFilterEvent) {
-        // get the column header for key column
-        const col: HTMLElement = this.headers.headers.get(key);
-        const offset = col.offsetLeft;
+        // get the column header for key column if exists
+        let offset: any;
+        if (key) {
+            const col: HTMLElement = this.headers.headers.get(key);
+            offset = col.offsetLeft;
+        }
+
         this.headers.forceUpdate();
         sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
         this.buildRibbon();
@@ -160,8 +162,9 @@ export default class SearchFilterTable extends FlowComponent {
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate(() => {
-
-            this.scroller.scrollLeft =  offset;
+            if (offset) {
+                this.scroller.scrollLeft =  offset;
+            }
         });
 
     }

@@ -1,4 +1,4 @@
-import ColumnCriteria from './ColumnCriteria';
+import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 
 export default class ColumnFilter {
@@ -14,6 +14,19 @@ export default class ColumnFilter {
         criteria.forEach((crit: any) => {
             if (crit instanceof ColumnCriteria === false) {
                 crit = JSON.parse(crit);
+            }
+            if (crit.comparator === eColumnComparator.in || crit.comparator === eColumnComparator.notIn) {
+                if (crit.value instanceof Map) {
+                    // do nothing
+                } else {
+
+                    const vals: any[] = JSON.parse(crit.value);
+                    const vmap: Map<string, string> = new Map();
+                    vals.forEach((v: string) => {
+                        vmap.set(v, v);
+                    });
+                    crit.value = vmap;
+                }
             }
             this.criteria.push(new ColumnCriteria(crit.comparator, crit.value));
         });

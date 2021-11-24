@@ -1,6 +1,13 @@
 .multiselect {
     width: 100%;
     height: 100%;
+    outline: none;
+    position: relative;
+  }
+
+  .multiselect:focus,
+  .multiselect:focus-visible {
+    outline: none;
   }
   
   .selectBox {
@@ -27,8 +34,8 @@
     width: fit-content;
     max-width: 500px;
     max-height: 400px;
-    top: 0.4rem;
-    position: relative;
+    top: 100%;
+    position: absolute;
   }
   
   .checkboxes {

@@ -25,6 +25,7 @@ export default class MultiSelect extends React.Component <any, any> {
         const checkBoxes: any[] = [];
         const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
         const sorted: any[] = Array.from(this.props.allItems.keys()).sort((a: any, b: any) => collator.compare(a, b));
+
         sorted.forEach((item: string) => {
             checkBoxes.push(
                 <div
@@ -39,10 +40,10 @@ export default class MultiSelect extends React.Component <any, any> {
                             key={item}
                             className="sft-checkbox"
                             checked={
-                                this.props.selectedItems.has(item)
+                                this.props.selectedItems?.has(item)
                             }
                             onClick={(e: any) => {
-                                if (this.props.selectedItems.has(item)) {
+                                if (this.props.selectedItems?.has(item)) {
                                     this.props.selectedItems.delete(item);
                                 } else {
                                     this.props.selectedItems.set(item, item);
@@ -63,7 +64,9 @@ export default class MultiSelect extends React.Component <any, any> {
 
                 </div>,
             );
+
         });
+
         return (
             <div className="multiselect">
                 <div

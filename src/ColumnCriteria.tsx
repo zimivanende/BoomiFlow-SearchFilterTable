@@ -51,18 +51,19 @@ export default class ColumnCriteria {
         switch (comparator) {
             case eColumnComparator.in:
             case eColumnComparator.notIn:
-                let vals: any[];
-                if (typeof value === 'string') {
-                    vals = value.split(',');
-                } else {
-                    vals = JSON.parse(value);
-                }
+                // let vals: any[];
+                // if (typeof value === 'string') {
+                //    vals = value.split(',');
+                // } else {
+                //    vals = JSON.parse(value);
+                // }
 
-                this.value = new Map();
-                vals?.forEach((val: any) => {
-                    this.value.set(val, val);
-                });
+                // this.value = new Map();
+                // vals?.forEach((val: any) => {
+                //    this.value.set(val, val);
+                // });
                 // this.value.push(value);
+                this.value = value;
                 break;
 
             default:

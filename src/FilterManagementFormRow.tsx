@@ -30,7 +30,7 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                 this.props.criteria.value = '';
             } else {
                 if ((comparator === eColumnComparator.in || comparator === eColumnComparator.notIn) && typeof this.props.criteria.value === 'string') {
-                    this.props.criteria.value = '';
+                    this.props.criteria.value = new Map();
                 }
             }
             this.forceUpdate();
