@@ -74,7 +74,7 @@ export default class SearchFilterTable extends FlowComponent {
     ribbonElement: any;
 
     // this is the footer React component
-    footer: SearchFilterTableHeaders;
+    footer: SearchFilterTableFooter;
 
     // this is the footer html element
     footerElement: any;
@@ -90,6 +90,9 @@ export default class SearchFilterTable extends FlowComponent {
 
     // these are the filter & sort controllers
     filters: ColumnFilters = new ColumnFilters(this);
+
+    // the scrolling element
+    scroller: HTMLDivElement;
 
     constructor(props: any) {
         super(props);
@@ -139,26 +142,28 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     filtersChanged(key: string, event: eFilterEvent) {
+        // get the column header for key column
+        const col: HTMLElement = this.headers.headers.get(key);
+        const offset = col.offsetLeft;
         this.headers.forceUpdate();
         sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
+        this.buildRibbon();
         switch (event) {
             case eFilterEvent.sort:
-                this.buildRibbon();
-                this.sortRows();
-                this.paginateRows();
-                this.buildTableRows();
-                this.forceUpdate();
                 break;
 
             case eFilterEvent.filter:
-                this.buildRibbon();
                 this.filterRows();
-                this.sortRows();
-                this.paginateRows();
-                this.buildTableRows();
-                this.forceUpdate();
                 break;
         }
+        this.sortRows();
+        this.paginateRows();
+        this.buildTableRows();
+        this.forceUpdate(() => {
+
+            this.scroller.scrollLeft =  offset;
+        });
+
     }
 
     globalFilterChanged(value: string) {
@@ -820,6 +825,7 @@ export default class SearchFilterTable extends FlowComponent {
                 >
                     <div
                         className="sft-scroller"
+                        ref={(element: HTMLDivElement) => {this.scroller = element; }}
                     >
                         <div
                             className="sft-scroller-body"

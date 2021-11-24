@@ -3,12 +3,28 @@ import React from 'react';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableHeaders extends React.Component<any, any> {
+    headers: Map<string, any> = new Map();
+
+    constructor(props: any) {
+        super(props);
+
+        this.setHeader = this.setHeader.bind(this);
+    }
 
     componentDidMount() {
         this.forceUpdate();
     }
 
+    setHeader(key: string, header: any) {
+        if (header) {
+            this.headers.set(key, header);
+        } else {
+            this.headers.delete(key);
+        }
+    }
+
     render() {
+        this.headers = new Map();
         const headers: any[] = [];
 
         const root: SearchFilterTable = this.props.root;
@@ -23,7 +39,9 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         if (root.colMap.size > 0) {
             headers.push(
                 <th
+                    key="checks"
                     className="sft-check-header"
+                    ref={(element: any) => {this.setHeader('checks', element); }}
                 >
                     <input
                         className="sft-checkbox"
@@ -36,7 +54,9 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
             if (buttons.length > 0) {
                 headers.push(
                     <th
+                        key="actions"
                         className="sft-column-header"
+                        ref={(element: any) => {this.setHeader('actions', element); }}
                     >
                         <div
                             className="sft-column-header-title"
@@ -61,7 +81,9 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
 
                 headers.push(
                     <th
+                        key={col.developerName}
                         className="sft-column-header"
+                        ref={(element: any) => {this.setHeader(col.developerName, element); }}
                     >
                         <div
                             className="sft-column-header-wrapper"

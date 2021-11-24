@@ -297,6 +297,7 @@
 .sft-table-cell-buttons {
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
 }
 
 .sft-table-cell-button {
@@ -306,12 +307,11 @@
     border-radius: 8px;
     display: flex;
     flex-direction: row;
-    margin: auto;
     margin-right: 0.5rem;
 }
 
 .sft-table-cell-button:last-of-type {
-    margin: auto;
+    margin-right: 0;
 }
 
 .sft-table-cell-button-element {
