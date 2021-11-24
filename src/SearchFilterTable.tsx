@@ -142,16 +142,23 @@ export default class SearchFilterTable extends FlowComponent {
     filtersChanged(key: string, event: eFilterEvent) {
         // get the column header for key column if exists
         let offset: any;
-        if (key) {
-            const col: HTMLElement = this.headers.headers.get(key);
-            offset = col.offsetLeft;
-        }
+        let sortKey: String;
+        // if (key) {
+        //    const col: HTMLElement = this.headers.headers.get(key);
+        //    offset = col.offsetLeft;
+        // }
 
         this.headers.forceUpdate();
         sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
         this.buildRibbon();
         switch (event) {
             case eFilterEvent.sort:
+                if (this.filters.get(key).sort !== eSortDirection.none) {
+                    const col: HTMLElement = this.headers.headers.get(key);
+                    offset = col.offsetLeft;
+                    sortKey = key;
+                }
+
                 break;
 
             case eFilterEvent.filter:
@@ -162,8 +169,10 @@ export default class SearchFilterTable extends FlowComponent {
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate(() => {
-            if (offset) {
-                this.scroller.scrollLeft =  offset;
+            if (offset && sortKey && sortKey === key) {
+                const col: HTMLElement = this.headers.headers.get(key);
+                offset = col.offsetLeft;
+                // this.scroller.scrollLeft =  offset;
             }
         });
 
