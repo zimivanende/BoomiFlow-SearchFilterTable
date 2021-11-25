@@ -48,13 +48,17 @@ export default class ColumnFilter {
     }
 
     sortAscending() {
-        this.sort = eSortDirection.ascending;
-        this.notify(eFilterEvent.sort);
+        if (this.sort !== eSortDirection.ascending) {
+            this.sort = eSortDirection.ascending;
+            this.notify(eFilterEvent.sort);
+        }
     }
 
     sortDescending() {
-        this.sort = eSortDirection.descending;
-        this.notify(eFilterEvent.sort);
+        if (this.sort !== eSortDirection.descending) {
+            this.sort = eSortDirection.descending;
+            this.notify(eFilterEvent.sort);
+        }
     }
 
     sortToggle() {
@@ -71,8 +75,10 @@ export default class ColumnFilter {
     }
 
     sortNone() {
-        this.sort = eSortDirection.none;
-        this.notify(eFilterEvent.sort);
+        if (this.sort !== eSortDirection.none) {
+            this.sort = eSortDirection.none;
+            this.notify(eFilterEvent.sort);
+        }
     }
 
     getForStorage(): string {
