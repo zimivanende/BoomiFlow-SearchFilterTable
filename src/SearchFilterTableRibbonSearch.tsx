@@ -115,6 +115,14 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         title={'Export All'}
 
                     />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export All'}
+                        </span> :
+                        null
+                    }
                 </div>,
             );
         }
@@ -129,8 +137,15 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         key={'exportShown'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
                         title={'Export Shown'}
-
                     />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export Shown'}
+                        </span> :
+                        null
+                    }
                 </div>,
             );
         }
@@ -171,6 +186,30 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             }
         });
 
+        if (root.dynamicColumns === true) {
+            rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {root.showColumnPicker(); }}
+                >
+
+                    <span
+                        key={'colpick'}
+                        className={'glyphicon glyphicon-option-vertical sft-ribbon-search-button-icon'}
+                        title={'Select columns'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Column Picker'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
         if (root.selectedRowMap.size > 0 && canExport === true) {
         leftButtons.push(
                 <div
@@ -181,8 +220,15 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         key={'exportSelected'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
                         title={'Export Selected'}
-
                     />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export Selected'}
+                        </span> :
+                        null
+                    }
                 </div>,
             );
         }

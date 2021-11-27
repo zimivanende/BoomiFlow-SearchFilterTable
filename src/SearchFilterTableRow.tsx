@@ -82,7 +82,9 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             );
         }
 
-        root.colMap.forEach((col: FlowDisplayColumn) => {
+        root.userColumns.forEach((collName: string) => {
+            const col: FlowDisplayColumn = root.colMap.get(collName);
+            // root.colMap.forEach((col: FlowDisplayColumn) => {
             const val: any = this.formatValue(col.contentType, root, objData?.properties[col.developerName]);
 
             cols.push(

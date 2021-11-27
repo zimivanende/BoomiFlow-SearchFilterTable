@@ -1,14 +1,22 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
 import React from 'react';
 import SearchFilterTable from './SearchFilterTable';
+import SearchFilterTableHeader from './SearchFilterTableHeader';
 
 export default class SearchFilterTableHeaders extends React.Component<any, any> {
-    headers: Map<string, any> = new Map();
+    headers: Map<string, SearchFilterTableHeader> = new Map();
+    draggedFieldName: string;
 
     constructor(props: any) {
         super(props);
 
         this.setHeader = this.setHeader.bind(this);
+        this.dragColumn = this.dragColumn.bind(this);
+        this.onDragEnter = this.onDragEnter.bind(this);
+        this.onDragOver = this.onDragOver.bind(this);
+        this.onDragLeave = this.onDragLeave.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+        this.moveColumn = this.moveColumn.bind(this);
     }
 
     componentDidMount() {
@@ -21,6 +29,90 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         } else {
             this.headers.delete(key);
         }
+    }
+
+    dragColumn(e: any, fieldName: string) {
+        // e.preventDefault();
+        // e.stopPropagation();
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('column', fieldName);
+        this.draggedFieldName = fieldName;
+    }
+
+    onDragEnter(e: any) {
+        e.preventDefault();
+        e.stopPropagation();
+        const tgtFieldName = e.currentTarget.getAttribute('data-fieldName');
+        const srcFieldName = this.draggedFieldName ;
+        if (!srcFieldName || this.draggedFieldName === tgtFieldName) {
+            e.dataTransfer.dropEffect = 'none';
+        } else {
+            this.headers.get(tgtFieldName).dragEnter();
+            e.dataTransfer.dropEffect = 'move';
+            // e.currentTarget.parentElement.classList.add('sft-column-header-wrapper-droppable');
+        }
+
+    }
+
+    onDragLeave(e: any) {
+        e.preventDefault();
+        e.stopPropagation();
+        const tgtFieldName = e.currentTarget.getAttribute('data-fieldName');
+        this.headers.get(tgtFieldName).dragLeave();
+        // e.currentTarget.parentElement.classList.remove('sft-column-header-wrapper-droppable');
+    }
+
+    onDragOver(e: any) {
+        e.preventDefault();
+        e.stopPropagation();
+        const srcFieldName = e.dataTransfer.getData('column');
+        const tgtFieldName = e.currentTarget.getAttribute('data-fieldName');
+
+        // e.dataTransfer.dropEffect="move";
+    }
+
+    async onDrop(e: any) {
+        const root: SearchFilterTable = this.props.root;
+        e.preventDefault();
+        e.stopPropagation();
+        const srcFieldName = e.dataTransfer.getData('column');
+        const tgtFieldName = e.currentTarget.getAttribute('data-fieldName');
+        this.draggedFieldName = undefined;
+        e.dataTransfer.clearData();
+        e.currentTarget.parentElement.classList.remove('sft-column-header-wrapper-droppable');
+
+        if (srcFieldName && srcFieldName !== tgtFieldName) {
+            await this.moveColumn(srcFieldName, tgtFieldName);
+            this.forceUpdate();
+        }
+
+    }
+
+    async moveColumn(srcFieldName: string, tgtFieldName: string) {
+        const root: SearchFilterTable = this.props.root;
+        console.log('move ' + srcFieldName + ' before ' + tgtFieldName);
+
+        root.userColumns.splice(root.userColumns.indexOf(tgtFieldName), 0, root.userColumns.splice(root.userColumns.indexOf(srcFieldName), 1)[0]);
+        root.forceUpdate();
+        // const srcPos: number = this.queueColumns[srcFieldName].fieldOrder;
+        // const tgtPos: number = this.queueColumns[tgtFieldName].fieldOrder;
+
+        // put cols into array ordered by fieldOrder
+        /*
+        const sortedColumns: any[] = [];
+        Object.keys(this.queueColumns).forEach((key: string) => {
+            sortedColumns[this.queueColumns[key].fieldOrder] = this.queueColumns[key];
+        });
+        sortedColumns.splice(tgtPos, 0, sortedColumns.splice(srcPos, 1)[0]);
+
+        for (let pos = 0 ; pos < sortedColumns.length ; pos++) {
+            if (sortedColumns[pos]) {
+                this.queueColumns[sortedColumns[pos].fieldName].fieldOrder = pos;
+            }
+        }
+        // send back to server
+        await this.saveQueueColumns();
+*/
     }
 
     render() {
@@ -71,7 +163,10 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                 );
             }
 
-            root.colMap.forEach((col: FlowDisplayColumn) => {
+            root.userColumns.forEach((collName: string) => {
+                const col: FlowDisplayColumn = root.colMap.get(collName);
+
+                // root.colMap.forEach((col: FlowDisplayColumn) => {
 
                 const sortIcon: any = root.filters.getSortIcon(col.developerName);
                 let filterIcon: any;
@@ -80,42 +175,12 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                 }
 
                 headers.push(
-                    <th
-                        key={col.developerName}
-                        className="sft-column-header"
-                        ref={(element: any) => {this.setHeader(col.developerName, element); }}
-                    >
-                        <div
-                            className="sft-column-header-wrapper"
-                        >
-                            <div
-                                className="sft-column-header-top"
-                            >
-                                <div
-                                    className="sft-column-header-flags"
-                                >
-                                    {sortIcon}
-                                </div>
-                                <div
-                                    className="sft-column-header-title"
-                                >
-                                    <span
-                                        className="sft-column-header-title-label"
-                                    >
-                                        {col.label}
-                                    </span>
-                                </div>
-                                <div
-                                    className="sft-column-header-buttons"
-                                >
-                                    {filterIcon}
-                                </div>
-                            </div>
-                            <div
-                                className="sft-column-header-bottom"
-                            />
-                        </div>
-                    </th>,
+                    <SearchFilterTableHeader
+                        root={this.props.root}
+                        parent={this}
+                        column={col}
+                        ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
+                    />,
                 );
             });
         }

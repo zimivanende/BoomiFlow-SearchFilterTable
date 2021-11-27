@@ -194,6 +194,11 @@
     align-items: center;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+    border-left: 3px solid transparent;
+}
+
+.sft-column-header-wrapper-droppable {
+    border-left: 5px solid orange;
 }
 
 .sft-column-header-top {

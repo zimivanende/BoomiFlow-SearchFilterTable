@@ -5,12 +5,14 @@ import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
 import CellItem from './CellItem';
 import ColumnCriteria from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
+import ColumnPickerForm from './ColumnPickerForm';
 import FilterManagementForm from './FilterManagementForm';
 import ModelExporter from './ModelExporter';
 import MultiSelect from './MultiSelect';
 import RowItem from './RowItem';
 import './SearchFilterTable.css';
 import SearchFilterTableFooter from './SearchFilterTableFooter';
+import SearchFilterTableHeader from './SearchFilterTableHeader';
 import SearchFilterTableHeaderButtons from './SearchFilterTableHeaderButtons';
 import SearchFilterTableHeaders from './SearchFilterTableHeaders';
 import SearchFilterTableRibbon from './SearchFilterTableRibbon';
@@ -59,6 +61,9 @@ export default class SearchFilterTable extends FlowComponent {
     // this is the column value map, it conatins all possible values for each column, it doesn't change unless data reloaded
     colValMap: Map<string, Map<any, any>> = new Map();
 
+    // this is the column value map, it conatins all possible values for each column, it doesn't change unless data reloaded
+    userColumns: string[] = [];
+
     // this is the table headers React component
     headers: SearchFilterTableHeaders;
 
@@ -94,6 +99,9 @@ export default class SearchFilterTable extends FlowComponent {
     // the scrolling element
     scroller: HTMLDivElement;
 
+    // dynamic columns flag
+    dynamicColumns: boolean = false;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -126,8 +134,38 @@ export default class SearchFilterTable extends FlowComponent {
         this.playAudio = this.playAudio.bind(this);
         this.playVideo = this.playVideo.bind(this);
 
+        this.showColumnPicker = this.showColumnPicker.bind(this);
+        this.applyColumns = this.applyColumns.bind(this);
+        this.cancelColumns = this.cancelColumns.bind(this);
+
         this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+    }
+
+    showColumnPicker() {
+        console.log('pick columns');
+
+        const content = (
+            <ColumnPickerForm
+                root={this}
+                ref={(element: ColumnPickerForm) => {this.form = element; }}
+            />
+        );
+        this.messageBox.showMessageBox('Select Columns', content, [new modalDialogButton('Apply', this.applyColumns), new modalDialogButton('Cancel', this.cancelColumns)]);
+    }
+
+    cancelColumns() {
+        this.messageBox.hideMessageBox();
+        this.form = undefined;
+    }
+
+    async applyColumns() {
+        this.userColumns = this.form.selectedColumns;
+        this.messageBox.hideMessageBox();
+        this.form = undefined;
+        this.headers.forceUpdate();
+        this.buildTableRows();
+        this.forceUpdate();
     }
 
     getColumnUniques(name: string, criteria: ColumnCriteria): any {
@@ -154,9 +192,9 @@ export default class SearchFilterTable extends FlowComponent {
         switch (event) {
             case eFilterEvent.sort:
                 if (this.filters.get(key).sort !== eSortDirection.none) {
-                    const col: HTMLElement = this.headers.headers.get(key);
-                    offset = col.offsetLeft;
-                    sortKey = key;
+                    const col: SearchFilterTableHeader = this.headers.headers.get(key);
+                    // offset = col.offsetLeft;
+                    // sortKey = key;
                 }
 
                 break;
@@ -170,8 +208,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.buildTableRows();
         this.forceUpdate(() => {
             if (offset && sortKey && sortKey === key) {
-                const col: HTMLElement = this.headers.headers.get(key);
-                offset = col.offsetLeft;
+                // const col: HTMLElement = this.headers.headers.get(key);
+                // offset = col.offsetLeft;
                 // this.scroller.scrollLeft =  offset;
             }
         });
@@ -266,6 +304,10 @@ export default class SearchFilterTable extends FlowComponent {
         // build tree
         this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
         this.filters.loadFromStorage(sessionStorage.getItem('sft-filters-' + this.componentId));
+
+        // calculate if we are in dynamic column mode
+        this.dynamicColumns = true;
+
         await this.buildCoreTable();
         this.filterRows();
         this.sortRows();
@@ -276,6 +318,14 @@ export default class SearchFilterTable extends FlowComponent {
     async componentWillUnmount() {
         await super.componentWillUnmount();
         (manywho as any).eventManager.removeDoneListener(this.componentId);
+    }
+
+    async loadUserColumns() {
+        this.userColumns = [];
+    }
+
+    async saveUserColumns() {
+        // this.userColumns = [];
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +339,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.rows = new Map();
 
         // sort display cols on order
-
+        this.colMap = new Map();
+        // use the cols from the displayColumns
         const cols: FlowDisplayColumn[] = this.model.displayColumns.sort((a: any, b: any) => {
             switch (true) {
                 case a.DisplayOrder > b.DisplayOrder:
@@ -301,10 +352,17 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
 
-        this.colMap = new Map();
+        if (this.dynamicColumns === true) {
+            await this.loadUserColumns();
+        }
+        const populateDefaults: boolean = this.dynamicColumns === false || (this.dynamicColumns === true && this.userColumns.length === 0);
+
         cols.forEach((col: FlowDisplayColumn) => {
             this.colMap.set(col.developerName, col);
             this.colValMap.set(col.developerName, new Map());
+            if (populateDefaults) {
+                this.userColumns.push(col.developerName);
+            }
         });
 
         let inlineSearch: boolean = true;
@@ -842,7 +900,9 @@ export default class SearchFilterTable extends FlowComponent {
                         <div
                             className="sft-scroller-body"
                         >
-                            <table>
+                            <table
+                                style={{minWidth: '100%'}}
+                            >
                                 <thead>
                                     {this.headersElement}
                                 </thead>
