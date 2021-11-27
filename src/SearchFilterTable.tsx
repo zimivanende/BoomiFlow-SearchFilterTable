@@ -137,6 +137,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.showColumnPicker = this.showColumnPicker.bind(this);
         this.applyColumns = this.applyColumns.bind(this);
         this.cancelColumns = this.cancelColumns.bind(this);
+        this.columnsReordered = this.columnsReordered.bind(this);
 
         this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
@@ -166,6 +167,11 @@ export default class SearchFilterTable extends FlowComponent {
         await this.saveUserColumns();
         this.headers.forceUpdate();
         this.buildTableRows();
+        this.forceUpdate();
+    }
+
+    async columnsReordered() {
+        await this.saveUserColumns();
         this.forceUpdate();
     }
 

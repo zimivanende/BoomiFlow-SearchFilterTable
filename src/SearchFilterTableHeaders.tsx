@@ -93,26 +93,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         console.log('move ' + srcFieldName + ' before ' + tgtFieldName);
 
         root.userColumns.splice(root.userColumns.indexOf(tgtFieldName), 0, root.userColumns.splice(root.userColumns.indexOf(srcFieldName), 1)[0]);
-        root.forceUpdate();
-        // const srcPos: number = this.queueColumns[srcFieldName].fieldOrder;
-        // const tgtPos: number = this.queueColumns[tgtFieldName].fieldOrder;
-
-        // put cols into array ordered by fieldOrder
-        /*
-        const sortedColumns: any[] = [];
-        Object.keys(this.queueColumns).forEach((key: string) => {
-            sortedColumns[this.queueColumns[key].fieldOrder] = this.queueColumns[key];
-        });
-        sortedColumns.splice(tgtPos, 0, sortedColumns.splice(srcPos, 1)[0]);
-
-        for (let pos = 0 ; pos < sortedColumns.length ; pos++) {
-            if (sortedColumns[pos]) {
-                this.queueColumns[sortedColumns[pos].fieldName].fieldOrder = pos;
-            }
-        }
-        // send back to server
-        await this.saveQueueColumns();
-*/
+        root.columnsReordered();
     }
 
     render() {
