@@ -385,6 +385,10 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
 
+        if (this.dynamicColumns === true && populateDefaults === true) {
+            await this.saveUserColumns();
+        }
+
         let inlineSearch: boolean = true;
         switch (this.getAttribute('RibbonStyle', 'ribbon')) {
 

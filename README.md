@@ -216,6 +216,8 @@ Changes to the selected columns and their order is persisted back to the field o
 
 These can then be persisted into a database with the user's login and the name of the table.
 
+If there are no columns in the string it will default to the Display Columns of the table and immediatly set that value into the state.
+
 
 ## Styling
 
