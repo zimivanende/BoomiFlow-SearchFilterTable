@@ -163,6 +163,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.userColumns = this.form.selectedColumns;
         this.messageBox.hideMessageBox();
         this.form = undefined;
+        await this.saveUserColumns();
         this.headers.forceUpdate();
         this.buildTableRows();
         this.forceUpdate();
@@ -306,7 +307,9 @@ export default class SearchFilterTable extends FlowComponent {
         this.filters.loadFromStorage(sessionStorage.getItem('sft-filters-' + this.componentId));
 
         // calculate if we are in dynamic column mode
-        this.dynamicColumns = true;
+        if (this.attributes.UserColumnsValue) {
+            this.dynamicColumns = true;
+        } // it will have defaulted to false
 
         await this.buildCoreTable();
         this.filterRows();
@@ -321,11 +324,27 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async loadUserColumns() {
-        this.userColumns = [];
+        const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+        if (userFields && (userFields.value as string).length > 0) {
+            const cols: string[] = (userFields.value as string).split(',');
+            this.userColumns = [];
+            cols.forEach((col: string) => {
+                this.userColumns.push(col.trim());
+            });
+        }
     }
 
     async saveUserColumns() {
-        // this.userColumns = [];
+        const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+        let userCols = '';
+        this.userColumns.forEach((col: string) => {
+            if (userCols.length > 0) {
+                userCols += ',';
+            }
+            userCols += col.trim();
+        });
+        userFields.value = userCols;
+        await this.updateValues(userFields);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -355,6 +374,7 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.dynamicColumns === true) {
             await this.loadUserColumns();
         }
+
         const populateDefaults: boolean = this.dynamicColumns === false || (this.dynamicColumns === true && this.userColumns.length === 0);
 
         cols.forEach((col: FlowDisplayColumn) => {

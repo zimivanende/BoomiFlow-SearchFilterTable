@@ -30,6 +30,8 @@ Text columns containing a dataUri are handled as specials: -
    Image data uris display an inplace <img> which when clicked opens a new tab.
    Others are displayed with a hyperlink.
 
+Columns are configurable at run time if the UserColumnsField is specified as an attribute.
+
 ## Datasource
 
 Set the datasource to a list of objects
@@ -199,6 +201,20 @@ Tells the component on load which column in the model should be used (if any) to
 Must be a boolean or number field.
 
 Supply the developerName of the column and the checkboxes for rows where the value is true or > 0 will be checked.
+
+### UserColumnsValue
+
+Optional.
+
+The name of a string value which will contian the names of columns the user should see for this table.
+
+The valuse should be comma delimited.
+
+Enabling this value makes the table configurable in that a column selector buttom appears and the column headers in the table are dragable to re-order.
+
+Changes to the selected columns and their order is persisted back to the field on change.
+
+These can then be persisted into a database with the user's login and the name of the table.
 
 
 ## Styling
