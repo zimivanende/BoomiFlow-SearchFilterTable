@@ -155,6 +155,10 @@ If specified then these are applied as pixel values.
 
 Always provide a height or the component will have a 0 height table area.
 
+### Content
+
+If specified then this will be used as the content of the info popup dialog and cause the info button to be shown on the toolbar.
+
 
 ## Component Attributes
 
@@ -202,21 +206,40 @@ Must be a boolean or number field.
 
 Supply the developerName of the column and the checkboxes for rows where the value is true or > 0 will be checked.
 
+
 ### UserColumnsValue
 
 Optional.
 
 The name of a string value which will contian the names of columns the user should see for this table.
 
-The valuse should be comma delimited.
+The values should be in a comma delimited string.
 
 Enabling this value makes the table configurable in that a column selector buttom appears and the column headers in the table are dragable to re-order.
 
-Changes to the selected columns and their order is persisted back to the field on change.
+Changes to the selected columns and their order are persisted back to the field on change.
 
 These can then be persisted into a database with the user's login and the name of the table.
 
 If there are no columns in the string it will default to the Display Columns of the table and immediatly set that value into the state.
+
+
+### ColumnsIcon
+
+Optional.
+
+The name of a glyphicon to show on the column picker button if it will be shown.
+
+defaults to option-vertical.
+
+
+### InfoIcon
+
+Optional.
+
+The name of a glyphicon to show on the info button if it will be shown.
+
+defaults to question-sign.
 
 
 ## Styling

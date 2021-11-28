@@ -146,7 +146,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon glyphicon-option-vertical sft-ribbon-search-button-icon'}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
                         title={'Select columns'}
                     />
                     {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
