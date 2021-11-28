@@ -113,6 +113,30 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             }
         });
 
+        if (root.model.content.length > 0) {
+            rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {root.showInfo(); }}
+                >
+
+                    <span
+                        key={'colpick'}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.InfoIcon ? root.attributes.InfoIcon.value : 'question-sign')}
+                        title={'Infornation'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Column Picker'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
         if (root.dynamicColumns === true) {
             rightButtons.push(
                 <div

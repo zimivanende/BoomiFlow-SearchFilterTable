@@ -143,6 +143,17 @@ export default class SearchFilterTable extends FlowComponent {
         sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
     }
 
+    showInfo() {
+        console.log('show info');
+
+        const content = (
+            <div
+                dangerouslySetInnerHTML={{__html: this.model.content}}
+            />
+        );
+        this.messageBox.showMessageBox('Information', content, [new modalDialogButton('Close', this.messageBox.hideMessageBox)]);
+    }
+
     showColumnPicker() {
         console.log('pick columns');
 
