@@ -172,18 +172,25 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async applyColumns() {
+        this.saveUserColumns();
         this.userColumns = this.form.selectedColumns;
         this.messageBox.hideMessageBox();
         this.form = undefined;
-        await this.saveUserColumns();
         this.headers.forceUpdate();
-        this.buildTableRows();
-        this.forceUpdate();
+        this.rows.forEach((row: SearchFilterTableRow) => {
+            row.forceUpdate();
+        });
+        // this.forceUpdate();
+
     }
 
     async columnsReordered() {
-        await this.saveUserColumns();
-        this.forceUpdate();
+        this.saveUserColumns();
+        this.headers.forceUpdate();
+        this.rows.forEach((row: SearchFilterTableRow) => {
+            row.forceUpdate();
+        });
+        // this.forceUpdate();
     }
 
     getColumnUniques(name: string, criteria: ColumnCriteria): any {
