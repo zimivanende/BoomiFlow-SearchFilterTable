@@ -186,7 +186,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             }
         });
 
-        if (root.model.content.length > 0) {
+        if (root.model.content?.length > 0) {
             rightButtons.push(
                 <div
                     className="sft-ribbon-search-button-wrapper"
