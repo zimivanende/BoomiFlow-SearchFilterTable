@@ -401,6 +401,10 @@ export default class SearchFilterTable extends FlowComponent {
 
         const populateDefaults: boolean = this.dynamicColumns === false || (this.dynamicColumns === true && this.userColumns.length === 0);
 
+        if (populateDefaults) {
+            this.userColumns = [];
+        }
+
         cols.forEach((col: FlowDisplayColumn) => {
             this.colMap.set(col.developerName, col);
             this.colValMap.set(col.developerName, new Map());
