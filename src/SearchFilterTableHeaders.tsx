@@ -147,23 +147,20 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
             root.userColumns.forEach((collName: string) => {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
 
-                // root.colMap.forEach((col: FlowDisplayColumn) => {
-
-                // const sortIcon: any = root.filters.getSortIcon(col.developerName);
-                // let filterIcon: any;
-                // if (this.props.inlineSearch === true) {
-                //    filterIcon = root.filters.getFilterIcon(col.developerName);
-                // }
-
-                headers.push(
-                    <SearchFilterTableHeader
-                        root={this.props.root}
-                        parent={this}
-                        column={col}
-                        inlineSearch={this.props.inlineSearch}
-                        ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
-                    />,
-                );
+                if (col) {
+                    headers.push(
+                        <SearchFilterTableHeader
+                            root={this.props.root}
+                            parent={this}
+                            column={col}
+                            inlineSearch={this.props.inlineSearch}
+                            ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
+                        />,
+                    );
+                } else {
+                    root.userColumns.splice(root.userColumns.indexOf(collName), 1);
+                    root.saveUserColumns();
+                }
             });
         }
 
