@@ -1,3 +1,4 @@
+import { eContentType } from 'flow-component-model';
 import React from 'react';
 
 export enum eColumnComparator {
@@ -27,18 +28,44 @@ export default class ColumnCriteria {
         }
     }
 
-    static getOptions(currentValue: eColumnComparator = -1, className: string = ''): any[] {
+    static isOptionApplicable(comparator: eColumnComparator, fieldType: eContentType): boolean {
+        switch (comparator) {
+            // Generic comparators
+            case eColumnComparator.equalTo:
+            case eColumnComparator.notEqualTo:
+                return true;
+
+            // String only comparators
+            case eColumnComparator.startsWith:
+            case eColumnComparator.endsWith:
+            case eColumnComparator.contains:
+            case eColumnComparator.notContains:
+            case eColumnComparator.in:
+            case eColumnComparator.notIn:
+                if ([eContentType.ContentString, eContentType.ContentPassword, eContentType.ContentNumber, eContentType.ContentContent].indexOf(fieldType) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            default: return false;
+        }
+    }
+
+    static getOptions(currentValue: eColumnComparator = -1, className: string = '', fieldType: eContentType): any[] {
         const options: any[] = [];
         Object.keys(eColumnComparator).filter((key: any) => !isNaN(Number(eColumnComparator[key]))).forEach((item: any) => {
-            options.push(
-                <option
-                    className={className}
-                    value={eColumnComparator[item]}
-                    selected={eColumnComparator[item as keyof typeof eColumnComparator ] === currentValue}
-                >
-                    {ColumnCriteria.getDisplayValue(eColumnComparator[item as keyof typeof eColumnComparator ])}
-                </option>,
-            );
+            if (ColumnCriteria.isOptionApplicable(eColumnComparator[item as keyof typeof eColumnComparator ], fieldType)) {
+                options.push(
+                    <option
+                        className={className}
+                        value={eColumnComparator[item]}
+                        selected={eColumnComparator[item as keyof typeof eColumnComparator ] === currentValue}
+                    >
+                        {ColumnCriteria.getDisplayValue(eColumnComparator[item as keyof typeof eColumnComparator ])}
+                    </option>,
+                );
+            }
         });
 
         return options;

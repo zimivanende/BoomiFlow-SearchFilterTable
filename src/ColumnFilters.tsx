@@ -139,6 +139,7 @@ export default class ColumnFilters {
                     key={key}
                     developerName={key}
                     filter={this.items.get(key)}
+                    contentType={col.contentType}
                     ref={(element: FilterConfigForm) => {this.setDialog(element); }}
                 />
             ),
@@ -297,11 +298,27 @@ export default class ColumnFilters {
         this.items.forEach((item: ColumnFilter) => {
 
             item.criteria.forEach((criteria: ColumnCriteria) => {
-                const val: string = (objData.properties[item.key].value as string)?.toLowerCase();
-                let crit: string;
-                if (typeof criteria.value === 'string') {
-                    crit = (criteria.value as string).toLowerCase();
+                let val: any;
+                let crit: any;
+                switch (objData.properties[item.key].contentType) {
+                    case eContentType.ContentString:
+                        val = (objData.properties[item.key].value as string)?.toLowerCase();
+                        crit = (criteria.value as string).toLowerCase();
+                        break;
+                    case eContentType.ContentNumber:
+                        val = (objData.properties[item.key].value as number);
+                        crit = criteria.value;
+                        break;
+                    case eContentType.ContentBoolean:
+                        val = (objData.properties[item.key].value as boolean);
+                        crit = criteria.value;
+                        break;
+
+                    default:
+                        val = '';
+                        crit = '';
                 }
+
                 switch (criteria.comparator) {
                     case eColumnComparator.equalTo:
                         if (val !== crit) {

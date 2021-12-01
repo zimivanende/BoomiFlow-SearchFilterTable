@@ -17,7 +17,12 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
     }
 
     valueChanged(e: any) {
-        this.props.criteria.value = e.target.value;
+        if (e.target.type === 'checkbox') {
+            this.props.criteria.value = e.target.checked;
+        } else {
+            this.props.criteria.value = e.target.value;
+        }
+
         this.forceUpdate();
     }
 
@@ -76,7 +81,7 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
             );
         }
 
-        const criteriaOptions: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option');
+        const criteriaOptions: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', fieldDef.contentType);
 
         let input: any;
 

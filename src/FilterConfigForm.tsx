@@ -55,7 +55,7 @@ export default class FilterConfigForm extends React.Component<any, any> {
             );
         } else {
             this.newCriteria.forEach((criteria: ColumnCriteria) => {
-                const options: any[] = ColumnCriteria.getOptions(criteria.comparator);
+                const options: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', this.props.contentType);
                 let critBox: any;
                 switch (criteria.comparator) {
                     case eColumnComparator.in:

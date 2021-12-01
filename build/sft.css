@@ -829,11 +829,7 @@
     width: auto !important;
 }
 
-.sft-checkbox::after,.sft-checkbox::before {
-    display: none !important;
-}
-
-
+.sft-checkbox::after,
 .sft-checkbox::before {
     display: none !important;
 }
@@ -1092,7 +1088,7 @@
     height: 1.3rem;
     margin: auto !important;
     padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
+    padding-right: 1rem !important;
     flex-grow: 1;
 }
 
@@ -1340,8 +1336,19 @@
 }
 
 .sft-fmf-row-criteria-checkbox {
-
+    display: block !important;
+    appearance: revert !important;
+    content: unset !important;
+    margin: auto !important;
+    transform: scale(1.5); 
+    width: auto !important;
 }
+
+.sft-fmf-row-criteria-checkbox::after,
+.sft-fmf-row-criteria-checkbox::before {
+    display: none !important;
+}
+
 
 .sft-fmf-row-criteria-text:focus,
 .sft-fmf-row-criteria-date:focus,
