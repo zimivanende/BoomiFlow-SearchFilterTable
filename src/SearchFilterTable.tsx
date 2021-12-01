@@ -139,8 +139,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.cancelColumns = this.cancelColumns.bind(this);
         this.columnsReordered = this.columnsReordered.bind(this);
 
-        this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
-        sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
+        localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
     }
 
     showInfo() {
@@ -212,7 +212,7 @@ export default class SearchFilterTable extends FlowComponent {
         // }
 
         this.headers.forceUpdate();
-        sessionStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
+        localStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
         this.buildRibbon();
         switch (event) {
             case eFilterEvent.sort:
@@ -272,7 +272,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     maxPerPageChanged(max: number) {
         this.maxPageRows = max || 10;
-        sessionStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+        localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate();
@@ -310,8 +310,8 @@ export default class SearchFilterTable extends FlowComponent {
             if (this.loadingState !== eLoadingState.ready) {
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
-                this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
-                this.filters.loadFromStorage(sessionStorage.getItem('sft-filters-' + this.componentId));
+                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
+                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
                 await this.buildCoreTable();
                 this.filterRows();
                 this.sortRows();
@@ -327,8 +327,8 @@ export default class SearchFilterTable extends FlowComponent {
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
         // build tree
-        this.maxPageRows = parseInt(sessionStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
-        this.filters.loadFromStorage(sessionStorage.getItem('sft-filters-' + this.componentId));
+        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
+        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
 
         // calculate if we are in dynamic column mode
         if (this.attributes.UserColumnsValue) {
