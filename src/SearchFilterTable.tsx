@@ -924,13 +924,16 @@ export default class SearchFilterTable extends FlowComponent {
         let body: any;
         if (this.loadingState !== eLoadingState.ready) {
             body = (
-                <div style={{width: '100%', height: '100%', display: 'flex'}}>
+                <div
+                    className="sft-loading"
+                >
                     <div
+                        className="sft-loading-inner"
                         style={{margin: 'auto', display: 'flex', flexDirection: 'column'}}
                     >
-                        {this.attributes.LoadingIcon ? <img style={{width: '5rem', margin: 'auto'}} src={this.attributes.LoadingIcon.value}/> : undefined}
+                        {this.attributes.LoadingIcon ? <img className="sft-loading-image" src={this.attributes.LoadingIcon.value}/> : undefined}
                         <span
-                            style={{fontSize: '2rem'}}
+                            className="sft-loading-label"
                         >
                             Loading
                         </span>

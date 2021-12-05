@@ -1380,3 +1380,24 @@
     text-indent: 1rem;
 }
 
+.sft-loading {
+    width: 100%;
+    height: 100%;
+    display: flex
+}
+
+.sft-loading-inner {
+    margin: auto;
+    display: flex;
+    flex-direction: column
+}
+
+.sft-loading-image{
+    width: 5rem;
+    margin: auto
+}
+
+.sft-loading-label {
+    font-size: 2rem
+}
+
