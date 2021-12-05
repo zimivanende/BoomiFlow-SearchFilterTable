@@ -241,6 +241,14 @@ The name of a glyphicon to show on the info button if it will be shown.
 
 defaults to question-sign.
 
+### LoadingIcon
+
+Optional.
+
+The name of an image to show while loading.
+
+Animated gif maybe.
+
 
 ## Styling
 

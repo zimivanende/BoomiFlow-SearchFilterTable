@@ -890,10 +890,6 @@ export default class SearchFilterTable extends FlowComponent {
 
     render() {
 
-        if (this.loadingState !== eLoadingState.ready) {
-            return this.lastContent;
-        }
-
         // handle classes attribute and hidden and size
         const classes: string = 'sft ' + this.getAttribute('classes', '');
         const style: CSSProperties = {};
@@ -925,6 +921,42 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
         }
 
+        let body: any;
+        if (this.loadingState !== eLoadingState.ready) {
+            body = (
+                <div style={{width: '100%', height: '100%', display: 'flex'}}>
+                    <div
+                        style={{margin: 'auto', display: 'flex', flexDirection: 'column'}}
+                    >
+                        {this.attributes.LoadingIcon ? <img style={{width: '5rem', margin: 'auto'}} src={this.attributes.LoadingIcon.value}/> : undefined}
+                        <span
+                            style={{fontSize: '2rem'}}
+                        >
+                            Loading
+                        </span>
+                    </div>
+
+                </div>
+            );
+        } else {
+            body = (
+                <div
+                    className="sft-scroller-body"
+                >
+                    <table
+                        style={{minWidth: '100%'}}
+                    >
+                        <thead>
+                            {this.headersElement}
+                        </thead>
+                        <tbody>
+                            {this.rowElements}
+                        </tbody>
+                        <tfoot/>
+                    </table>
+                </div>
+            );
+        }
         this.lastContent = (
             <div
                 className={classes}
@@ -949,22 +981,7 @@ export default class SearchFilterTable extends FlowComponent {
                         className="sft-scroller"
                         ref={(element: HTMLDivElement) => {this.scroller = element; }}
                     >
-                        <div
-                            className="sft-scroller-body"
-                        >
-                            <table
-                                style={{minWidth: '100%'}}
-                            >
-                                <thead>
-                                    {this.headersElement}
-                                </thead>
-                                <tbody>
-                                    {this.rowElements}
-                                </tbody>
-                                <tfoot/>
-                            </table>
-
-                        </div>
+                        {body}
                     </div>
                 </div>
                 {this.footerElement}

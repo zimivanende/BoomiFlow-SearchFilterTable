@@ -32,7 +32,7 @@ export default class CommonFunctions {
                         val = property.value;
                         break;
                     case eContentType.ContentBoolean:
-                        value = rule.value.toLowerCase() === 'true';
+                        value = ('' + rule.value).toLowerCase() === 'true';
                         val = property.value;
                         break;
                     case eContentType.ContentString:
