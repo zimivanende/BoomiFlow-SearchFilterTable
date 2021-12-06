@@ -303,7 +303,11 @@ export default class ColumnFilters {
                 switch (objData.properties[item.key].contentType) {
                     case eContentType.ContentString:
                         val = (objData.properties[item.key].value as string)?.toLowerCase();
-                        crit = (criteria.value as string).toLowerCase();
+                        if (criteria.value instanceof Map) {
+                            crit = criteria.value;
+                        } else {
+                            crit = (criteria.value as string).toLowerCase();
+                        }
                         break;
                     case eContentType.ContentNumber:
                         val = (objData.properties[item.key].value as number);
@@ -352,13 +356,13 @@ export default class ColumnFilters {
                         break;
                     case eColumnComparator.in:
                         // criteria.value will be a map
-                        if (!criteria.value.has(objData.properties[item.key].value as string)) {
+                        if (!crit.has(objData.properties[item.key].value as string)) {
                             matches = false;
                         }
                         break;
                     case eColumnComparator.notIn:
                         // criteria.value will be a map of allowable valued
-                        if (criteria.value.has(objData.properties[item.key].value as string)) {
+                        if (crit.has(objData.properties[item.key].value as string)) {
                             matches = false;
                         }
                         break;
