@@ -317,7 +317,12 @@ export default class ColumnFilters {
                         val = (objData.properties[item.key].value as boolean);
                         crit = criteria.value;
                         break;
-
+                    case eContentType.ContentDateTime:
+                        val = new Date(objData.properties[item.key].value as string);
+                        if (isNaN(val)) {val = 0; } else {(val = val.getTime()); }
+                        crit = new Date(criteria.value);
+                        if (isNaN(crit)) {crit = 0; } else {(crit = crit.getTime()); }
+                        break;
                     default:
                         val = '';
                         crit = '';
@@ -366,7 +371,16 @@ export default class ColumnFilters {
                             matches = false;
                         }
                         break;
-
+                    case eColumnComparator.lessThan:
+                        if (crit < val) {
+                            matches = false;
+                        }
+                        break;
+                    case eColumnComparator.greaterThan:
+                        if (crit > val) {
+                            matches = false;
+                        }
+                        break;
                     default:
                         matches = false;
                         break;
@@ -414,9 +428,13 @@ export default class ColumnFilters {
             switch (colDef.contentType) {
 
                 case eContentType.ContentDateTime:
-                    sorted = Array.from(candidates).sort((a: any, b: any) =>
-                        a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value,
-                    );
+                    sorted = Array.from(candidates).sort((a: any, b: any) => {
+                        const d1: Date = new Date(a[1].objectData.properties[sortColumn.key].value);
+                        const d2: Date = new Date(b[1].objectData.properties[sortColumn.key].value);
+                        if (d1 < d2) { return -1; }
+                        if (d1 > d2) { return 1; }
+                        return 0; // a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value,
+                    });
                     break;
 
                 default:

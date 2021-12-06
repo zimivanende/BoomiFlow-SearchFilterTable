@@ -4,6 +4,8 @@ import React from 'react';
 export enum eColumnComparator {
     equalTo,
     notEqualTo,
+    greaterThan,
+    lessThan,
     startsWith,
     endsWith,
     contains,
@@ -25,6 +27,8 @@ export default class ColumnCriteria {
             case eColumnComparator.notContains: return 'Does Not Contain';
             case eColumnComparator.in: return 'Is In';
             case eColumnComparator.notIn: return 'Is Not In';
+            case eColumnComparator.greaterThan: return 'Greater Than';
+            case eColumnComparator.lessThan: return 'Less Than';
         }
     }
 
@@ -48,6 +52,14 @@ export default class ColumnCriteria {
                     return false;
                 }
 
+            // numeric & date
+            case eColumnComparator.lessThan:
+            case eColumnComparator.greaterThan:
+                if ([eContentType.ContentDateTime, eContentType.ContentNumber].indexOf(fieldType) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
             default: return false;
         }
     }

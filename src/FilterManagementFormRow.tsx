@@ -93,7 +93,7 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                     input = (
                         <input
                             className="sft-fmf-row-criteria-date"
-                            type="localDate"
+                            type="date"
                             value={this.props.criteria.value}
                             onChange={this.valueChanged}
                         />
