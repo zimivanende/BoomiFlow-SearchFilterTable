@@ -249,6 +249,13 @@ The name of an image to show while loading.
 
 Animated gif maybe.
 
+### DateFormat
+
+Optional.
+
+A string to control date formatting, UTC, JSON, LOCALE.
+
+Defaults to LOCALE
 
 ## Styling
 

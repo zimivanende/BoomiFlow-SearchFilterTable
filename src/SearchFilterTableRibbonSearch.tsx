@@ -265,7 +265,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 >
                     <span
                         key={'clearFilters'}
-                        className={'glyphicon glyphicon-trash sft-ribbon-search-button-icon'}
+                        className={'glyphicon glyphicon-trash sft-ribbon-search-button-icon sft-ribbon-search-button-icon-clear'}
                         title={'Clear Filters'}
                     />
                 </div>

@@ -111,11 +111,23 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             case eContentType.ContentDateTime:
                 const dt: Date = new Date(value.value as string);
                 if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
+                    let str: string = '';
+                    switch (root.getAttribute('DateFormat', 'LOCALE')) {
+                        case 'UTC':
+                            str = dt.toUTCString();
+                            break;
+                        case 'JSON':
+                            str = dt.toJSON();
+                            break;
+                        default:
+                            str = dt.toLocaleString();
+                            break;
+                    }
                     result = (
                         <span
                             className="sft-table-cell-text"
                         >
-                            {dt.toLocaleString()}
+                            {str}
                         </span>
                     );
                 } else {
