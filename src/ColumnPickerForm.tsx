@@ -84,11 +84,11 @@ export default class ColumnPickerForm extends React.Component<any, any> {
         return (
             <div
                 className="modal-dialog-content"
-                style={{maxHeight: '50%', display: 'flex', flexDirection: 'column', margin: 'auto', padding: '0rem'}}
+                style={{maxHeight: '80vh', maxWidth: '80vw', display: 'flex', flexDirection: 'column', margin: 'auto', padding: '0rem'}}
             >
                 <div
                     className="sft-scroller"
-                    style={{maxHeight: '50%'}}
+                    style={{maxHeight: '80vh', maxWidth: '80vw'}}
                 >
                     <div
                         className="sft-column-picker-body"
