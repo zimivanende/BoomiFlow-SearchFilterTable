@@ -731,3 +731,28 @@
 .sft-loading-label {
     font-size: 2rem
 }
+
+/* START Column Picker Form Styling */
+.sft-column-picker-body {
+    display: flex;
+    flex-direction: row;
+    overflow: visible;
+    background-color: #fefefe;
+}
+
+.sft-column-picker-column {    
+    border-right: 1px solid #ccc;
+    margin-right: 1rem;
+}
+
+.sft-column-picker-column:last-of-type {    
+    border-right: none;
+    margin-right: 1rem;
+}
+
+.sft-column-picker-row {
+    display: flex;
+    flex-direction: row;
+}
+/* END Column Picker Form Styling */
+

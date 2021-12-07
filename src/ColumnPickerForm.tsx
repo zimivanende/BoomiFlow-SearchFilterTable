@@ -30,15 +30,13 @@ export default class ColumnPickerForm extends React.Component<any, any> {
 
     render() {
         const root: SearchFilterTable = this.props.root;
-
-        const rows: any[] = [];
+        const cols: any[] = [];
+        let rows: any[] = [];
         root.colMap.forEach((column: FlowDisplayColumn) => {
-            rows.push(
+            if (rows.length < 11) {
+                rows.push(
                 <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                    }}
+                    className="sft-column-picker-row"
                 >
                     <div
                         className="checkbox-checkbox-wrapper"
@@ -63,8 +61,25 @@ export default class ColumnPickerForm extends React.Component<any, any> {
                     </div>
 
                 </div>,
-            );
+                );
+            } else {
+                cols.push(
+                    <div
+                        className="sft-column-picker-column"
+                    >
+                        {rows}
+                    </div>,
+                );
+                rows = [];
+            }
         });
+        if (rows.length > 0) {
+            cols.push(
+                <div>
+                    {rows}
+                </div>,
+            );
+        }
 
         return (
             <div
@@ -76,9 +91,9 @@ export default class ColumnPickerForm extends React.Component<any, any> {
                     style={{maxHeight: '50%'}}
                 >
                     <div
-                        className="sft-scroller-body"
+                        className="sft-column-picker-body"
                     >
-                        {rows}
+                        {cols}
                     </div>
                 </div>
             </div>
