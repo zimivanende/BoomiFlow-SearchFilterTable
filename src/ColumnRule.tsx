@@ -1,14 +1,15 @@
 import React from 'react';
+import SearchFilterTable from './SearchFilterTable';
 
 export class ColumnRules {
-    static parse(ruleStr: string): Map<string, ColumnRule> {
+    static parse(ruleStr: string, parent: SearchFilterTable): Map<string, ColumnRule> {
         const rules: Map<string, ColumnRule> = new Map();
         if (ruleStr && ruleStr.length > 0) {
             let rObj: any;
             try {
                 rObj = JSON.parse(ruleStr);
                 Object.keys(rObj).forEach((key: string) => {
-                    rules.set(key, ColumnRule.parse(key, rObj[key]));
+                    rules.set(key, ColumnRule.parse(key, rObj[key],parent));
                 });
             } catch (e) {
 
@@ -21,10 +22,19 @@ export class ColumnRules {
 
 export class ColumnRule {
 
-    static parse(key: string, rule: any): ColumnRule {
+    columnName: string;
+    mode: string;
+    target: string;
+    url: string;
+    label: string;
+    className: string;
+    parent: SearchFilterTable;
+
+    static parse(key: string, rule: any, parent: SearchFilterTable): ColumnRule {
         const colRule: ColumnRule = new ColumnRule();
         colRule.columnName = key;
         colRule.mode = rule.mode?.toLowerCase();
+        colRule.parent = parent;
         switch (colRule.mode) {
             case 'url':
                 colRule.target = rule.target || '_blank';
@@ -37,11 +47,7 @@ export class ColumnRule {
         return colRule;
     }
 
-    columnName: string;
-    mode: string;
-    target: string;
-    url: string;
-    label: string;
+    
 
     generateColumnContent(value: any): any {
         switch (this.mode) {
@@ -56,7 +62,13 @@ export class ColumnRule {
                         {this.label || value}
                     </a>
                 );
-
+            case 'class':
+                let props: any={
+                    parent: this.parent,
+                    rule: this,
+                    value: value
+                }
+                return React.createElement(this.className,props);
             default:
                 return(
                     <span>{value}</span>
