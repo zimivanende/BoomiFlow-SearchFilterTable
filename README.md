@@ -257,6 +257,27 @@ A string to control date formatting, UTC, JSON, LOCALE.
 
 Defaults to LOCALE
 
+### ColumnRules
+
+The "ColumnRules" attribute allows us to specify special formatting / function for one or more columns.
+
+The value is a JSON object with one attribute per column.
+
+```
+{
+   "SalesforceId":{
+      "mode":"url",
+      "target":"_blank",
+      "url":"https://boomi.my.salesforce.com/{{VALUE}}",
+      "label":"Open In Salesforce"
+   }
+}
+```
+
+currently mode only supports "url".
+
+
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.

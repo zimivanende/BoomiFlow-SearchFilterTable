@@ -6,6 +6,7 @@ import CellItem from './CellItem';
 import ColumnCriteria from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
 import ColumnPickerForm from './ColumnPickerForm';
+import { ColumnRule, ColumnRules } from './ColumnRule';
 import FilterManagementForm from './FilterManagementForm';
 import ModelExporter from './ModelExporter';
 import MultiSelect from './MultiSelect';
@@ -102,6 +103,9 @@ export default class SearchFilterTable extends FlowComponent {
     // dynamic columns flag
     dynamicColumns: boolean = false;
 
+    // column formatting rules map - allows us to specify special actions on clicking a cell
+    columnRules: Map<string, ColumnRule> = new Map();
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -141,6 +145,8 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+
+        this.columnRules = ColumnRules.parse(this.getAttribute('ColumnRules', '{}'));
     }
 
     showInfo() {

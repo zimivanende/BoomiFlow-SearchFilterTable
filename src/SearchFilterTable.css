@@ -296,6 +296,12 @@
     color: #111;
 }
 
+.sft-table-cell-href {
+    font-size: 0.8rem;
+    text-decoration: underline !important;
+    text-underline-offset: 0.2rem;
+}
+
 .sft-table-cell-buttons {
     display: flex;
     flex-direction: row;

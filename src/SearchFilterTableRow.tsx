@@ -107,93 +107,118 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     // handles special contents like uris & dataUri
     formatValue(contentType: eContentType,  root: SearchFilterTable, value: FlowObjectDataProperty): any {
         let result: any;
-        switch (contentType) {
-            case eContentType.ContentDateTime:
-                const dt: Date = new Date(value.value as string);
-                if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
-                    let str: string = '';
-                    switch (root.getAttribute('DateFormat', 'LOCALE')) {
-                        case 'UTC':
-                            str = dt.toUTCString();
-                            break;
-                        case 'JSON':
-                            str = dt.toJSON();
-                            break;
-                        default:
-                            str = dt.toLocaleString();
-                            break;
-                    }
-                    result = (
-                        <span
-                            className="sft-table-cell-text"
-                        >
-                            {str}
-                        </span>
-                    );
-                } else {
-                    <span className="sft-table-cell-text" />;
-                }
-                break;
-
-            case eContentType.ContentString:
-                switch (true) {
-                    case (value.value as string).startsWith('http:'):
-                    case (value.value as string).startsWith('https:'):
-                        let inner: any;
-                        if (this.isUrlImage(value.value as string)) {
-                            inner = (
-                                <img
-                                    src={value.value as string}
-                                    style={{height: '2rem', width: 'auto'}}
-                                    alt={value.value as string}
-                                    title={value.value as string}
-                                />
-                            );
-                        } else {
-                            inner = value.value;
+        if (root.columnRules.has(value.developerName)) {
+            result = root.columnRules.get(value.developerName).generateColumnContent(value.value);
+        } else {
+            switch (contentType) {
+                case eContentType.ContentDateTime:
+                    const dt: Date = new Date(value.value as string);
+                    if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
+                        let str: string = '';
+                        switch (root.getAttribute('DateFormat', 'LOCALE')) {
+                            case 'UTC':
+                                str = dt.toUTCString();
+                                break;
+                            case 'JSON':
+                                str = dt.toJSON();
+                                break;
+                            default:
+                                str = dt.toLocaleString();
+                                break;
                         }
                         result = (
-                            <a href={(value.value as string)} target="_blank">
-                                {inner}
-                            </a>
+                            <span
+                                className="sft-table-cell-text"
+                            >
+                                {str}
+                            </span>
                         );
-                        break;
+                    } else {
+                        <span className="sft-table-cell-text" />;
+                    }
+                    break;
 
-                    case (value.value as string).startsWith('data:'):
-                        const mime = (value.value as string).split(';')[0].split(':')[1];
-                        switch (true) {
-                            case mime.startsWith('audio/'):
-                                result = (
-                                    <audio
-                                        controls={true}
-                                        style={{width: '100%', minWidth: '9rem'}}>
-                                        <source src={(value.value as string)} type={mime}/>
-                                    </audio>
+                case eContentType.ContentString:
+                    switch (true) {
+                        case (value.value as string).startsWith('http:'):
+                        case (value.value as string).startsWith('https:'):
+                            let inner: any;
+                            if (this.isUrlImage(value.value as string)) {
+                                inner = (
+                                    <img
+                                        src={value.value as string}
+                                        style={{height: '2rem', width: 'auto'}}
+                                        alt={value.value as string}
+                                        title={value.value as string}
+                                    />
                                 );
-                                break;
+                            } else {
+                                inner = value.value;
+                            }
+                            result = (
+                                <a
+                                    href={(value.value as string)}
+                                    target="_blank"
+                                >
+                                    {inner}
+                                </a>
+                            );
+                            break;
 
-                            case mime.startsWith('video/'):
-                                result = (
-                                    <button
-                                        className="sft-table-cell-button"
-                                        onClick={(e: any) => {root.playVideo('Video', (value.value as string), mime); }}
-                                    >
-                                        Play Video
-                                    </button>
-                                );
-                                break;
+                        case (value.value as string).startsWith('data:'):
+                            const mime = (value.value as string).split(';')[0].split(':')[1];
+                            switch (true) {
+                                case mime.startsWith('audio/'):
+                                    result = (
+                                        <audio
+                                            controls={true}
+                                            style={{width: '100%', minWidth: '9rem'}}>
+                                            <source src={(value.value as string)} type={mime}/>
+                                        </audio>
+                                    );
+                                    break;
 
-                            default:
-                                const dnld: string = this.makeFileName('file', mime);
-                                result = (
-                                    <a href={(value.value as string)} target="_blank" download={dnld}>Download File</a>
-                                );
-                                break;
-                        }
+                                case mime.startsWith('video/'):
+                                    result = (
+                                        <button
+                                            className="sft-table-cell-button"
+                                            onClick={(e: any) => {root.playVideo('Video', (value.value as string), mime); }}
+                                        >
+                                            Play Video
+                                        </button>
+                                    );
+                                    break;
 
-                        break;
+                                default:
+                                    const dnld: string = this.makeFileName('file', mime);
+                                    result = (
+                                        <a href={(value.value as string)} target="_blank" download={dnld}>Download File</a>
+                                    );
+                                    break;
+                            }
 
-                    default:
+                            break;
+
+                        default:
+                            result = (
+                                <span
+                                    className="sft-table-cell-text"
+                                >
+                                    {(value.value as string)}
+                                </span>
+                            );
+                            break;
+                    }
+
+                    break;
+                case eContentType.ContentNumber:
+                    if (((value as any).Value as string) === '') {
+                        result = (
+                            <span
+                                className="sft-table-cell-text"
+                            />
+                        );
+                    } else {
                         result = (
                             <span
                                 className="sft-table-cell-text"
@@ -201,18 +226,25 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                 {(value.value as string)}
                             </span>
                         );
-                        break;
-                }
+                    }
+                    break;
+                case eContentType.ContentBoolean:
+                    if (((value as any).Value as string)?.toLowerCase() === 'true') {
+                        result = (
+                            <span
+                                className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-true glyphicon glyphicon-ok"
+                            />
+                        );
+                    } else {
+                        result = (
+                            <span
+                                className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-false glyphicon glyphicon-remove"
+                            />
+                        );
+                    }
+                    break;
 
-                break;
-            case eContentType.ContentNumber:
-                if (((value as any).Value as string) === '') {
-                    result = (
-                        <span
-                            className="sft-table-cell-text"
-                        />
-                    );
-                } else {
+                default:
                     result = (
                         <span
                             className="sft-table-cell-text"
@@ -220,33 +252,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             {(value.value as string)}
                         </span>
                     );
-                }
-                break;
-            case eContentType.ContentBoolean:
-                if (((value as any).Value as string)?.toLowerCase() === 'true') {
-                    result = (
-                        <span
-                            className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-true glyphicon glyphicon-ok"
-                        />
-                    );
-                } else {
-                    result = (
-                        <span
-                            className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-false glyphicon glyphicon-remove"
-                        />
-                    );
-                }
-                break;
-
-            default:
-                result = (
-                    <span
-                        className="sft-table-cell-text"
-                    >
-                        {(value.value as string)}
-                    </span>
-                );
-                break;
+                    break;
+            }
         }
         return result;
     }
