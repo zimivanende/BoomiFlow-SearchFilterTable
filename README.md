@@ -270,6 +270,12 @@ The value is a JSON object with one attribute per column.
       "target":"_blank",
       "url":"https://boomi.my.salesforce.com/{{VALUE}}",
       "label":"Open In Salesforce"
+   },
+   "AccountId":{
+      "mode":"url",
+      "target":"_blank",
+      "url":"https://boomi.my.salesforce.com/{{VALUE}}",
+      "label":"Open In Salesforce"
    }
 }
 ```
