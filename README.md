@@ -282,6 +282,24 @@ The value is a JSON object with one attribute per column.
 
 currently mode only supports "url".
 
+### OutcomesPosition
+
+The "OutcomesPosition" attribute allows specifying the default column position for outcomes.
+
+Values can be "first","last" or a number.
+
+Default is "first".
+
+If the table allows dynamic user columns then this will only be applied the frist time and will be stored into the user's column data.
+
+### OutcomesLabel
+
+String.
+
+Allows control of the outcomes / actions column title.
+
+Default is "Actions".
+
 
 
 ## Styling

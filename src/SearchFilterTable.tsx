@@ -146,7 +146,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
-        this.columnRules = ColumnRules.parse(this.getAttribute('ColumnRules', '{}'));
+        this.columnRules = ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
     }
 
     showInfo() {
@@ -418,6 +418,35 @@ export default class SearchFilterTable extends FlowComponent {
                 this.userColumns.push(col.developerName);
             }
         });
+
+        // now allow for button re-location if not already defined
+        if (this.userColumns.indexOf('#BUTTONS#') < 0) {
+            let outcomesPos: number = 0;
+            switch (this.getAttribute('OutcomesPosition', '0').toLowerCase()) {
+                case 'first':
+                case 'start':
+                case '0':
+                    outcomesPos = 0;
+                    break;
+                case 'last':
+                case 'end':
+                    outcomesPos = this.userColumns.length;
+                    break;
+                default:
+                    try {
+                        outcomesPos = parseInt(this.getAttribute('OutcomesPosition', '0'));
+                        if (outcomesPos > this.userColumns.length) {
+                            outcomesPos = this.userColumns.length;
+                        }
+                    } catch (e) {
+                        console.log('OutcomesPosition had an invalid value');
+                        outcomesPos = 0;
+                    }
+                    break;
+            }
+            // insert buttons column
+            this.userColumns.splice(outcomesPos, 0, '#BUTTONS#');
+        }
 
         if (this.dynamicColumns === true && populateDefaults === true) {
             await this.saveUserColumns();

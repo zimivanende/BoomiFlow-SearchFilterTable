@@ -146,7 +146,7 @@
     cursor: default !important;
     width: 3rem;
     min-width: 3rem;
-    border-right: 1px solid #fefefe;
+    border-right: 2px solid #fefefe;
     background-color: #888;
     z-index: 1000;
 }

@@ -422,39 +422,43 @@ export default class ColumnFilters {
 
         if (sortColumn) {
             const colDef: FlowDisplayColumn = this.parent.colMap.get(sortColumn.key);
+            if (colDef) {
+                let sorted: any;
 
-            let sorted: any;
+                switch (colDef?.contentType) {
 
-            switch (colDef.contentType) {
+                    case eContentType.ContentDateTime:
+                        sorted = Array.from(candidates).sort((a: any, b: any) => {
+                            const d1: Date = new Date(a[1].objectData.properties[sortColumn.key].value);
+                            const d2: Date = new Date(b[1].objectData.properties[sortColumn.key].value);
+                            if (d1 < d2) { return -1; }
+                            if (d1 > d2) { return 1; }
+                            return 0; // a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value,
+                        });
+                        break;
 
-                case eContentType.ContentDateTime:
-                    sorted = Array.from(candidates).sort((a: any, b: any) => {
-                        const d1: Date = new Date(a[1].objectData.properties[sortColumn.key].value);
-                        const d2: Date = new Date(b[1].objectData.properties[sortColumn.key].value);
-                        if (d1 < d2) { return -1; }
-                        if (d1 > d2) { return 1; }
-                        return 0; // a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value,
-                    });
-                    break;
+                    default:
+                        const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+                        sorted = Array.from(candidates).sort((a: any, b: any) =>
+                            collator.compare(a[1].objectData.properties[sortColumn.key].value, b[1].objectData.properties[sortColumn.key].value),
+                        );
+                        break;
 
-                default:
-                    const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-                    sorted = Array.from(candidates).sort((a: any, b: any) =>
-                        collator.compare(a[1].objectData.properties[sortColumn.key].value, b[1].objectData.properties[sortColumn.key].value),
-                    );
-                    break;
+                }
 
+                if (sortColumn.sort === eSortDirection.descending) {
+                    sorted = sorted.reverse();
+                }
+
+                const results: Map<string, RowItem> = new Map(sorted);
+                results.forEach((item: RowItem, key: string) => {
+                    results.set(key, undefined);
+                });
+                return results;
+            } else {
+                return items;
             }
 
-            if (sortColumn.sort === eSortDirection.descending) {
-                sorted = sorted.reverse();
-            }
-
-            const results: Map<string, RowItem> = new Map(sorted);
-            results.forEach((item: RowItem, key: string) => {
-                results.set(key, undefined);
-            });
-            return results;
         } else {
             return items;
         }

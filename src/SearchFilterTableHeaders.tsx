@@ -124,42 +124,37 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                 </th>,
             );
 
-            if (buttons.length > 0) {
-                headers.push(
-                    <th
-                        key="actions"
-                        className="sft-column-header"
-                        ref={(element: any) => {this.setHeader('actions', element); }}
-                    >
-                        <div
-                            className="sft-column-header-title"
-                        >
-                            <span
-                                className="sft-column-header-title-label"
-                            >
-                                {'Actions'}
-                            </span>
-                        </div>
-                    </th>,
-                );
-            }
-
             root.userColumns.forEach((collName: string) => {
-                const col: FlowDisplayColumn = root.colMap.get(collName);
 
-                if (col) {
-                    headers.push(
-                        <SearchFilterTableHeader
-                            root={this.props.root}
-                            parent={this}
-                            column={col}
-                            inlineSearch={this.props.inlineSearch}
-                            ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
-                        />,
-                    );
+                if (collName === '#BUTTONS#') {
+                    if (buttons.length > 0) {
+                        headers.push(
+                            <SearchFilterTableHeader
+                                root={this.props.root}
+                                parent={this}
+                                column={{developerName: '#BUTTONS#', label: root.getAttribute('OutcomesLabel', 'Action')}}
+                                static={true}
+                                inlineSearch={this.props.inlineSearch}
+                                ref={(element: SearchFilterTableHeader) => {this.setHeader('#BUTTONS#', element); }}
+                            />,
+                        );
+                    }
                 } else {
-                    root.userColumns.splice(root.userColumns.indexOf(collName), 1);
-                    root.saveUserColumns();
+                    const col: FlowDisplayColumn = root.colMap.get(collName);
+                    if (col) {
+                        headers.push(
+                            <SearchFilterTableHeader
+                                root={this.props.root}
+                                parent={this}
+                                column={col}
+                                inlineSearch={this.props.inlineSearch}
+                                ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
+                            />,
+                        );
+                    } else {
+                        root.userColumns.splice(root.userColumns.indexOf(collName), 1);
+                        root.saveUserColumns();
+                    }
                 }
             });
         }

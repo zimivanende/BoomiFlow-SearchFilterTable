@@ -9,7 +9,7 @@ export class ColumnRules {
             try {
                 rObj = JSON.parse(ruleStr);
                 Object.keys(rObj).forEach((key: string) => {
-                    rules.set(key, ColumnRule.parse(key, rObj[key],parent));
+                    rules.set(key, ColumnRule.parse(key, rObj[key], parent));
                 });
             } catch (e) {
 
@@ -21,14 +21,6 @@ export class ColumnRules {
 }
 
 export class ColumnRule {
-
-    columnName: string;
-    mode: string;
-    target: string;
-    url: string;
-    label: string;
-    className: string;
-    parent: SearchFilterTable;
 
     static parse(key: string, rule: any, parent: SearchFilterTable): ColumnRule {
         const colRule: ColumnRule = new ColumnRule();
@@ -47,7 +39,13 @@ export class ColumnRule {
         return colRule;
     }
 
-    
+    columnName: string;
+    mode: string;
+    target: string;
+    url: string;
+    label: string;
+    className: string;
+    parent: SearchFilterTable;
 
     generateColumnContent(value: any): any {
         switch (this.mode) {
@@ -63,12 +61,12 @@ export class ColumnRule {
                     </a>
                 );
             case 'class':
-                let props: any={
+                const props: any = {
                     parent: this.parent,
                     rule: this,
-                    value: value
-                }
-                return React.createElement(this.className,props);
+                    value,
+                };
+                return React.createElement(this.className, props);
             default:
                 return(
                     <span>{value}</span>

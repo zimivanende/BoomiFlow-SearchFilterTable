@@ -68,32 +68,33 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             </td>,
         );
 
-        if (buttons.length > 0) {
-            cols.push(
-                <td
-                    className="sft-table-cell"
-                >
-                    <div
-                        className="sft-table-cell-buttons"
-                    >
-                        {buttons}
-                    </div>
-                </td>,
-            );
-        }
-
         root.userColumns.forEach((collName: string) => {
-            const col: FlowDisplayColumn = root.colMap.get(collName);
-            // root.colMap.forEach((col: FlowDisplayColumn) => {
-            const val: any = this.formatValue(col.contentType, root, objData?.properties[col.developerName]);
+            if (collName === '#BUTTONS#') {
+                cols.push(
+                    <td
+                        className="sft-table-cell"
+                    >
+                        <div
+                            className="sft-table-cell-buttons"
+                        >
+                            {buttons}
+                        </div>
+                    </td>,
+                );
+            } else {
+                const col: FlowDisplayColumn = root.colMap.get(collName);
+                // root.colMap.forEach((col: FlowDisplayColumn) => {
+                const val: any = this.formatValue(col.contentType, root, objData?.properties[col.developerName]);
 
-            cols.push(
-                <td
-                    className="sft-table-cell"
-                >
-                    {val}
-                </td>,
-            );
+                cols.push(
+                    <td
+                        className="sft-table-cell"
+                    >
+                        {val}
+                    </td>,
+                );
+            }
+
         });
         return (
             <tr

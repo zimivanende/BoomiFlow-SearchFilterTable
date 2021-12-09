@@ -30,10 +30,13 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
         const root: SearchFilterTable = this.props.root;
         const parent: SearchFilterTableHeaders = this.props.parent;
         const col: FlowDisplayColumn = this.props.column;
-        const sortIcon = root.filters.getSortIcon(col.developerName);
         let filterIcon: any;
-        if (this.props.inlineSearch === true) {
-            filterIcon = root.filters.getFilterIcon(col.developerName);
+        let sortIcon: any;
+        if (this.props.static !== true) {
+            sortIcon = root.filters.getSortIcon(col.developerName);
+            if (this.props.inlineSearch === true) {
+                filterIcon = root.filters.getFilterIcon(col.developerName);
+            }
         }
 
         return (
