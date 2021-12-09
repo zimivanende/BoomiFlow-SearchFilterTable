@@ -32,6 +32,8 @@ Text columns containing a dataUri are handled as specials: -
 
 Columns are configurable at run time if the UserColumnsField is specified as an attribute.
 
+Only supports model data from a list NOT A SERVICE
+
 ## Datasource
 
 Set the datasource to a list of objects
