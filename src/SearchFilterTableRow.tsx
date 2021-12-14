@@ -70,17 +70,19 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         root.userColumns.forEach((collName: string) => {
             if (collName === '#BUTTONS#') {
-                cols.push(
-                    <td
-                        className="sft-table-cell"
-                    >
-                        <div
-                            className="sft-table-cell-buttons"
+                if (buttons.length > 0) {
+                    cols.push(
+                        <td
+                            className="sft-table-cell"
                         >
-                            {buttons}
-                        </div>
-                    </td>,
-                );
+                            <div
+                                className="sft-table-cell-buttons"
+                            >
+                                {buttons}
+                            </div>
+                        </td>,
+                    );
+                }
             } else {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
                 // root.colMap.forEach((col: FlowDisplayColumn) => {
