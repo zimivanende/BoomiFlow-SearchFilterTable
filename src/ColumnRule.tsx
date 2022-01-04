@@ -1,3 +1,4 @@
+import { eContentType, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
 import React from 'react';
 import SearchFilterTable from './SearchFilterTable';
 
@@ -47,17 +48,49 @@ export class ColumnRule {
     className: string;
     parent: SearchFilterTable;
 
-    generateColumnContent(value: any): any {
+    getTextValue(property: FlowObjectDataProperty): string {
+        let result: string = '';
+        switch (property.contentType) {
+            case eContentType.ContentBoolean:
+                if (property.value === true) {
+                    result = 'True';
+                } else {
+                    result = 'False';
+                }
+                break;
+            case eContentType.ContentNumber:
+                result = property.value.toString();
+                break;
+            default:
+                result = property.value as string;
+                break;
+        }
+        return result;
+    }
+
+    generateColumnContent(value: any, row: FlowObjectData): any {
         switch (this.mode) {
             case 'url':
                 const href: string = this.url.replace('{{VALUE}}', value);
+                let label: string = this.label || value;
+
+                // use regex to find any {{}} tags in content and save them in matches
+                let match: any;
+                const matches: any[] = [];
+                while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
+                    const prop: any = row.properties[match[1].replace('&amp;', '&')];
+                    if (prop) {
+                        const subs: string = this.getTextValue(prop);
+                        label = label.replace(match[0], subs);
+                    }
+                }
                 return(
                     <a
                         className="sft-table-cell-href"
                         href={href}
                         target={this.target}
                     >
-                        {this.label || value}
+                        {label}
                     </a>
                 );
             case 'class':

@@ -271,18 +271,21 @@ The value is a JSON object with one attribute per column.
       "mode":"url",
       "target":"_blank",
       "url":"https://xxx.my.salesforce.com/{{VALUE}}",
-      "label":"Open In Salesforce"
+      "label":"Open In Salesforce" 
    },
    "AccountId":{
       "mode":"url",
       "target":"_blank",
       "url":"https://xxx.my.salesforce.com/{{VALUE}}",
-      "label":"Open In Salesforce"
+      "label":"{{AccountName}}"
    }
 }
 ```
 
 currently mode only supports "url".
+
+The label may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
+This allows for making composite columns. 
 
 ### OutcomesPosition
 

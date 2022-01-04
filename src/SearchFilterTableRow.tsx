@@ -86,7 +86,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             } else {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
                 // root.colMap.forEach((col: FlowDisplayColumn) => {
-                const val: any = this.formatValue(col.contentType, root, objData?.properties[col.developerName]);
+                const val: any = this.formatValue(col.contentType, root, objData?.properties[col.developerName], objData);
 
                 cols.push(
                     <td
@@ -108,10 +108,10 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     // handles special contents like uris & dataUri
-    formatValue(contentType: eContentType,  root: SearchFilterTable, value: FlowObjectDataProperty): any {
+    formatValue(contentType: eContentType,  root: SearchFilterTable, value: FlowObjectDataProperty, row: FlowObjectData): any {
         let result: any;
         if (root.columnRules.has(value.developerName)) {
-            result = root.columnRules.get(value.developerName).generateColumnContent(value.value);
+            result = root.columnRules.get(value.developerName).generateColumnContent(value.value, row);
         } else {
             switch (contentType) {
                 case eContentType.ContentDateTime:
