@@ -202,6 +202,7 @@ export default class SearchFilterTable extends FlowComponent {
     getColumnUniques(name: string, criteria: ColumnCriteria): any {
         return (
            <MultiSelect
+                id={name}
                 allItems={this.colValMap.get(name)}
                 selectedItems={criteria}
            />

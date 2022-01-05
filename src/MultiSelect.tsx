@@ -11,7 +11,7 @@ export default class MultiSelect extends React.Component <any, any> {
     }
 
     showCheckboxes() {
-        const checkboxes = document.getElementById('checkboxes');
+        const checkboxes = document.getElementById('checkboxes_' + this.props.id);
         if (!this.expanded) {
             checkboxes.style.display = 'flex';
             this.expanded = true;
@@ -85,7 +85,7 @@ export default class MultiSelect extends React.Component <any, any> {
                 >
                     <div
                         className="checkboxes"
-                        id="checkboxes"
+                        id={'checkboxes_' + this.props.id}
                     >
                         {checkBoxes}
                     </div>
