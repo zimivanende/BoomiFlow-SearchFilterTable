@@ -106,6 +106,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     // column formatting rules map - allows us to specify special actions on clicking a cell
     columnRules: Map<string, ColumnRule> = new Map();
+    manywho: any;
 
     constructor(props: any) {
         super(props);
@@ -367,7 +368,10 @@ export default class SearchFilterTable extends FlowComponent {
         } else {
             userFieldsVal = localStorage.getItem('sft_' + this.componentId + '_cols') || '';
         }
-        const cols: string[] = userFieldsVal.split(',');
+        let cols: string[] = [];
+        if (userFieldsVal && userFieldsVal.length > 0) {
+            cols = userFieldsVal.split(',');
+        }
         this.userColumns = [];
         cols.forEach((col: string) => {
             this.userColumns.push(col.trim());
@@ -491,7 +495,7 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
         }
 
-        if (this.model.label.length > 0) {
+        if (this.model.label?.length > 0) {
             this.titleElement = (
                 <div
                     className="sft-title"
