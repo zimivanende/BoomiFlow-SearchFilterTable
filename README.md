@@ -213,7 +213,7 @@ Supply the developerName of the column and the checkboxes for rows where the val
 
 Optional.
 
-The name of a string value which will contian the names of columns the user should see for this table.
+The name of a string value which will contian the names of columns the user should see for this table or the constant "LOCAL_STORAGE" to use browser local storage.
 
 The values should be in a comma delimited string.
 

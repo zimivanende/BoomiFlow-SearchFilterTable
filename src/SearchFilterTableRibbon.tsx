@@ -1,5 +1,5 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
@@ -140,18 +140,18 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         if (root.dynamicColumns === true) {
             rightButtons.push(
                 <div
-                    className="sft-ribbon-search-button-wrapper"
+                    className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {root.showColumnPicker(); }}
                 >
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
+                        className={'glyphicon sft-ribbon-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
                         title={'Select columns'}
                     />
                     {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
-                            className="sft-ribbon-search-button-label"
+                            className="sft-ribbon-button-label"
                         >
                             {'Column Picker'}
                         </span> :
@@ -188,9 +188,15 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             );
         }
 
+        const style: CSSProperties = {};
+        if (root.titleElement) {
+            style.top = '2.5rem';
+        }
+
         return (
             <div
                 className="sft-ribbon"
+                style={style}
             >
                 <div
                     className="sft-ribbon-left-wrapper"

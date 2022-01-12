@@ -68,6 +68,7 @@ export default class SearchFilterTable extends FlowComponent {
     // this is the table headers React component
     headers: SearchFilterTableHeaders;
 
+    // The title bar
     titleElement: any;
 
     // this is the table headers html element
@@ -178,8 +179,8 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async applyColumns() {
-        this.saveUserColumns();
         this.userColumns = this.form.selectedColumns;
+        this.saveUserColumns();
         this.messageBox.hideMessageBox();
         this.form = undefined;
         this.headers.forceUpdate();
@@ -355,18 +356,25 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async loadUserColumns() {
-        const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
-        if (userFields && (userFields.value as string).length > 0) {
-            const cols: string[] = (userFields.value as string).split(',');
-            this.userColumns = [];
-            cols.forEach((col: string) => {
-                this.userColumns.push(col.trim());
-            });
+        let userFieldsVal: string = '';
+
+        if (this.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
+            const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+            if (userFields && (userFields.value as string).length > 0) {
+                userFieldsVal = userFields.value as string;
+
+            }
+        } else {
+            userFieldsVal = localStorage.getItem('sft_' + this.componentId + '_cols') || '';
         }
+        const cols: string[] = userFieldsVal.split(',');
+        this.userColumns = [];
+        cols.forEach((col: string) => {
+            this.userColumns.push(col.trim());
+        });
     }
 
     async saveUserColumns() {
-        const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
         let userCols = '';
         this.userColumns.forEach((col: string) => {
             if (userCols.length > 0) {
@@ -374,8 +382,14 @@ export default class SearchFilterTable extends FlowComponent {
             }
             userCols += col.trim();
         });
-        userFields.value = userCols;
-        await this.updateValues(userFields);
+
+        if (this.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
+            const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+            userFields.value = userCols;
+            await this.updateValues(userFields);
+        } else {
+            localStorage.setItem('sft_' + this.componentId + '_cols', userCols);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -406,7 +420,7 @@ export default class SearchFilterTable extends FlowComponent {
             await this.loadUserColumns();
         }
 
-        const populateDefaults: boolean = this.dynamicColumns === false || (this.dynamicColumns === true && this.userColumns.length === 0);
+        const populateDefaults: boolean = this.dynamicColumns === false || (this.dynamicColumns === true && (this.userColumns.length === 0 || (this.userColumns.length === 1 && this.userColumns.indexOf('#BUTTONS#') >= 0)));
 
         if (populateDefaults) {
             this.userColumns = [];
@@ -475,6 +489,20 @@ export default class SearchFilterTable extends FlowComponent {
                     />
                 );
                 break;
+        }
+
+        if (this.model.label.length > 0) {
+            this.titleElement = (
+                <div
+                    className="sft-title"
+                >
+                    <span
+                        className="sft-title-label"
+                    >
+                        {this.model.label}
+                    </span>
+                </div>
+            );
         }
 
         this.headersElement = (
@@ -944,17 +972,21 @@ export default class SearchFilterTable extends FlowComponent {
 
         const title: string = this.model.label || '';
 
-        let top: string = '6rem';
+        let top: number = 6;
         switch (this.getAttribute('RibbonStyle', 'ribbon')) {
 
             case 'search':
-                top = '4rem';
+                top = 4;
                 break;
 
             case 'ribbon':
             default:
-                top = '6rem';
+                top = 6;
                 break;
+        }
+
+        if (this.titleElement) {
+            top += 2.5;
         }
 
         let body: any;
@@ -1014,7 +1046,7 @@ export default class SearchFilterTable extends FlowComponent {
                 {this.ribbonElement}
                 <div
                     className="sft-body"
-                    style={{top}}
+                    style={{top: top + 'rem'}}
                 >
                     <div
                         className="sft-scroller"

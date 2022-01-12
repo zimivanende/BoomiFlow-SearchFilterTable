@@ -1,5 +1,5 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
@@ -272,9 +272,15 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             );
         }
 
+        const style: CSSProperties = {};
+        if (root.titleElement) {
+            style.top = '2.5rem';
+        }
+
         return (
             <div
                 className="sft-ribbon-search"
+                style={style}
             >
                 <div
                     className="sft-ribbon-search-left-wrapper"
