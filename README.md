@@ -34,6 +34,19 @@ Columns are configurable at run time if the UserColumnsField is specified as an 
 
 Only supports model data from a list NOT A SERVICE
 
+## Height
+
+Sets the display height of the table.
+
+Required !!
+
+## Label
+
+Optional
+
+If set then a title bar is drawn above the table containing the label value
+
+
 ## Datasource
 
 Set the datasource to a list of objects
