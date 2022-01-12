@@ -260,7 +260,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         if (root.filters.isFiltered()) {
             clearFiltersButton = (
                 <div
-                    className="sft-ribbon-search-button-wrapper"
+                    className="sft-ribbon-search-button-wrapper sft-ribbon-search-button-clear"
                     onClick={this.clearFilters}
                 >
                     <span
