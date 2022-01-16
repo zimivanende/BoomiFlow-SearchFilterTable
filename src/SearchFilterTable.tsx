@@ -384,7 +384,11 @@ export default class SearchFilterTable extends FlowComponent {
             if (userCols.length > 0) {
                 userCols += ',';
             }
-            userCols += col.trim();
+            if (col) {
+                userCols += col.trim();
+            } else {
+                console.log('One of the columns in the table had a null name.  Check the table display columns settings in Flow');
+            }
         });
 
         if (this.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
