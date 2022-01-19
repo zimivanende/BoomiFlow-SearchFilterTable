@@ -151,6 +151,8 @@ Only shows the outcome button if there are selected rows
 Will launch a uri when clicked rather than trigger an outcome.
 
 Uri can contain {{FieldName}} elements which will be substituted with values from that column in the row.
+Uri can contain {{FlowValueName}} elements which will be substituted with values from flow value (must be string).
+Uri can contain {{CONSTANT_NAME}} elements which will be substituted with values from flow constants.  Allowed are "TENANT_ID"
 
 ### target
 

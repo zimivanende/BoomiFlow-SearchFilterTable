@@ -876,7 +876,7 @@ export default class SearchFilterTable extends FlowComponent {
                 let match: any;
                 let objData: FlowObjectData;
                 while (match = RegExp(/{{([^}]*)}}/).exec(href)) {
-                    // could be a property of the selected item or a global variable - depends also on isBulkAction
+                    // could be a property of the selected item or a global variable or a static value - depends also on isBulkAction
                      // if it's not bulk then grab selected row objdata
                     if (outcome.isBulkAction === false) {
                         objData = this.rowMap.get(selectedItem)?.objectData;
@@ -886,10 +886,17 @@ export default class SearchFilterTable extends FlowComponent {
                         // objdata had this prop
                         href = href.replace(match[0], (objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ''));
                     } else {
-                        // no prop found, try to get the value
-                        const val: FlowField = await this.loadValue(match[1]);
-                        if (val) {
-                            href = href.replace(match[0], val.value as string);
+                        // is it a known static
+                        switch (match[1]) {
+                            case 'TENANT_ID':
+                                href = href.replace(match[0], this.tenantId);
+                                break;
+
+                            default:
+                                const val: FlowField = await this.loadValue(match[1]);
+                                if (val) {
+                                    href = href.replace(match[0], val.value as string);
+                                }
                         }
                     }
                 }
@@ -897,8 +904,12 @@ export default class SearchFilterTable extends FlowComponent {
                 if (this.outcomes[outcomeName].attributes['target']?.value === '_self') {
                     window.location.href = href;
                 } else {
-                    const tab = window.open();
-                    tab.location.href = href;
+                    const tab = window.open('');
+                    if (tab) {
+                        tab.location.href = href;
+                    } else {
+                        console.log('Couldn\'t open a new tab');
+                    }
                 }
             } else {
                 await this.triggerOutcome(outcomeName);
