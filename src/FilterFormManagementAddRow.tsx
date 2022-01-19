@@ -40,6 +40,8 @@ export default class FilterManagementFormAddRow extends React.Component<any, any
                 {'Please Select ...'}
             </option>,
         );
+        // sort
+            /*
         parent.columns.forEach((field: FlowDisplayColumn) => {
             if (!parent.newFilters.isFilteredOn(field.developerName)) {
                 fieldOptions.push(
@@ -51,6 +53,28 @@ export default class FilterManagementFormAddRow extends React.Component<any, any
                     </option>,
                 );
             }
+        });
+        */
+
+        const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+
+        const sorted = Array.from(parent.columns).filter((a) => {
+            return !parent.newFilters.isFilteredOn((a[1] as FlowDisplayColumn).developerName);
+        }).sort((a, b) => {
+            return collator.compare((a[1] as FlowDisplayColumn).label, (b[1] as FlowDisplayColumn).label);
+        });
+
+        // const results: Map<string, FlowDisplayColumn> = new Map(sorted);
+
+        sorted.forEach((col: any) => {
+            fieldOptions.push(
+                <option
+                    className="sft-fmf-row-criteria-select-option"
+                    value={col[1].developerName}
+                >
+                    {' ' + col[1].label + ' '}
+                </option>,
+            );
         });
 
         fieldInput = (

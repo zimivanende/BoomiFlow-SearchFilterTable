@@ -160,7 +160,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 if (showOutcome === true) {
                     rightButtons.push(
                         <div
-                            className="sft-ribbon-search-button-wrapper"
+                            className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
                             onClick={(e: any) => {root.doOutcome(key, undefined); }}
                         >
                             {outcome.attributes?.icon ?
