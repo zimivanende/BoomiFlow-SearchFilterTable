@@ -1,4 +1,4 @@
-import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
 import React from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
@@ -158,6 +158,26 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                         case eContentType.ContentString:
                             switch (true) {
+                                case this.isJSON(value.value as string) === true:
+                                    result = (
+                                        <button
+                                            onClick={(e: any) => {this.showJSON(value.developerName, value.value as string); }}
+                                        >
+                                            {'View JSON'}
+                                        </button>
+                                    );
+                                    break;
+
+                                case this.isContent(value.value as string) === true:
+                                    result = (
+                                        <button
+                                            onClick={(e: any) => {this.showContent(value.developerName, value.value as string); }}
+                                        >
+                                            {'View Content'}
+                                        </button>
+                                    );
+                                    break;
+
                                 case (value.value as string).startsWith('http:'):
                                 case (value.value as string).startsWith('https:'):
                                     let inner: any;
@@ -292,6 +312,87 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         ) { return true; } else {
             return false;
         }
+    }
+
+    isJSON(value: string): boolean {
+        try {
+            value = value.replaceAll('\\n ', '');
+            value = value.replaceAll('\\n}', '}');
+            value = value.replaceAll('\\', '"');
+            value = value.replaceAll('\"', '"');
+            const obj = JSON.parse(value);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    showJSON(title: string, value: string) {
+        const root: SearchFilterTable = this.props.root;
+        value = value.replaceAll('\\n ', '');
+        value = value.replaceAll('\\n}', '}');
+        value = value.replaceAll('\\', '"');
+        value = value.replaceAll('\"', '"');
+        const jj: string = JSON.stringify(JSON.parse(value), undefined, 4);
+        // jj = jj.replaceAll('/&', '&amp;').replaceAll('/<', '&lt;').replaceAll('/>', '&gt;');
+
+        const content = (
+            <div
+                style={{
+                    maxHeight: '40vmax',
+                    maxWidth: '60vmax',
+                    overflow: 'auto',
+                }}
+            >
+                <div
+                    style={{
+                        overflow: 'visible',
+                        whiteSpace: 'pre',
+                        textAlign: 'left',
+                        fontSize: '1rem',
+                    }}
+                >
+                    {jj}
+                </div>
+            </div>
+
+        );
+        root.messageBox.showMessageBox(title, content, [new modalDialogButton('Ok', root.messageBox.hideMessageBox)]);
+    }
+
+    isContent(value: string): boolean {
+        if (value.indexOf('\\n') > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    showContent(title: string, value: string) {
+        value = value.replaceAll('\\n', '<br>');
+        value = value.replaceAll('<br><br>', '<br>');
+        const content = (
+            <div
+                style={{
+                    maxHeight: '40vmax',
+                    maxWidth: '60vmax',
+                    overflow: 'auto',
+                }}
+            >
+                <div
+                    style={{
+                        overflow: 'visible',
+                        whiteSpace: 'pre',
+                        textAlign: 'left',
+                        fontSize: '1rem',
+                    }}
+                    dangerouslySetInnerHTML={{__html: value}}
+                />
+            </div>
+
+        );
+        const root: SearchFilterTable = this.props.root;
+        root.messageBox.showMessageBox(title, content, [new modalDialogButton('Ok', root.messageBox.hideMessageBox)]);
     }
 
     makeFileName(name: string, mimeType: string): string {
