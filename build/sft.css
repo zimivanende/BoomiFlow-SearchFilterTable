@@ -832,7 +832,7 @@
     min-width: 3rem;
     border-right: 2px solid #fefefe;
     background-color: #888;
-    z-index: 100000;
+    z-index: 1020;
 }
 
 .sft-checkbox {
@@ -983,7 +983,7 @@
 .sft-table-cell-check {
     position: sticky;
     left: 0;
-    z-index: 10000;
+    z-index: 1010;
     background-color: #ddd;
     border-right: 3px solid #fefefe;
     box-sizing: content-box;

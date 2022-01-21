@@ -315,6 +315,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     isJSON(value: string): boolean {
+        if (value === 'null') { value = ''; }
+        if (value.indexOf('{') < 0) { return false; }
         try {
             value = value.replaceAll('\\n ', '');
             value = value.replaceAll('\\n}', '}');
@@ -361,6 +363,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     isContent(value: string): boolean {
+        if (value === 'null') { value = ''; }
         if (value.indexOf('\\n') > 0) {
             return true;
         } else {
