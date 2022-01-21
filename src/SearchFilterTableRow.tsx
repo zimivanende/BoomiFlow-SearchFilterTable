@@ -59,7 +59,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         cols.push(
             <td
-                className="sft-table-cell"
+                className="sft-table-cell sft-table-cell-check"
             >
                 <input
                     className="sft-checkbox"
