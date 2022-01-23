@@ -125,8 +125,10 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                         flowKey: root.flowKey,
                         contentType: value.contentType,
                         contentFormat: value.contentFormat,
+                        row,
+                        sft: root,
                     };
-                    result = React.createElement(manywho.component.getByName(componentType), {contentValue: value.value });
+                    result = React.createElement(manywho.component.getByName(componentType), columnProps);
                 } else {
                     switch (contentType) {
                         case eContentType.ContentDateTime:
