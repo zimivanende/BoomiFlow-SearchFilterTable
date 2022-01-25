@@ -893,10 +893,23 @@ export default class SearchFilterTable extends FlowComponent {
                                 break;
 
                             default:
-                                const val: FlowField = await this.loadValue(match[1]);
+                                const fldElements: string[] = match[1].split('->');
+                                // element[0] is the flow field name
+                                const val: FlowField = await this.loadValue(fldElements[0]);
+                                let value: any;
                                 if (val) {
-                                    href = href.replace(match[0], val.value as string);
+                                    if (fldElements.length > 1) {
+                                        let od: FlowObjectData = val.value as FlowObjectData;
+                                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                        }
+                                        value = od;
+                                    } else {
+                                        value = val.value;
+                                    }
                                 }
+                                href = href.replace(match[0], value);
+
                         }
                     }
                 }
