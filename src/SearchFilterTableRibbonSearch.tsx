@@ -312,7 +312,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     >
                         <span
                             key={'showSearch'}
-                            className={'glyphicon glyphicon-menu-hamburger sft-ribbon-search-button-icon'}
+                            className={'glyphicon glyphicon-filter sft-ribbon-search-button-icon'}
                             title={'Advanced Search'}
                         />
                     </div>
