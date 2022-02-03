@@ -104,6 +104,9 @@ export default class SearchFilterTable extends FlowComponent {
     // dynamic columns flag
     dynamicColumns: boolean = false;
 
+    // max col text size before converting to button
+    maxColText: number = -1;
+
     // column formatting rules map - allows us to specify special actions on clicking a cell
     columnRules: Map<string, ColumnRule> = new Map();
     manywho: any;
@@ -343,6 +346,10 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.attributes.UserColumnsValue) {
             this.dynamicColumns = true;
         } // it will have defaulted to false
+
+        if (this.attributes.MaxColumnTextLength) {
+            this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
+        } // it defaults to -1 which means dont apply this
 
         await this.buildCoreTable();
         this.filterRows();

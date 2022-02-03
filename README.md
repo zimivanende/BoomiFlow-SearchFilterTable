@@ -320,6 +320,12 @@ Allows control of the outcomes / actions column title.
 
 Default is "Actions".
 
+### MaxColumnTextLength
+
+Number.
+
+The maximum length of a column's text before it's converted to a popout button.
+
 
 
 ## Styling

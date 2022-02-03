@@ -239,6 +239,16 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                                     break;
 
+                                case root.maxColText > 0 && (value.value as string).length > root.maxColText:
+                                    result = (
+                                        <button
+                                            onClick={(e: any) => {this.showContent(value.developerName, value.value as string); }}
+                                        >
+                                            {'View Content'}
+                                        </button>
+                                    );
+                                    break;
+
                                 default:
                                     result = (
                                         <span
