@@ -88,15 +88,19 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             } else {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
                 // root.colMap.forEach((col: FlowDisplayColumn) => {
+                if (col) {
                 const val: any = this.formatValue(col.componentType, col.contentType, root, objData?.properties[col.developerName], objData);
 
                 cols.push(
-                    <td
-                        className="sft-table-cell"
-                    >
-                        {val}
-                    </td>,
-                );
+                        <td
+                            className="sft-table-cell"
+                        >
+                            {val}
+                        </td>,
+                    );
+                } else {
+                    console.log('Failed to get a definition for col ' + collName);
+                }
             }
 
         });
