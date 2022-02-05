@@ -356,6 +356,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.sortRows();
         this.buildTableRows();
         this.forceUpdate();
+
     }
 
     async componentWillUnmount() {

@@ -10,7 +10,7 @@ export default class ColumnFilter {
     constructor(key: string, parent: ColumnFilters, sort: eSortDirection = eSortDirection.none, criteria: any[] = []) {
         this.key = key;
         this.parent = parent;
-        this.sort = sort;
+        this.sort = sort || eSortDirection.none;
         criteria.forEach((crit: any) => {
             if (crit instanceof ColumnCriteria === false) {
                 crit = JSON.parse(crit);

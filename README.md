@@ -326,7 +326,10 @@ Number.
 
 The maximum length of a column's text before it's converted to a popout button.
 
+### QuickCheck
+Boolean.
 
+If true then check boxes appear in the column headers allowing quick application of true/false criteria to boolean columns
 
 ## Styling
 

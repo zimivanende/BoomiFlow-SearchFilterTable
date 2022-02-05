@@ -27,6 +27,8 @@ export default class ColumnFilters {
     items: Map<string, ColumnFilter> = new Map();
     globalCriteria: string;
 
+    quickChecks: Map<string, HTMLInputElement> = new Map();
+
     constructor(parent: SearchFilterTable) {
         this.parent = parent;
 
@@ -34,10 +36,11 @@ export default class ColumnFilters {
 
         this.getSortIcon = this.getSortIcon.bind(this);
         this.getFilterIcon = this.getFilterIcon.bind(this);
+        this.getQuickCheck = this.getQuickCheck.bind(this);
 
         this.sortClicked = this.sortClicked.bind(this);
         this.filterClicked = this.filterClicked.bind(this);
-
+        this.quickCheckClicked = this.quickCheckClicked.bind(this);
         this.saveFilter = this.saveFilter.bind(this);
         this.cancelFilter = this.cancelFilter.bind(this);
 
@@ -263,6 +266,33 @@ export default class ColumnFilters {
                 />
             );
         }
+    }
+
+    getQuickCheck(columnName: string): any {
+        if (this.parent.getAttribute('QuickCheck', 'false') === 'true' && this.parent.colMap.get(columnName)?.contentType === eContentType.ContentBoolean) {
+            const crit: ColumnCriteria = (this.items.get(columnName) as ColumnFilter)?.criteria[0];
+            return (
+                <input
+                    className="sft-checkbox sft-quick-check"
+                    type="checkbox"
+                    onChange={(e: any) => {this.quickCheckClicked(columnName, e); }}
+                    ref={(element: HTMLInputElement) => {this.quickChecks.set(columnName, element); }}
+                    checked={(crit?.value ? crit.value as boolean : false)}
+                />
+            );
+        } else {
+            return undefined;
+        }
+    }
+
+    quickCheckClicked(key: string, e: any) {
+        console.log('quick ' + key);
+        if (e.currentTarget.checked === true) {
+            this.items.set(key, new ColumnFilter(key, this, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, true)]));
+        } else {
+            this.items.get(key).clearFilters();
+        }
+        this.notify(key, eFilterEvent.filter);
     }
 
     // this will filter the passed source map based on the current filters and return a new map of matches.

@@ -32,11 +32,13 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
         const col: FlowDisplayColumn = this.props.column;
         let filterIcon: any;
         let sortIcon: any;
+        let quickCheck: any;
         if (this.props.static !== true) {
             sortIcon = root.filters.getSortIcon(col.developerName);
             if (this.props.inlineSearch === true) {
                 filterIcon = root.filters.getFilterIcon(col.developerName);
             }
+            quickCheck = root.filters.getQuickCheck(col.developerName);
         }
 
         return (
@@ -82,6 +84,7 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
                             className="sft-column-header-buttons"
                         >
                             {filterIcon}
+                            {quickCheck}
                         </div>
                     </div>
                     <div

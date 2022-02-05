@@ -595,6 +595,7 @@
     border: 2px solid #666;
     padding: 0.54rem;
     margin: auto;
+    margin-right: 0;
     margin-left: 0.5rem;
     cursor: pointer;
 }
@@ -788,3 +789,9 @@
 }
 /* END Column Picker Form Styling */
 
+.sft-quick-check {
+    margin-left: 0.5rem!important;
+    margin-bottom: auto !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+}
