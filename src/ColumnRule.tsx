@@ -134,11 +134,13 @@ export class ColumnRule {
                         }
                     }
                 }
-                return result;
+                return (
+                    <span className="sft-table-cell-text" >{result}</span>
+                );
 
             default:
                 return(
-                    <span>{value}</span>
+                    <span className="sft-table-cell-text">{value}</span>
                 );
         }
     }
