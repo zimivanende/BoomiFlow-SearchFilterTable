@@ -33,36 +33,7 @@ export default class ColumnPickerForm extends React.Component<any, any> {
         const cols: any[] = [];
         let rows: any[] = [];
         root.colMap.forEach((column: FlowDisplayColumn) => {
-            if (rows.length < 11) {
-                rows.push(
-                <div
-                    className="sft-column-picker-row"
-                >
-                    <div
-                        className="checkbox-checkbox-wrapper"
-                    >
-                        <input
-                            id={column.developerName}
-                            type="checkbox"
-                            className="sft-checkbox"
-                            checked={this.selectedColumns.indexOf(column.developerName) >= 0}
-                            onChange={(e: any) => {this.toggleSelection(column.developerName, e); }}
-                        />
-                    </div>
-                    <div
-                        className="checkbox-label-wrapper"
-                    >
-                        <label
-                            className="checkbox-row-label"
-                            htmlFor={column.developerName}
-                        >
-                            {column.label}
-                        </label>
-                    </div>
-
-                </div>,
-                );
-            } else {
+            if (rows.length > 11) {
                 cols.push(
                     <div
                         className="sft-column-picker-column"
@@ -72,6 +43,34 @@ export default class ColumnPickerForm extends React.Component<any, any> {
                 );
                 rows = [];
             }
+            rows.push(
+            <div
+                className="sft-column-picker-row"
+            >
+                <div
+                    className="checkbox-checkbox-wrapper"
+                >
+                    <input
+                        id={column.developerName}
+                        type="checkbox"
+                        className="sft-checkbox"
+                        checked={this.selectedColumns.indexOf(column.developerName) >= 0}
+                        onChange={(e: any) => {this.toggleSelection(column.developerName, e); }}
+                    />
+                </div>
+                <div
+                    className="checkbox-label-wrapper"
+                >
+                    <label
+                        className="checkbox-row-label"
+                        htmlFor={column.developerName}
+                    >
+                        {column.label}
+                    </label>
+                </div>
+
+            </div>,
+            );
         });
         if (rows.length > 0) {
             cols.push(
