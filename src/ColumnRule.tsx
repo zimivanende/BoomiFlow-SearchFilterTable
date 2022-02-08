@@ -34,6 +34,9 @@ export class ColumnRule {
                 colRule.url = rule.url || '{{VALUE}}';
                 colRule.label = rule.label || undefined;
                 break;
+            case 'dateformat':
+                colRule.dateFormat = rule.dateFormat;
+                break;
             default:
                 break;
         }
@@ -47,6 +50,7 @@ export class ColumnRule {
     label: string;
     className: string;
     parent: SearchFilterTable;
+    dateFormat: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -100,6 +104,38 @@ export class ColumnRule {
                     value,
                 };
                 return React.createElement(this.className, props);
+            case 'dateformat':
+                let result: string = '';
+                if (value) {
+                    const dt: Date = new Date(value);
+                    if (!isNaN(dt.getTime())) {
+                        switch (this.dateFormat.toLowerCase()) {
+                            case 'datetime':
+                                result = dt.toLocaleString();
+                                break;
+                            case 'date':
+                                result = dt.toLocaleDateString();
+                                break;
+                            case 'time':
+                                result = dt.toLocaleTimeString();
+                                break;
+                            case 'json':
+                                result = dt.toJSON();
+                                break;
+                            case 'iso':
+                                result = dt.toISOString();
+                                break;
+                            case 'utc':
+                                result = dt.toUTCString();
+                                break;
+                            case 'year':
+                                result = '' + dt.getFullYear();
+                                break;
+                        }
+                    }
+                }
+                return result;
+
             default:
                 return(
                     <span>{value}</span>

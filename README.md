@@ -293,14 +293,31 @@ The value is a JSON object with one attribute per column.
       "target":"_blank",
       "url":"https://xxx.my.salesforce.com/{{VALUE}}",
       "label":"{{AccountName}}"
+   },
+   "Summary":{
+      "mode":"class",
+      "className":"MyReactClass"
+   },
+   "StartDate":{
+      "mode":"dateFormat",
+      "dateFormat":"date"
    }
 }
 ```
 
-currently mode only supports "url".
+currently mode only supports "url", "class" & "dateFormat".
 
 The label may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
 This allows for making composite columns. 
+
+For "dateFormat" you can use: -
+"datetime"  date & time in local format
+"date"      displays local date format
+"time"      shows only the time element in local format
+"json"      shows date & time in JSON format
+"iso"       shows date & time in ISO format
+"utc"       shows date & time in UTC format
+"year"      shows only the year element
 
 ### OutcomesPosition
 
