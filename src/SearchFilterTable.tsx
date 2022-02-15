@@ -111,6 +111,8 @@ export default class SearchFilterTable extends FlowComponent {
     columnRules: Map<string, ColumnRule> = new Map();
     manywho: any;
 
+    retries: number = 0;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -147,6 +149,9 @@ export default class SearchFilterTable extends FlowComponent {
         this.applyColumns = this.applyColumns.bind(this);
         this.cancelColumns = this.cancelColumns.bind(this);
         this.columnsReordered = this.columnsReordered.bind(this);
+
+        this.cancelOutcomeForm = this.cancelOutcomeForm.bind(this);
+        this.okOutcomeForm = this.okOutcomeForm.bind(this);
 
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
@@ -315,13 +320,14 @@ export default class SearchFilterTable extends FlowComponent {
     setFooter(element: SearchFilterTableFooter) {
         this.footer = element;
     }
-
     async flowMoved(xhr: any, request: any) {
         const me: any = this;
         if (xhr.invokeType === 'FORWARD') {
-            if (this.loadingState !== eLoadingState.ready) {
+            if (this.loadingState !== eLoadingState.ready && this.retries < 3) {
+                this.retries ++;
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
+                this.retries = 0;
                 this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
                 this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
                 await this.buildCoreTable();
@@ -865,11 +871,11 @@ export default class SearchFilterTable extends FlowComponent {
         }
     }
 
-    async doOutcome(outcomeName: string, selectedItem?: string) {
-
+    async doOutcome(outcomeName: string, selectedItem?: string, ignoreRules?: boolean) {
+        let objData: FlowObjectData;
         // if there's a row level state then set it
         if (selectedItem && this.getAttribute('RowLevelState', '').length > 0) {
-            const objData: FlowObjectData = this.rowMap.get(selectedItem)?.objectData;
+            objData = this.rowMap.get(selectedItem)?.objectData;
             const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if (val) {
                 val.value = objData;
@@ -878,62 +884,84 @@ export default class SearchFilterTable extends FlowComponent {
         }
         if (this.outcomes[outcomeName]) {
             const outcome: FlowOutcome = this.outcomes[outcomeName];
-            // does it have a uri attribute ?
-            if (outcome.attributes['uri']) {
-                let href: string = outcome.attributes['uri'].value;
-                let match: any;
-                let objData: FlowObjectData;
-                while (match = RegExp(/{{([^}]*)}}/).exec(href)) {
-                    // could be a property of the selected item or a global variable or a static value - depends also on isBulkAction
-                     // if it's not bulk then grab selected row objdata
-                    if (outcome.isBulkAction === false) {
-                        objData = this.rowMap.get(selectedItem)?.objectData;
-                    }
+            switch (true) {
+                // does it have a uri attribute ?
+                case outcome.attributes['uri']?.value.length > 0 :
+                    let href: string = outcome.attributes['uri'].value;
+                    let match: any;
+                    while (match = RegExp(/{{([^}]*)}}/).exec(href)) {
+                        // could be a property of the selected item or a global variable or a static value - depends also on isBulkAction
+                        // if it's not bulk then grab selected row objdata
+                        if (outcome.isBulkAction === false) {
+                            objData = this.rowMap.get(selectedItem)?.objectData;
+                        }
 
-                    if (objData && objData.properties[match[1]]) {
-                        // objdata had this prop
-                        href = href.replace(match[0], (objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ''));
-                    } else {
-                        // is it a known static
-                        switch (match[1]) {
-                            case 'TENANT_ID':
-                                href = href.replace(match[0], this.tenantId);
-                                break;
+                        if (objData && objData.properties[match[1]]) {
+                            // objdata had this prop
+                            href = href.replace(match[0], (objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ''));
+                        } else {
+                            // is it a known static
+                            switch (match[1]) {
+                                case 'TENANT_ID':
+                                    href = href.replace(match[0], this.tenantId);
+                                    break;
 
-                            default:
-                                const fldElements: string[] = match[1].split('->');
-                                // element[0] is the flow field name
-                                const val: FlowField = await this.loadValue(fldElements[0]);
-                                let value: any;
-                                if (val) {
-                                    if (fldElements.length > 1) {
-                                        let od: FlowObjectData = val.value as FlowObjectData;
-                                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
-                                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                default:
+                                    const fldElements: string[] = match[1].split('->');
+                                    // element[0] is the flow field name
+                                    const val: FlowField = await this.loadValue(fldElements[0]);
+                                    let value: any;
+                                    if (val) {
+                                        if (fldElements.length > 1) {
+                                            let od: FlowObjectData = val.value as FlowObjectData;
+                                            for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                                od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                            }
+                                            value = od;
+                                        } else {
+                                            value = val.value;
                                         }
-                                        value = od;
-                                    } else {
-                                        value = val.value;
                                     }
-                                }
-                                href = href.replace(match[0], value);
+                                    href = href.replace(match[0], value);
 
+                            }
                         }
                     }
-                }
 
-                if (this.outcomes[outcomeName].attributes['target']?.value === '_self') {
-                    window.location.href = href;
-                } else {
-                    const tab = window.open('');
-                    if (tab) {
-                        tab.location.href = href;
+                    if (this.outcomes[outcomeName].attributes['target']?.value === '_self') {
+                        window.location.href = href;
                     } else {
-                        console.log('Couldn\'t open a new tab');
+                        const tab = window.open('');
+                        if (tab) {
+                            tab.location.href = href;
+                        } else {
+                            console.log('Couldn\'t open a new tab');
+                        }
                     }
-                }
-            } else {
-                await this.triggerOutcome(outcomeName);
+                    break;
+
+                case outcome.attributes?.form?.value.length > 0 && ignoreRules !== true:
+                    const form: any = JSON.parse(outcome.attributes.form.value);
+                    objData = this.rowMap.get(selectedItem)?.objectData;
+                    const formProps = {
+                        id: this.componentId,
+                        flowKey: this.flowKey,
+                        okOutcome: this.okOutcomeForm,
+                        cancelOutcome: this.cancelOutcomeForm,
+                        objData,
+                        outcomeName: outcome.developerName,
+                        sft: this,
+                    };
+                    const comp: any = manywho.component.getByName(form.class);
+                    const content: any = React.createElement(comp, formProps);
+                    this.messageBox.showMessageBox(
+                        form.title, content, [new modalDialogButton('Ok', this.okOutcomeForm), new modalDialogButton('Cancel', this.cancelOutcomeForm)],
+                    );
+                    break;
+
+                default:
+                    await this.triggerOutcome(outcomeName);
+                    break;
             }
         } else {
             manywho.component.handleEvent(
@@ -947,6 +975,31 @@ export default class SearchFilterTable extends FlowComponent {
             );
         }
         this.forceUpdate();
+    }
+
+    cancelOutcomeForm() {
+        this.messageBox.hideMessageBox();
+        this.form = null;
+    }
+
+    async okOutcomeForm() {
+        if (this.form.validate() === true) {
+            const objData: FlowObjectData = this.form?.makeObjectData();
+            const objDataId: string = this.form.props.objData.internalId;
+            const outcome: FlowOutcome = this.outcomes[this.form.props.outcomeName];
+            if (outcome?.attributes?.form.value) {
+                const form: any = JSON.parse(outcome.attributes.form.value);
+                const state: FlowField = await this.loadValue(form.state);
+                if (state) {
+                    state.value = objData;
+                    await this.updateValues(state);
+                }
+            }
+            this.messageBox.hideMessageBox();
+            this.form = null;
+            this.doOutcome(outcome.developerName, objDataId, true);
+        }
+
     }
 
     async doExport(data: Map<string, RowItem>) {
