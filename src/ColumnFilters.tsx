@@ -358,6 +358,9 @@ export default class ColumnFilters {
                         crit = '';
                 }
 
+                let crits: string[];
+                let matchArray: boolean[];
+
                 switch (criteria.comparator) {
                     case eColumnComparator.equalTo:
                         if (val !== crit) {
@@ -370,9 +373,17 @@ export default class ColumnFilters {
                         }
                         break;
                     case eColumnComparator.contains:
-                        if (val.indexOf(crit) < 0) {
-                            matches = false;
-                        }
+                        crits = crit.split(',');
+                        matchArray = [];
+                        crits.forEach((crit: string) => {
+                            if (val.indexOf(crit.trim()) < 0) {
+                                matchArray.push(false);
+                            } else {
+                                matchArray.push(true);
+                            }
+                        });
+                        matches = matchArray.indexOf(true) >= 0;
+
                         break;
                     case eColumnComparator.startsWith:
                         if (!val.startsWith(crit)) {
@@ -385,9 +396,14 @@ export default class ColumnFilters {
                         }
                         break;
                     case eColumnComparator.notContains:
-                        if (val.indexOf(crit) >= 0) {
-                            matches = false;
-                        }
+                        crits = crit.split(',');
+                        matchArray = [];
+                        crits.forEach((crit: string) => {
+                            if (val.indexOf(crit.trim()) >= 0) {
+                                matchArray.push(true);
+                            }
+                        });
+                        matches = matchArray.indexOf(true) < 0;
                         break;
                     case eColumnComparator.in:
                         // criteria.value will be a map
