@@ -330,7 +330,7 @@ export default class ColumnFilters {
             item.criteria.forEach((criteria: ColumnCriteria) => {
                 let val: any;
                 let crit: any;
-                switch (objData.properties[item.key].contentType) {
+                switch (objData.properties[item.key]?.contentType) {
                     case eContentType.ContentString:
                         val = (objData.properties[item.key].value as string)?.toLowerCase();
                         if (criteria.value instanceof Map) {
