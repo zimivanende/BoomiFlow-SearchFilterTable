@@ -987,22 +987,19 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.form.validate() === true) {
             const objData: FlowObjectData = await this.form?.makeObjectData();
             const objDataId: string = this.form.props.objData.internalId;
-            const outcome: FlowOutcome = this.outcomes[this.form.props.outcomeName];
-            if (outcome?.attributes?.form.value) {
-                const form: any = JSON.parse(outcome.attributes.form.value);
-                if (form.state && objData) {
-                    const state: FlowField = await this.loadValue(form.state);
-                    if (state) {
-                        state.value = objData;
-                        await this.updateValues(state);
-                    }
+            const outcome: FlowOutcome = this.form.props.outcome;
+            const form: any = this.form.props.form;
+            if (form.state && objData) {
+                const state: FlowField = await this.loadValue(form.state);
+                if (state) {
+                    state.value = objData;
+                    await this.updateValues(state);
                 }
             }
             this.messageBox.hideMessageBox();
             this.form = null;
             this.doOutcome(outcome.developerName, objDataId, true);
         }
-
     }
 
     async doExport(data: Map<string, RowItem>) {
