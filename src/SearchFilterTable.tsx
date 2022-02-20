@@ -949,7 +949,8 @@ export default class SearchFilterTable extends FlowComponent {
                         okOutcome: this.okOutcomeForm,
                         cancelOutcome: this.cancelOutcomeForm,
                         objData,
-                        outcomeName: outcome.developerName,
+                        outcome,
+                        form,
                         sft: this,
                     };
                     const comp: any = manywho.component.getByName(form.class);
