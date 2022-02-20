@@ -984,7 +984,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     async okOutcomeForm() {
         if (this.form.validate() === true) {
-            const objData: FlowObjectData = this.form?.makeObjectData();
+            const objData: FlowObjectData = await this.form?.makeObjectData();
             const objDataId: string = this.form.props.objData.internalId;
             const outcome: FlowOutcome = this.outcomes[this.form.props.outcomeName];
             if (outcome?.attributes?.form.value) {
