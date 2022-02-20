@@ -989,10 +989,12 @@ export default class SearchFilterTable extends FlowComponent {
             const outcome: FlowOutcome = this.outcomes[this.form.props.outcomeName];
             if (outcome?.attributes?.form.value) {
                 const form: any = JSON.parse(outcome.attributes.form.value);
-                const state: FlowField = await this.loadValue(form.state);
-                if (state) {
-                    state.value = objData;
-                    await this.updateValues(state);
+                if (form.state && objData) {
+                    const state: FlowField = await this.loadValue(form.state);
+                    if (state) {
+                        state.value = objData;
+                        await this.updateValues(state);
+                    }
                 }
             }
             this.messageBox.hideMessageBox();
