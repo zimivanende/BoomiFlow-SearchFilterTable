@@ -8,9 +8,13 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
     searchInput: HTMLInputElement;
     previousFilter: string = '';
     currentFilter: string;
+    leftButtons: any[];
+    rightButtons: any[];
+    clearFiltersButton: any;
 
     constructor(props: any) {
         super(props);
+        this.generateButtons = this.generateButtons.bind(this);
         this.clearSearch = this.clearSearch.bind(this);
         this.showSearch = this.showSearch.bind(this);
         this.clearFilters = this.clearFilters.bind(this);
@@ -21,7 +25,188 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         this.currentFilter = root.filters.globalCriteria;
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await this.generateButtons();
+    }
+
+    async generateButtons() {
+        const root: SearchFilterTable = this.props.root;
+        this.leftButtons = [];
+        this.rightButtons = [];
+        const canExport: boolean = (root.getAttribute('canExport', 'true').toLowerCase() === 'true');
+
+        // ad export if allowed
+        if (canExport === true) {
+            this.rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap); }}
+                >
+                    <span
+                        key={'exportAll'}
+                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
+                        title={'Export All'}
+
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export All'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
+        if (root.rowMap.size > root.currentRowMap.size && canExport === true) {
+            this.rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.currentRowMap); }}
+                >
+                    <span
+                        key={'exportShown'}
+                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
+                        title={'Export Shown'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export Shown'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
+        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.outcomes));
+
+        for (let pos = 0 ; pos < arrOutcomes.length ; pos++) {
+
+            const outcome: FlowOutcome = arrOutcomes[pos];
+
+            if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
+
+                const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+
+                if (showOutcome === true) {
+                    this.rightButtons.push(
+                        <div
+                            className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
+                            onClick={(e: any) => {root.doOutcome(outcome.developerName, undefined); }}
+                        >
+                            {outcome.attributes?.icon ?
+                                <span
+                                    key={outcome.developerName}
+                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
+                                    title={outcome.label || outcome.developerName}
+
+                                /> :
+                                null
+                            }
+                            {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
+                                <span
+                                    className="sft-ribbon-search-button-label"
+                                >
+                                    {outcome.label}
+                                </span> :
+                                null
+                            }
+                        </div>,
+                    );
+                }
+            }
+        }
+
+        if (root.model.content?.length > 0) {
+            this.rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {root.showInfo(); }}
+                >
+
+                    <span
+                        key={'colpick'}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.InfoIcon ? root.attributes.InfoIcon.value : 'question-sign')}
+                        title={'Infornation'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Column Picker'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
+        if (root.dynamicColumns === true) {
+            this.rightButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {root.showColumnPicker(); }}
+                >
+
+                    <span
+                        key={'colpick'}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
+                        title={'Select columns'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Column Picker'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+
+        if (root.selectedRowMap.size > 0 && canExport === true) {
+            this.leftButtons.push(
+                <div
+                    className="sft-ribbon-search-button-wrapper"
+                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
+                >
+                    <span
+                        key={'exportSelected'}
+                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
+                        title={'Export Selected'}
+                    />
+                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                        <span
+                            className="sft-ribbon-search-button-label"
+                        >
+                            {'Export Selected'}
+                        </span> :
+                        null
+                    }
+                </div>,
+            );
+        }
+        let clearFiltersButton;
+        if (root.filters.isFiltered()) {
+            clearFiltersButton = (
+                <div
+                    className="sft-ribbon-search-button-wrapper sft-ribbon-search-button-clear"
+                    onClick={this.clearFilters}
+                >
+                    <span
+                        key={'clearFilters'}
+                        className={'glyphicon glyphicon-trash sft-ribbon-search-button-icon sft-ribbon-search-button-icon-clear'}
+                        title={'Clear Filters'}
+                    />
+                </div>
+            );
+        }
         this.forceUpdate();
     }
 
@@ -93,185 +278,6 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
         const root: SearchFilterTable = this.props.root;
 
-        const leftButtons: any[] = [];
-        const rightButtons: any[] = [];
-
-        const lastOrder: number = 0;
-        const addedExpand: boolean = false;
-        const addedContract: boolean = false;
-
-        const canExport: boolean = (root.getAttribute('canExport', 'true').toLowerCase() === 'true');
-
-        // ad export if allowed
-        if (canExport === true) {
-            rightButtons.push(
-                <div
-                    className="sft-ribbon-search-button-wrapper"
-                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap); }}
-                >
-                    <span
-                        key={'exportAll'}
-                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
-                        title={'Export All'}
-
-                    />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
-                        <span
-                            className="sft-ribbon-search-button-label"
-                        >
-                            {'Export All'}
-                        </span> :
-                        null
-                    }
-                </div>,
-            );
-        }
-
-        if (root.rowMap.size > root.currentRowMap.size && canExport === true) {
-            rightButtons.push(
-                <div
-                    className="sft-ribbon-search-button-wrapper"
-                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.currentRowMap); }}
-                >
-                    <span
-                        key={'exportShown'}
-                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
-                        title={'Export Shown'}
-                    />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
-                        <span
-                            className="sft-ribbon-search-button-label"
-                        >
-                            {'Export Shown'}
-                        </span> :
-                        null
-                    }
-                </div>,
-            );
-        }
-
-        Object.keys(root.outcomes).forEach((key: string) => {
-            const outcome: FlowOutcome = root.outcomes[key];
-
-            if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
-
-                const showOutcome: boolean = CommonFunctions.assessGlobalOutcomeRule(outcome, root);
-
-                if (showOutcome === true) {
-                    rightButtons.push(
-                        <div
-                            className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
-                            onClick={(e: any) => {root.doOutcome(key, undefined); }}
-                        >
-                            {outcome.attributes?.icon ?
-                                <span
-                                    key={key}
-                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
-                                    title={outcome.label || key}
-
-                                /> :
-                                null
-                            }
-                            {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
-                                <span
-                                    className="sft-ribbon-search-button-label"
-                                >
-                                    {outcome.label}
-                                </span> :
-                                null
-                            }
-                        </div>,
-                    );
-                }
-            }
-        });
-
-        if (root.model.content?.length > 0) {
-            rightButtons.push(
-                <div
-                    className="sft-ribbon-search-button-wrapper"
-                    onClick={(e: any) => {root.showInfo(); }}
-                >
-
-                    <span
-                        key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.InfoIcon ? root.attributes.InfoIcon.value : 'question-sign')}
-                        title={'Infornation'}
-                    />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
-                        <span
-                            className="sft-ribbon-search-button-label"
-                        >
-                            {'Column Picker'}
-                        </span> :
-                        null
-                    }
-                </div>,
-            );
-        }
-
-        if (root.dynamicColumns === true) {
-            rightButtons.push(
-                <div
-                    className="sft-ribbon-search-button-wrapper"
-                    onClick={(e: any) => {root.showColumnPicker(); }}
-                >
-
-                    <span
-                        key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
-                        title={'Select columns'}
-                    />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
-                        <span
-                            className="sft-ribbon-search-button-label"
-                        >
-                            {'Column Picker'}
-                        </span> :
-                        null
-                    }
-                </div>,
-            );
-        }
-
-        if (root.selectedRowMap.size > 0 && canExport === true) {
-        leftButtons.push(
-                <div
-                    className="sft-ribbon-search-button-wrapper"
-                    onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
-                >
-                    <span
-                        key={'exportSelected'}
-                        className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
-                        title={'Export Selected'}
-                    />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
-                        <span
-                            className="sft-ribbon-search-button-label"
-                        >
-                            {'Export Selected'}
-                        </span> :
-                        null
-                    }
-                </div>,
-            );
-        }
-        let clearFiltersButton;
-        if (root.filters.isFiltered()) {
-            clearFiltersButton = (
-                <div
-                    className="sft-ribbon-search-button-wrapper sft-ribbon-search-button-clear"
-                    onClick={this.clearFilters}
-                >
-                    <span
-                        key={'clearFilters'}
-                        className={'glyphicon glyphicon-trash sft-ribbon-search-button-icon sft-ribbon-search-button-icon-clear'}
-                        title={'Clear Filters'}
-                    />
-                </div>
-            );
-        }
-
         const style: CSSProperties = {};
         if (root.titleElement) {
             style.top = '2.5rem';
@@ -316,7 +322,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                             title={'Advanced Search'}
                         />
                     </div>
-                    {clearFiltersButton}
+                    {this.clearFiltersButton}
                 </div>
                 <div
                     className="sft-ribbon-search-right-wrapper"
@@ -324,8 +330,8 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     <div
                         className="sft-ribbon-search-buttons-wrapper"
                     >
-                        {leftButtons}
-                        {rightButtons}
+                        {this.leftButtons}
+                        {this.rightButtons}
                     </div>
                 </div>
             </div>

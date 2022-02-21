@@ -102,6 +102,7 @@ Default is text only.
 
 ### rule
 Row level outcomes allow for adding rules which will control if the outcome should be displayed for the current row.
+Top Level Outcomes allow for adding rules based of other non-row data.
 
 The attribute value string should be in JSON format like this: -
 {
@@ -110,7 +111,11 @@ The attribute value string should be in JSON format like this: -
    "value":"valueToTest"
 }
 
-The "field" is set to the developerName of the column to test.
+In the case of row level outcomes, the "field" is set to the developerName of the column to test.
+
+For top level outcomes the field specifies the name of a flow field or one of its attributes to test.
+In this case put the field name and optionally attribute name in curly brace notation: -
+{{FlowFieldName}} or {{FlowFieldName->PropertyName}}
 
 The "comparator" must be one of the following: - 
 

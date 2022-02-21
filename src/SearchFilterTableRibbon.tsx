@@ -5,26 +5,28 @@ import SearchFilterTable from './SearchFilterTable';
 
 export default class SearchFilterTableRibbon extends React.Component<any, any> {
 
-    componentDidMount() {
-        this.forceUpdate();
+    leftButtons: any[];
+    rightButtons: any[];
+
+    constructor(props: any) {
+        super(props);
+        this.generateButtons = this.generateButtons.bind(this);
     }
 
-    render() {
+    async componentDidMount() {
+        await this.generateButtons();
+    }
+
+    async generateButtons() {
+        this.leftButtons = [];
+        this.rightButtons = [];
 
         const root: SearchFilterTable = this.props.root;
-
-        const leftButtons: any[] = [];
-        const rightButtons: any[] = [];
-
-        const lastOrder: number = 0;
-        const addedExpand: boolean = false;
-        const addedContract: boolean = false;
-
         const canExport: boolean = (root.getAttribute('canExport', 'true').toLowerCase() === 'true');
 
         // ad export if allowed
         if (canExport === true) {
-            rightButtons.push(
+            this.rightButtons.push(
                 <div
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap); }}
@@ -51,7 +53,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         }
 
         if (root.rowMap.size > root.currentRowMap.size && canExport === true) {
-            rightButtons.push(
+            this.rightButtons.push(
                 <div
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.currentRowMap); }}
@@ -77,24 +79,26 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             );
         }
 
-        Object.keys(root.outcomes).forEach((key: string) => {
-            const outcome: FlowOutcome = root.outcomes[key];
+        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.outcomes));
+
+        for (let pos = 0 ; pos < arrOutcomes.length ; pos++) {
+            const outcome: FlowOutcome = arrOutcomes[pos];
 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
 
-                const showOutcome: boolean = CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+                const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
 
                 if (showOutcome === true) {
-                    rightButtons.push(
+                    this.rightButtons.push(
                         <div
                             className="sft-ribbon-button-wrapper"
-                            onClick={(e: any) => {root.doOutcome(key, undefined); }}
+                            onClick={(e: any) => {root.doOutcome(outcome.developerName, undefined); }}
                         >
                             {outcome.attributes?.icon ?
                                 <span
-                                    key={key}
+                                    key={outcome.developerName}
                                     className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-button-icon'}
-                                    title={outcome.label || key}
+                                    title={outcome.label || outcome.developerName}
 
                                 /> :
                                 null
@@ -111,10 +115,10 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     );
                 }
             }
-        });
+        }
 
         if (root.model.content?.length > 0) {
-            rightButtons.push(
+            this.rightButtons.push(
                 <div
                     className="sft-ribbon-search-button-wrapper"
                     onClick={(e: any) => {root.showInfo(); }}
@@ -138,7 +142,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         }
 
         if (root.dynamicColumns === true) {
-            rightButtons.push(
+            this.rightButtons.push(
                 <div
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {root.showColumnPicker(); }}
@@ -162,7 +166,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         }
 
         if (root.selectedRowMap.size > 0 && canExport === true) {
-        leftButtons.push(
+            this.leftButtons.push(
                 <div
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
@@ -187,6 +191,12 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                 </div>,
             );
         }
+        this.forceUpdate();
+    }
+
+    render() {
+
+        const root: SearchFilterTable = this.props.root;
 
         const style: CSSProperties = {};
         if (root.titleElement) {
@@ -214,7 +224,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     <div
                         className="sft-ribbon-hbuttons-wrapper"
                     >
-                        {leftButtons}
+                        {this.leftButtons}
                     </div>
                 </div>
                 <div
@@ -231,7 +241,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     <div
                         className="sft-ribbon-hbuttons-wrapper"
                     >
-                        {rightButtons}
+                        {this.rightButtons}
                     </div>
                 </div>
             </div>

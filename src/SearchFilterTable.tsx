@@ -753,7 +753,7 @@ export default class SearchFilterTable extends FlowComponent {
     // builds title bar buttons based on attached outcomes
     //////////////////////////////////////////////////////
     buildRibbon() {
-        this.ribbon?.forceUpdate();
+        this.ribbon?.generateButtons();
     }
 
     //////////////////////////////////////////////////////
