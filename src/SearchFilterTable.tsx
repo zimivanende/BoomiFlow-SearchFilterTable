@@ -228,9 +228,9 @@ export default class SearchFilterTable extends FlowComponent {
         //    offset = col.offsetLeft;
         // }
 
-        this.headers.forceUpdate();
+        this.headers?.forceUpdate();
         localStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
-        this.buildRibbon();
+        // this.buildRibbon();
         switch (event) {
             case eFilterEvent.sort:
                 if (this.filters.get(key).sort !== eSortDirection.none) {
@@ -752,8 +752,8 @@ export default class SearchFilterTable extends FlowComponent {
     //////////////////////////////////////////////////////
     // builds title bar buttons based on attached outcomes
     //////////////////////////////////////////////////////
-    buildRibbon() {
-        this.ribbon?.generateButtons();
+    async buildRibbon() {
+        await this.ribbon?.generateButtons();
     }
 
     //////////////////////////////////////////////////////
@@ -986,7 +986,7 @@ export default class SearchFilterTable extends FlowComponent {
     async okOutcomeForm() {
         if (this.form.validate() === true) {
             const objData: FlowObjectData = await this.form?.makeObjectData();
-            const objDataId: string = this.form.props.objData.internalId;
+            const objDataId: string = this.form.props.objData?.internalId;
             const outcome: FlowOutcome = this.form.props.outcome;
             const form: any = this.form.props.form;
             if (form.state && objData) {

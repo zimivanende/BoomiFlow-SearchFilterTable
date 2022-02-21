@@ -31,7 +31,13 @@ export default class CommonFunctions {
                         default:
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
-                            const val: FlowField = await root.loadValue(fldElements[0]);
+                            let val: FlowField;
+                            if (root.fields[fldElements[0]]) {
+                                val = root.fields[fldElements[0]];
+                            } else {
+                                val = await root.loadValue(fldElements[0]);
+                            }
+
                             if (val) {
                                 let od: FlowObjectData = val.value as FlowObjectData;
                                 if (od) {

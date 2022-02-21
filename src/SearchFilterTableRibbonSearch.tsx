@@ -29,7 +29,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         await this.generateButtons();
     }
 
-    async generateButtons() {
+    async generateButtons(): Promise<any> {
         const root: SearchFilterTable = this.props.root;
         this.leftButtons = [];
         this.rightButtons = [];
@@ -208,6 +208,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             );
         }
         this.forceUpdate();
+        return true;
     }
 
     clearSearch(e: any) {
