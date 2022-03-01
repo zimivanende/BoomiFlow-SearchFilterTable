@@ -586,7 +586,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.sortRows();
         this.paginateRows();
 
-        this.buildRibbon();
+        await this.buildRibbon();
         this.buildFooter();
 
     }
@@ -640,35 +640,27 @@ export default class SearchFilterTable extends FlowComponent {
         console.log('paginate: ' + (end.getTime() - start.getTime()));
     }
 
-    firstPage() {
+    async firstPage() {
         this.currentRowPage = 0;
         this.buildTableRows();
-        this.buildRibbon();
-        this.buildFooter();
         this.forceUpdate();
     }
 
     previousPage() {
         if (this.currentRowPage > 1) { this.currentRowPage -= 1; } else { this.currentRowPage = 0; }
         this.buildTableRows();
-        this.buildRibbon();
-        this.buildFooter();
         this.forceUpdate();
     }
 
     nextPage() {
         if (this.currentRowPage < (this.currentRowPages.length - 1)) { this.currentRowPage += 1; } else { this.currentRowPage = this.currentRowPages.length - 1; }
         this.buildTableRows();
-        this.buildRibbon();
-        this.buildFooter();
         this.forceUpdate();
     }
 
     lastPage() {
         this.currentRowPage = this.currentRowPages.length - 1 ;
         this.buildTableRows();
-        this.buildRibbon();
-        this.buildFooter();
         this.forceUpdate();
     }
 
@@ -754,6 +746,7 @@ export default class SearchFilterTable extends FlowComponent {
     //////////////////////////////////////////////////////
     async buildRibbon() {
         await this.ribbon?.generateButtons();
+        this.forceUpdate();
     }
 
     //////////////////////////////////////////////////////

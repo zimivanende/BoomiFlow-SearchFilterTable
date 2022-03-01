@@ -192,9 +192,9 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 </div>,
             );
         }
-        let clearFiltersButton;
+
         if (root.filters.isFiltered()) {
-            clearFiltersButton = (
+            this.clearFiltersButton = (
                 <div
                     className="sft-ribbon-search-button-wrapper sft-ribbon-search-button-clear"
                     onClick={this.clearFilters}
@@ -208,7 +208,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             );
         }
         this.forceUpdate();
-        return true;
+        // return true;
     }
 
     clearSearch(e: any) {
@@ -269,10 +269,10 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         root.manageFilters();
     }
 
-    clearFilters(e: any) {
+    async clearFilters(e: any) {
         const root: SearchFilterTable = this.props.root;
         root.filters.clearAll();
-        root.buildRibbon();
+        await root.buildRibbon();
     }
 
     render() {
