@@ -380,7 +380,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
     isContent(value: string): boolean {
         if (value === 'null') { value = ''; }
-        if (value.indexOf('\\n') > 0) {
+        if (value.indexOf('\\n') > 0 || /<\/?[a-z][\s\S]*>/i.test(value)) {
             return true;
         } else {
             return false;
