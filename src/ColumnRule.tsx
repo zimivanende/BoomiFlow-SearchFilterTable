@@ -1,5 +1,5 @@
 import { eContentType, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import SearchFilterTable from './SearchFilterTable';
 
 export class ColumnRules {
@@ -28,6 +28,8 @@ export class ColumnRule {
         colRule.columnName = key;
         colRule.mode = rule.mode?.toLowerCase();
         colRule.parent = parent;
+        colRule.whiteSpace = rule.whitespace || '';
+        colRule.cssClass = rule.classes || '';
         switch (colRule.mode) {
             case 'url':
                 colRule.target = rule.target || '_blank';
@@ -36,6 +38,9 @@ export class ColumnRule {
                 break;
             case 'dateformat':
                 colRule.dateFormat = rule.dateFormat;
+                break;
+            case 'class':
+                colRule.className = rule.className;
                 break;
             default:
                 break;
@@ -51,9 +56,12 @@ export class ColumnRule {
     className: string;
     parent: SearchFilterTable;
     dateFormat: string;
+    whiteSpace: string;
+    cssClass: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
+        const style: CSSProperties = {};
         switch (property.contentType) {
             case eContentType.ContentBoolean:
                 if (property.value === true) {
@@ -73,6 +81,14 @@ export class ColumnRule {
     }
 
     generateColumnContent(value: any, row: FlowObjectData): any {
+        const style: CSSProperties = {};
+        let classes: string = 'sft-table-cell-text';
+        if (this.whiteSpace) {
+            style.whiteSpace =  this.whiteSpace as 'normal';
+        }
+        if (this.cssClass) {
+            classes += ' ' + this.cssClass;
+        }
         switch (this.mode) {
             case 'url':
                 const href: string = this.url.replace('{{VALUE}}', value);
@@ -98,12 +114,18 @@ export class ColumnRule {
                     </a>
                 );
             case 'class':
-                const props: any = {
-                    parent: this.parent,
-                    rule: this,
-                    value,
+                const columnProps = {
+                    id: row.internalId,
+                    propertyId: value.typeElementPropertyId,
+                    contentValue: value.value,
+                    objectData: value.value,
+                    flowKey: this.parent.flowKey,
+                    contentType: value.contentType,
+                    contentFormat: value.contentFormat,
+                    row,
+                    sft: this.parent,
                 };
-                return React.createElement(this.className, props);
+                return React.createElement(this.className, columnProps);
             case 'dateformat':
                 let result: string = '';
                 if (value) {
@@ -135,12 +157,12 @@ export class ColumnRule {
                     }
                 }
                 return (
-                    <span className="sft-table-cell-text" >{result}</span>
+                    <span className={classes} style={style}>{result}</span>
                 );
 
             default:
                 return(
-                    <span className="sft-table-cell-text">{value}</span>
+                    <span className={classes} style={style}>{value}</span>
                 );
         }
     }
