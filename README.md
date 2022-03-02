@@ -305,7 +305,9 @@ The value is a JSON object with one attribute per column.
    },
    "StartDate":{
       "mode":"dateFormat",
-      "dateFormat":"date"
+      "dateFormat":"date",
+      "classes":"mycssclass",
+      "whitespace":"pre" // any allowed whitespace flag
    }
 }
 ```
