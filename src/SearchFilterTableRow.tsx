@@ -7,6 +7,27 @@ declare const manywho: any;
 
 export default class SearchFilterTableRow extends React.Component<any, any> {
 
+    constructor(props: any) {
+        super(props);
+        this.state = {enabledOutcomes: []};
+    }
+
+    async componentDidMount(): Promise<void> {
+        const enabledOutcomes: string[] = [];
+        const root: SearchFilterTable = this.props.root;
+        const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
+        const keys: string[] = Object.keys(root.outcomes);
+        for (let pos = 0 ; pos < keys.length ; pos++) {
+            if (root.outcomes[keys[pos]].isBulkAction === false) {
+                if (await CommonFunctions.assessRowOutcomeRule(root.outcomes[keys[pos]], objData, root) === true) {
+                    enabledOutcomes.push(keys[pos]);
+                }
+            }
+        }
+        this.setState({enabledOutcomes});
+        root.forceUpdate();
+    }
+
     render() {
 
         const root: SearchFilterTable = this.props.root;
@@ -15,7 +36,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const buttons: any[] = [];
         Object.keys(root.outcomes).forEach((key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
-                const showOutcome: boolean = CommonFunctions.assessRowOutcomeRule(root.outcomes[key], objData);
+                const showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
                     let icon: any;

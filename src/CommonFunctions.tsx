@@ -3,6 +3,10 @@ import SearchFilterTable from './SearchFilterTable';
 
 export default class CommonFunctions {
 
+    static async getFlowValue(): Promise<any> {
+
+    }
+
     static async assessGlobalOutcomeRule(outcome: FlowOutcome, root: SearchFilterTable): Promise<boolean> {
         let result: boolean = true;
 
@@ -18,7 +22,6 @@ export default class CommonFunctions {
                 // since this is a global then the value of the rule.field must be a flow field or the property of one
                 // split the rule.field on the separator
                 let match: any;
-                const matches: any[] = [];
                 let fld: string = rule.field;
                 while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
                     // is it a known static
@@ -63,21 +66,69 @@ export default class CommonFunctions {
 
                 result = result && CommonFunctions.assessRule(value, rule.comparator, rule.value, contentType);
             } catch (e) {
-                console.log('The rule on row level outcome ' + outcome.developerName + ' is invalid');
+                console.log('The rule on top level outcome ' + outcome.developerName + ' is invalid');
             }
         }
 
         return result;
     }
 
-    static assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData): boolean {
+    static async assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData, root: SearchFilterTable): Promise<boolean> {
         let result: boolean = true;
         if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
             try {
                 const rule = JSON.parse(outcome.attributes.rule.value);
-                const property: FlowObjectDataProperty = row.properties[rule.field];
+                let value: any;
+                let contentType: eContentType;
+                let match: any;
+                let fld: string = rule.field;
+                while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
+                    // is it a known static
+                    switch (match[1]) {
+                        case 'TENANT_ID':
+                            contentType = eContentType.ContentString;
+                            value = 'MyTenentId';
+                            break;
 
-                result = CommonFunctions.assessRule(property.value, rule.comparator, rule.value, property.contentType);
+                        default:
+                            const fldElements: string[] = match[1].split('->');
+                            // element[0] is the flow field name
+                            let val: FlowField;
+                            if (root.fields[fldElements[0]]) {
+                                val = root.fields[fldElements[0]];
+                            } else {
+                                val = await root.loadValue(fldElements[0]);
+                            }
+
+                            if (val) {
+                                let od: FlowObjectData = val.value as FlowObjectData;
+                                if (od) {
+                                    if (fldElements.length > 1) {
+                                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                            contentType = (od as FlowObjectData).properties[fldElements[epos]]?.contentType;
+                                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                        }
+                                        value = od;
+                                    } else {
+                                        value = val.value;
+                                        contentType = val.contentType;
+                                    }
+                                } else {
+                                    value = val.value;
+                                    contentType = val.contentType;
+                                }
+                            }
+                            break;
+                    }
+                    fld = fld.replace(match[0], value);
+                }
+
+                if (row.properties[fld]) {
+                    const property: FlowObjectDataProperty = row.properties[fld];
+                    result = CommonFunctions.assessRule(property.value, rule.comparator, rule.value, property.contentType);
+                } else {
+                    result = CommonFunctions.assessRule(value, rule.comparator, rule.value, contentType);
+                }
 
             } catch (e) {
                 console.log('The rule on row level outcome ' + outcome.developerName + ' is invalid');
