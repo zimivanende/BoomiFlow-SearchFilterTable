@@ -402,7 +402,6 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                     style={{
                         overflow: 'visible',
                         whiteSpace: 'pre',
-                        textAlign: 'left',
                         fontSize: '1rem',
                     }}
                     dangerouslySetInnerHTML={{__html: value}}
