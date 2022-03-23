@@ -16,26 +16,14 @@ module.exports = function() {
             extensions: [".ts", ".tsx", ".js", ".json"],
         },
         devServer: {
-            contentBase: './build'
+            static: './build'
         },
         mode: 'development',
         module: {
             rules: [
-                {
-                    test: /\.tsx?$/,
-                    enforce: 'pre',
-                    use: [
-                        {
-                            loader: 'tslint-loader',
-                            options: {
-                                fix: true
-                            }
-                        }
-                    ]
-                },
                 { 
                     test: /\.tsx?$/, 
-                    loader: "awesome-typescript-loader" 
+                    loader: "ts-loader" 
                 },
                 { 
                     test: /\.js$/, 

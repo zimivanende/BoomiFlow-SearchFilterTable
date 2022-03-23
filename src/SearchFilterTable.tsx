@@ -1,7 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowField,  FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
-import FlowContextMenu from 'flow-component-model/lib/Dialogs/FlowContextMenu';
+import { eContentType, eLoadingState, FlowComponent, FlowContextMenu, FlowDisplayColumn, FlowField,  FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
 import CellItem from './CellItem';
 import ColumnCriteria from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
@@ -160,8 +159,6 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     showInfo() {
-        console.log('show info');
-
         const content = (
             <div
                 dangerouslySetInnerHTML={{__html: this.model.content}}
@@ -171,8 +168,6 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     showColumnPicker() {
-        console.log('pick columns');
-
         const content = (
             <ColumnPickerForm
                 root={this}
@@ -426,17 +421,23 @@ export default class SearchFilterTable extends FlowComponent {
 
         // sort display cols on order
         this.colMap = new Map();
-        // use the cols from the displayColumns
-        const cols: FlowDisplayColumn[] = this.model.displayColumns.sort((a: any, b: any) => {
-            switch (true) {
-                case a.DisplayOrder > b.DisplayOrder:
-                    return 1;
-                case a.DisplayOrder === b.DisplayOrder:
-                    return 0;
-                default:
-                    return -1;
-            }
-        });
+        // use the cols from the displayColumns if defined
+        let cols: FlowDisplayColumn[];
+        if (this.model.displayColumns && this.model.displayColumns.length > 0) {
+            cols = this.model.displayColumns?.sort((a: any, b: any) => {
+                switch (true) {
+                    case a.DisplayOrder > b.DisplayOrder:
+                        return 1;
+                    case a.DisplayOrder === b.DisplayOrder:
+                        return 0;
+                    default:
+                        return -1;
+                }
+            });
+        } else {
+            // use whole model
+            // this.model.dataSource
+        }
 
         if (this.dynamicColumns === true) {
             await this.loadUserColumns();
@@ -579,8 +580,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.rowMap.set(node.id, node);
         });
         const end: Date = new Date();
-        console.log('build rowmap: ' + (end.getTime() - start.getTime()));
-
+    
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
         this.sortRows();
@@ -606,7 +606,6 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
         const end: Date = new Date();
-        console.log('filter: ' + (end.getTime() - start.getTime()));
     }
 
     // sorts the currentRowMap by getting the current sort column from filters
@@ -616,7 +615,6 @@ export default class SearchFilterTable extends FlowComponent {
             this.currentRowMap = this.filters.sort(this.currentRowMap, this.rowMap);
         }
         const end: Date = new Date();
-        console.log('sort: ' + (end.getTime() - start.getTime()));
     }
 
     // this goes through currentRowMap and splits them into pages based on maxPageRows
@@ -637,7 +635,6 @@ export default class SearchFilterTable extends FlowComponent {
         this.currentRowPages.push(currentPage);
         this.currentRowPage = 0;
         const end: Date = new Date();
-        console.log('paginate: ' + (end.getTime() - start.getTime()));
     }
 
     async firstPage() {
@@ -951,6 +948,7 @@ export default class SearchFilterTable extends FlowComponent {
                     this.messageBox.showMessageBox(
                         form.title, content, [new modalDialogButton('Ok', this.okOutcomeForm), new modalDialogButton('Cancel', this.cancelOutcomeForm)],
                     );
+                    this.forceUpdate();
                     break;
 
                 default:
@@ -974,6 +972,7 @@ export default class SearchFilterTable extends FlowComponent {
     cancelOutcomeForm() {
         this.messageBox.hideMessageBox();
         this.form = null;
+        this.forceUpdate();
     }
 
     async okOutcomeForm() {
@@ -992,6 +991,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.messageBox.hideMessageBox();
             this.form = null;
             this.doOutcome(outcome.developerName, objDataId, true);
+            this.forceUpdate();
         }
     }
 
