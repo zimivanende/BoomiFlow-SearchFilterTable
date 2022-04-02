@@ -28,6 +28,7 @@ export default class ColumnFilters {
     globalCriteria: string;
 
     quickChecks: Map<string, HTMLInputElement> = new Map();
+    suppressNotify: boolean = false;
 
     constructor(parent: SearchFilterTable) {
         this.parent = parent;
@@ -63,7 +64,9 @@ export default class ColumnFilters {
 
     // this is called when individual filters change
     notify(key: string, event: eFilterEvent) {
-        this.parent.filtersChanged(key, event);
+        if(this.suppressNotify===false) {
+            this.parent.filtersChanged(key, event);
+        }
     }
 
     get(key: string): ColumnFilter {
@@ -105,9 +108,11 @@ export default class ColumnFilters {
     }
 
     clearAll() {
+        this.suppressNotify = true;
         this.items.forEach((item: ColumnFilter) => {
             item.clearFilters();
         });
+        this.suppressNotify = false;
         this.notify('', eFilterEvent.filter);
     }
 

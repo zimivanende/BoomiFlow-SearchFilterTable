@@ -11,6 +11,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
     leftButtons: any[];
     rightButtons: any[];
     clearFiltersButton: any;
+    deBounce: boolean = false;
 
     constructor(props: any) {
         super(props);
@@ -30,6 +31,12 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
     }
 
     async generateButtons(): Promise<any> {
+        if(this.deBounce === true) {
+            return true;
+        }
+        else {
+            this.deBounce = true;
+        }
         const root: SearchFilterTable = this.props.root;
         this.leftButtons = [];
         this.rightButtons = [];
@@ -207,8 +214,12 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 </div>
             );
         }
+        else {
+            this.clearFiltersButton = undefined;
+        }
+        this.deBounce = false;
         this.forceUpdate();
-        // return true;
+        return true;
     }
 
     clearSearch(e: any) {
