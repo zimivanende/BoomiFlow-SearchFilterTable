@@ -17,7 +17,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         await this.generateButtons();
     }
 
-    async generateButtons() {
+    async generateButtons() : Promise<boolean>{
         this.leftButtons = [];
         this.rightButtons = [];
 
@@ -192,6 +192,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             );
         }
         this.forceUpdate();
+        return true;
     }
 
     render() {

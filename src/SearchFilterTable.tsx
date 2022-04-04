@@ -74,7 +74,7 @@ export default class SearchFilterTable extends FlowComponent {
     headersElement: any;
 
     // this is the footer React component
-    ribbon: SearchFilterTableRibbon;
+    ribbon: SearchFilterTableRibbon | SearchFilterTableRibbonSearch;
 
     // this is the ribbon html element
     ribbonElement: any;
@@ -111,6 +111,8 @@ export default class SearchFilterTable extends FlowComponent {
     manywho: any;
 
     retries: number = 0;
+
+    loaded: Boolean = false;
 
     constructor(props: any) {
         super(props);
@@ -302,7 +304,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     // stores / deletes a ref to the column headers
-    setRibbon(element: SearchFilterTableRibbon) {
+    setRibbon(element: SearchFilterTableRibbon | SearchFilterTableRibbonSearch) {
         this.ribbon = element;
     }
 
@@ -319,17 +321,19 @@ export default class SearchFilterTable extends FlowComponent {
         const me: any = this;
         if (xhr.invokeType === 'FORWARD') {
             if (this.loadingState !== eLoadingState.ready && this.retries < 3) {
+                this.loaded=false;
                 this.retries ++;
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
                 this.retries = 0;
+                this.loaded = true;
                 this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
                 this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
                 await this.buildCoreTable();
-                this.filterRows();
-                this.sortRows();
-                this.buildTableRows();
-                this.forceUpdate();
+                //this.filterRows();
+                //this.sortRows();
+                //this.buildTableRows();
+                //this.forceUpdate();
             }
         }
 
@@ -337,6 +341,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     async componentDidMount() {
         // will get this from a component attribute
+        this.loaded=false;
         await super.componentDidMount();
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
         // build tree
@@ -352,11 +357,13 @@ export default class SearchFilterTable extends FlowComponent {
             this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
         } // it defaults to -1 which means dont apply this
 
+        this.loaded = true;
+
         await this.buildCoreTable();
-        this.filterRows();
-        this.sortRows();
-        this.buildTableRows();
-        this.forceUpdate();
+        //this.filterRows();
+        //this.sortRows();
+        //this.buildTableRows();
+        //this.forceUpdate();
 
     }
 
@@ -497,7 +504,7 @@ export default class SearchFilterTable extends FlowComponent {
                 this.ribbonElement = (
                     <SearchFilterTableRibbonSearch
                         root={this}
-                        ref={(element: SearchFilterTableRibbon) => {this.setRibbon(element); }}
+                        ref={(element: SearchFilterTableRibbonSearch) => {this.setRibbon(element); }}
                     />
                 );
                 inlineSearch = false;
@@ -583,12 +590,11 @@ export default class SearchFilterTable extends FlowComponent {
     
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
-        this.sortRows();
-        this.paginateRows();
+        //this.sortRows();
+        //this.paginateRows();
 
-        await this.buildRibbon();
-        this.buildFooter();
-
+        //await this.buildRibbon();
+        //this.buildFooter();
     }
 
     // filters the currentRowMap
@@ -606,6 +612,7 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
         const end: Date = new Date();
+        this.sortRows();
     }
 
     // sorts the currentRowMap by getting the current sort column from filters
@@ -615,6 +622,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.currentRowMap = this.filters.sort(this.currentRowMap, this.rowMap);
         }
         const end: Date = new Date();
+        this.paginateRows();
     }
 
     // this goes through currentRowMap and splits them into pages based on maxPageRows
@@ -624,17 +632,18 @@ export default class SearchFilterTable extends FlowComponent {
         let currentPage: Map<string, RowItem> = new Map();
         this.currentRowMap.forEach((item: RowItem, key: string) => {
             if (currentPage.size < this.maxPageRows) {
-                currentPage.set(key, undefined);
+                currentPage.set(key, item);
             } else {
                 this.currentRowPages.push(currentPage);
                 currentPage = new Map();
-                currentPage.set(key, undefined);
+                currentPage.set(key, item);
             }
         });
         // add any stragglers
         this.currentRowPages.push(currentPage);
         this.currentRowPage = 0;
         const end: Date = new Date();
+        this.buildTableRows();
     }
 
     async firstPage() {
@@ -719,7 +728,7 @@ export default class SearchFilterTable extends FlowComponent {
     /////////////////////////////////////////////////////////////////////
     // Builds the rowElements from the currentRowMap and forces a redraw
     ////////////////////////////////////////////////////////////////////
-    buildTableRows() {
+    async buildTableRows() {
         this.rowElements = [];
         // loop over rowmap if defined
         if (this.currentRowPages && this.currentRowPages.length > 0 && this.currentRowPages[this.currentRowPage]) {
@@ -734,16 +743,20 @@ export default class SearchFilterTable extends FlowComponent {
                 );
             });
         }
-        this.buildRibbon();
+        await this.buildRibbon();
         this.buildFooter();
+        this.forceUpdate();
     }
 
     //////////////////////////////////////////////////////
     // builds title bar buttons based on attached outcomes
     //////////////////////////////////////////////////////
     async buildRibbon() {
-        await this.ribbon?.generateButtons();
-        this.forceUpdate();
+        let res: Boolean = await this.ribbon?.generateButtons();
+        if ( res === true){
+            this.forceUpdate();
+        };
+        
     }
 
     //////////////////////////////////////////////////////
@@ -1078,7 +1091,7 @@ export default class SearchFilterTable extends FlowComponent {
         }
 
         let body: any;
-        if (this.loadingState !== eLoadingState.ready) {
+        if (this.loaded===false  && this.loadingState !== eLoadingState.ready) {
             body = (
                 <div
                     className="sft-loading"

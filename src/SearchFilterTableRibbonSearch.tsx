@@ -30,9 +30,9 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         await this.generateButtons();
     }
 
-    async generateButtons(): Promise<any> {
+    async generateButtons(): Promise<Boolean> {
         if(this.deBounce === true) {
-            return true;
+            return false;
         }
         else {
             this.deBounce = true;
