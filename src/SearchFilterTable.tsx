@@ -357,6 +357,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
         } // it defaults to -1 which means dont apply this
 
+        await this.preLoad();
         this.loaded = true;
 
         await this.buildCoreTable();
@@ -414,6 +415,43 @@ export default class SearchFilterTable extends FlowComponent {
         } else {
             localStorage.setItem('sft_' + this.componentId + '_cols', userCols);
         }
+    }
+
+    async preLoad() : Promise<any> {
+        //preload any column rule values
+        let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
+        for(let pos = 1 ; pos < outcomes.length ; pos++) {
+            let outcome: FlowOutcome = outcomes[pos];
+            if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
+                try {
+                    const rule = JSON.parse(outcome.attributes.rule.value);
+                    // since this is a global then the value of the rule.field must be a flow field or the property of one
+                    // split the rule.field on the separator
+                    let match: any;
+                    let fld: string = rule.field;
+                    while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
+                        switch (match[1]) {
+                            case 'TENANT_ID':
+                                break;
+    
+                            default:
+                                const fldElements: string[] = match[1].split('->');
+                                // element[0] is the flow field name
+                                let val: FlowField;
+                                if (!this.fields[fldElements[0]]) {
+                                    val = await this.loadValue(fldElements[0]);
+                                }
+                                break;
+                        }
+                        fld = fld.replace(match[0], "done");
+                    }
+                }
+                catch (e) {
+                    console.log('The rule on outcome ' + outcome.developerName + ' is invalid');
+                }
+            }
+        }
+        return true;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
