@@ -326,6 +326,7 @@ export default class SearchFilterTable extends FlowComponent {
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
                 this.retries = 0;
+                await this.preLoad();
                 this.loaded = true;
                 this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
                 this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
@@ -419,6 +420,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     async preLoad() : Promise<any> {
         //preload any column rule values
+        let alreadyDone: string[] = [];
         let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
         for(let pos = 1 ; pos < outcomes.length ; pos++) {
             let outcome: FlowOutcome = outcomes[pos];
@@ -438,8 +440,9 @@ export default class SearchFilterTable extends FlowComponent {
                                 const fldElements: string[] = match[1].split('->');
                                 // element[0] is the flow field name
                                 let val: FlowField;
-                                if (!this.fields[fldElements[0]]) {
+                                if (alreadyDone.indexOf(fldElements[0]) < 0) {
                                     val = await this.loadValue(fldElements[0]);
+                                    alreadyDone.push(fldElements[0]);
                                 }
                                 break;
                         }
