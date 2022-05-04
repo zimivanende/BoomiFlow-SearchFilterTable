@@ -42,6 +42,9 @@ export class ColumnRule {
             case 'class':
                 colRule.className = rule.className;
                 break;
+            case 'outcome':
+                colRule.outcomeName = rule.outcomeName;
+
             default:
                 break;
         }
@@ -58,6 +61,7 @@ export class ColumnRule {
     dateFormat: string;
     whiteSpace: string;
     cssClass: string;
+    outcomeName: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -80,7 +84,7 @@ export class ColumnRule {
         return result;
     }
 
-    generateColumnContent(value: any, row: FlowObjectData): any {
+    generateColumnContent(value: any, row: FlowObjectData, sft?: SearchFilterTable): any {
         const style: CSSProperties = {};
         let classes: string = 'sft-table-cell-text';
         if (this.whiteSpace) {
@@ -89,14 +93,38 @@ export class ColumnRule {
         if (this.cssClass) {
             classes += ' ' + this.cssClass;
         }
+        let label: string;
+        let match: any;
+        const matches: any[] = [];
         switch (this.mode) {
-            case 'url':
-                const href: string = this.url.replace('{{VALUE}}', value);
-                let label: string = this.label || value;
+            case 'outcome':
+                label = this.label || value;
 
                 // use regex to find any {{}} tags in content and save them in matches
-                let match: any;
-                const matches: any[] = [];
+                
+                
+                while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
+                    const prop: any = row.properties[match[1].replace('&amp;', '&')];
+                    if (prop) {
+                        const subs: string = this.getTextValue(prop);
+                        label = label.replace(match[0], subs);
+                    }
+                }
+                return(
+                    <span
+                        className="sft-table-cell-href"
+                        onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
+                    >
+                        {label}
+                    </span>
+                );
+                break;
+
+            case 'url':
+                const href: string = this.url.replace('{{VALUE}}', value);
+                label = this.label || value;
+
+                // use regex to find any {{}} tags in content and save them in matches
                 while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
                     const prop: any = row.properties[match[1].replace('&amp;', '&')];
                     if (prop) {

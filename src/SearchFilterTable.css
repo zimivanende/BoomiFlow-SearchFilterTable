@@ -325,6 +325,12 @@
     font-size: 0.8rem;
     text-decoration: underline !important;
     text-underline-offset: 0.2rem;
+    cursor: pointer;
+    color:rgb(92, 92, 255);
+}
+
+.sft-table-cell-href:hover {
+    color: #000;
 }
 
 .sft-table-cell-buttons {

@@ -19,8 +19,10 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const keys: string[] = Object.keys(root.outcomes);
         for (let pos = 0 ; pos < keys.length ; pos++) {
             if (root.outcomes[keys[pos]].isBulkAction === false) {
-                if (await CommonFunctions.assessRowOutcomeRule(root.outcomes[keys[pos]], objData, root) === true) {
-                    enabledOutcomes.push(keys[pos]);
+                if(!root.supressedOutcomes.has(root.outcomes[keys[pos]].developerName)) {
+                    if (await CommonFunctions.assessRowOutcomeRule(root.outcomes[keys[pos]], objData, root) === true) {
+                        enabledOutcomes.push(keys[pos]);
+                    }
                 }
             }
         }
@@ -139,7 +141,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         let result: any;
         if (value && value.developerName) {
             if (root.columnRules.has(value.developerName)) {
-                result = root.columnRules.get(value.developerName).generateColumnContent(value.value, row);
+                result = root.columnRules.get(value.developerName).generateColumnContent(value.value, row, root);
             } else {
                 if (componentType?.length > 0) {
                     const columnProps = {

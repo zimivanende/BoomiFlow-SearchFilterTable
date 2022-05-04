@@ -114,6 +114,8 @@ export default class SearchFilterTable extends FlowComponent {
 
     loaded: Boolean = false;
 
+    supressedOutcomes: Map<string,boolean> = new Map();;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -451,6 +453,18 @@ export default class SearchFilterTable extends FlowComponent {
                 }
                 catch (e) {
                     console.log('The rule on outcome ' + outcome.developerName + ' is invalid');
+                }
+            }
+        }
+        //now parse all columnRules
+        if (this.getAttribute("ColumnRules","").length > 0) {
+            let rules: any[] = JSON.parse(this.getAttribute("ColumnRules"));
+            let rulesArray: any[] = Array.from(Object.keys(rules));
+            if(rulesArray && rulesArray.length > 0) {
+                for(let rPos = 0 ; rPos < rulesArray.length ; rPos++) {
+                    if(rules[rulesArray[rPos]].mode?.toLowerCase() === "outcome") {
+                        this.supressedOutcomes.set(rules[rulesArray[rPos]].outcomeName,true);
+                    }
                 }
             }
         }

@@ -308,13 +308,19 @@ The value is a JSON object with one attribute per column.
       "dateFormat":"date",
       "classes":"mycssclass",
       "whitespace":"pre" // any allowed whitespace flag
+   },
+   "MyColumn":{
+      "mode":"outcome",
+      "outcomeName":"MyOutcome",
    }
 }
 ```
 
-currently mode only supports "url", "class" & "dateFormat".
+Currently mode only supports "url","outcome", "class" & "dateFormat".
 
-The label may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
+Note: If there is a column rule with mode outcome then that outcome will be forcibly hidden from the actions column
+
+The label (optional) may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
 This allows for making composite columns. 
 
 For "dateFormat" you can use: -
