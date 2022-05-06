@@ -36,8 +36,12 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
 
         const buttons: any[] = [];
+        let anyoutcomes: boolean = false;
         Object.keys(root.outcomes).forEach((key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
+                if(!root.supressedOutcomes.has(key)) {
+                    anyoutcomes=true;
+                }
                 const showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
@@ -95,7 +99,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         root.userColumns.forEach((collName: string) => {
             if (collName === '#BUTTONS#') {
-                if (buttons.length > 0) {
+                if (anyoutcomes) {
                     cols.push(
                         <td
                             className="sft-table-cell"

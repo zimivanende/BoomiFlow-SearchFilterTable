@@ -73,8 +73,11 @@ export default class CommonFunctions {
         return result;
     }
 
-    static async assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData, root: SearchFilterTable): Promise<boolean> {
+    static assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData, root: SearchFilterTable): boolean {
         let result: boolean = true;
+        if(!outcome) {
+            return false
+        }
         if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
             try {
                 const rule = JSON.parse(outcome.attributes.rule.value);
@@ -94,12 +97,8 @@ export default class CommonFunctions {
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
                             let val: FlowField;
-                            if (root.fields[fldElements[0]]) {
-                                val = root.fields[fldElements[0]];
-                            } else {
-                                val = await root.loadValue(fldElements[0]);
-                            }
-
+                            val = root.fields[fldElements[0]];
+                            
                             if (val) {
                                 let od: FlowObjectData = val.value as FlowObjectData;
                                 if (od) {

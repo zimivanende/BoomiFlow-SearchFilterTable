@@ -1,5 +1,6 @@
 import { eContentType, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
 import React, { CSSProperties } from 'react';
+import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
 export class ColumnRules {
@@ -99,6 +100,7 @@ export class ColumnRule {
         switch (this.mode) {
             case 'outcome':
                 label = this.label || value;
+                let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
 
                 // use regex to find any {{}} tags in content and save them in matches
                 
@@ -110,15 +112,22 @@ export class ColumnRule {
                         label = label.replace(match[0], subs);
                     }
                 }
-                return(
-                    <span
-                        className="sft-table-cell-href"
-                        onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
-                    >
-                        {label}
-                    </span>
-                );
-                break;
+                if(show) {
+                    return(
+                        <span
+                            className="sft-table-cell-href"
+                            onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
+                        >
+                            {label}
+                        </span>
+                    );
+                }
+                else {
+                    return(
+                        <span className={classes} style={style}>{value}</span>
+                    );
+                }
+                
 
             case 'url':
                 const href: string = this.url.replace('{{VALUE}}', value);

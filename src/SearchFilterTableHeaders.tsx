@@ -103,8 +103,12 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         const root: SearchFilterTable = this.props.root;
 
         const buttons: any[] = [];
+        let anyoutcomes: boolean = false;
         Object.keys(root.outcomes).forEach((key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
+                if(!root.supressedOutcomes.has(key)) {
+                    anyoutcomes=true;
+                }
                 buttons.push(key);
             }
         });
@@ -127,7 +131,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
             root.userColumns.forEach((collName: string) => {
 
                 if (collName === '#BUTTONS#') {
-                    if (buttons.length > 0) {
+                    if (anyoutcomes) {
                         headers.push(
                             <SearchFilterTableHeader
                                 root={this.props.root}
