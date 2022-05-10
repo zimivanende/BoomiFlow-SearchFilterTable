@@ -6,7 +6,7 @@ import SearchFilterTable from './SearchFilterTable';
 export class ColumnRules {
     static async parse(ruleStr: string, parent: SearchFilterTable): Promise<Map<string, ColumnRule>> {
         let match: any;
-        while (match = RegExp(/{{([^}]*)}}/).exec(ruleStr)) {
+        while (match = RegExp(/^{{([^}]*)}}/).exec(ruleStr)) {
             
             const fldElements: string[] = match[1].split('->');
             // element[0] is the flow field name
