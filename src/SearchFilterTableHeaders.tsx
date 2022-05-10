@@ -114,19 +114,21 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         });
 
         if (root.colMap.size > 0) {
-            headers.push(
-                <th
-                    key="checks"
-                    className="sft-check-header"
-                    ref={(element: any) => {this.setHeader('checks', element); }}
-                >
-                    <input
-                        className="sft-checkbox"
-                        type="checkbox"
-                        onClick={(event: any) => {root.toggleSelectAll(event); }}
-                    />
-                </th>,
-            );
+            if(root.model.multiSelect) {
+                headers.push(
+                    <th
+                        key="checks"
+                        className="sft-check-header"
+                        ref={(element: any) => {this.setHeader('checks', element); }}
+                    >
+                        <input
+                            className="sft-checkbox"
+                            type="checkbox"
+                            onClick={(event: any) => {root.toggleSelectAll(event); }}
+                        />
+                    </th>,
+                );
+            }
 
             root.userColumns.forEach((collName: string) => {
 

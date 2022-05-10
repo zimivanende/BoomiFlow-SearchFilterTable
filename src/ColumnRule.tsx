@@ -1,10 +1,19 @@
-import { eContentType, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
+import { eContentType, FlowField, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
 import React, { CSSProperties } from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
 export class ColumnRules {
-    static parse(ruleStr: string, parent: SearchFilterTable): Map<string, ColumnRule> {
+    static async parse(ruleStr: string, parent: SearchFilterTable): Promise<Map<string, ColumnRule>> {
+        let match: any;
+        while (match = RegExp(/{{([^}]*)}}/).exec(ruleStr)) {
+            
+            const fldElements: string[] = match[1].split('->');
+            // element[0] is the flow field name
+            let val: FlowField = await parent.loadValue(fldElements[0]);            
+            ruleStr = ruleStr.replace(match[0], val.value as string);
+        }
+
         const rules: Map<string, ColumnRule> = new Map();
         if (ruleStr && ruleStr.length > 0) {
             let rObj: any;
@@ -101,6 +110,7 @@ export class ColumnRule {
             case 'outcome':
                 label = this.label || value;
                 let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
+                
 
                 // use regex to find any {{}} tags in content and save them in matches
                 
@@ -113,10 +123,12 @@ export class ColumnRule {
                     }
                 }
                 if(show) {
+                    let toolTip: string = sft.outcomes[this.outcomeName].label;
                     return(
                         <span
                             className="sft-table-cell-href"
                             onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
+                            title={toolTip}
                         >
                             {label}
                         </span>

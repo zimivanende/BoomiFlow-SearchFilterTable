@@ -159,7 +159,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
-        this.columnRules = ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
+        
     }
 
     showInfo() {
@@ -359,7 +359,7 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.attributes.MaxColumnTextLength) {
             this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
         } // it defaults to -1 which means dont apply this
-
+        this.columnRules = await ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
         await this.preLoad();
         this.loaded = true;
 
@@ -457,17 +457,14 @@ export default class SearchFilterTable extends FlowComponent {
             }
         }
         //now parse all columnRules
-        if (this.getAttribute("ColumnRules","").length > 0) {
-            let rules: any[] = JSON.parse(this.getAttribute("ColumnRules"));
-            let rulesArray: any[] = Array.from(Object.keys(rules));
-            if(rulesArray && rulesArray.length > 0) {
-                for(let rPos = 0 ; rPos < rulesArray.length ; rPos++) {
-                    if(rules[rulesArray[rPos]].mode?.toLowerCase() === "outcome") {
-                        this.supressedOutcomes.set(rules[rulesArray[rPos]].outcomeName,true);
-                    }
+        if(this.columnRules && this.columnRules.size > 0) {
+            this.columnRules.forEach((rule: ColumnRule) => {
+                if(rule.mode?.toLowerCase() === "outcome") {
+                    this.supressedOutcomes.set(rule.outcomeName,true);
                 }
-            }
+            });
         }
+        
         return true;
     }
 

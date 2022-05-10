@@ -84,18 +84,20 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         const cols: any[] = [];
 
-        cols.push(
-            <td
-                className="sft-table-cell sft-table-cell-check"
-            >
-                <input
-                    className="sft-checkbox"
-                    type="checkbox"
-                    onClick={(event: any) => {root.toggleSelect(event, this.props.id); }}
-                    checked={root.selectedRowMap.has(this.props.id)}
-                />
-            </td>,
-        );
+        if (root.model.multiSelect){
+            cols.push(
+                <td
+                    className="sft-table-cell sft-table-cell-check"
+                >
+                    <input
+                        className="sft-checkbox"
+                        type="checkbox"
+                        onClick={(event: any) => {root.toggleSelect(event, this.props.id); }}
+                        checked={root.selectedRowMap.has(this.props.id)}
+                    />
+                </td>,
+            );
+        }
 
         root.userColumns.forEach((collName: string) => {
             if (collName === '#BUTTONS#') {

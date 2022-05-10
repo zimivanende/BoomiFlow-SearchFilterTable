@@ -285,6 +285,7 @@ The "ColumnRules" attribute allows us to specify special formatting / function f
 
 The value is a JSON object with one attribute per column.
 
+
 ```
 {
    "SalesforceId":{
@@ -319,6 +320,9 @@ The value is a JSON object with one attribute per column.
 Currently mode only supports "url","outcome", "class" & "dateFormat".
 
 Note: If there is a column rule with mode outcome then that outcome will be forcibly hidden from the actions column
+
+Note: This can also be the name of a Flow Value containing the json value wrapped in double braces e.g. {{MyFlowValueName}}
+!!! In this case make sure to reference the value in your flow so that it exists in the state !!!
 
 The label (optional) may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
 This allows for making composite columns. 
