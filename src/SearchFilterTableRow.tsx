@@ -42,7 +42,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
                 }
-                const showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
+                let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
                     let icon: any;
@@ -58,6 +58,9 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                         );
                     }
                     if ((root.outcomes[key].attributes['display']) && root.outcomes[key].attributes['display'].value.indexOf('icon') >= 0) {
+                        if(root.outcomes[key].attributes['icon'].value.toLowerCase() === 'null') {
+                            showOutcome = false;
+                        }
                         icon = (
                             <span
                                 className={'sft-table-cell-button-element sft-table-cell-button-icon glyphicon glyphicon-' + (root.outcomes[key].attributes['icon'].value || 'plus')}
@@ -65,19 +68,21 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                         );
                     }
 
-                    buttons.push(
-                        <div
-                            className="sft-table-cell-button"
-                            title={root.outcomes[key].label}
-                            onClick={(event: any) => {
-                                root.doOutcome(key, objData.internalId);
-                            }}
-                        >
-                            {icon}
-                            {label}
+                    if(showOutcome===true){
+                        buttons.push(
+                            <div
+                                className="sft-table-cell-button"
+                                title={root.outcomes[key].label}
+                                onClick={(event: any) => {
+                                    root.doOutcome(key, objData.internalId);
+                                }}
+                            >
+                                {icon}
+                                {label}
 
-                        </div>,
-                    );
+                            </div>,
+                        );
+                    }
                 }
             }
         });

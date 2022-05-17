@@ -163,6 +163,9 @@ Uri can contain {{CONSTANT_NAME}} elements which will be substituted with values
 
 _blank for opening uri in new window (default if ommitted) or _self to reuse current tab
 
+### form
+A custom class can be attached to an outcome to act as a form
+from = {"class":"PSPRequestResourceForm", "title":"New Resource Request"}
 
 ## Settings
 
