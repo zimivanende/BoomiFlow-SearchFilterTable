@@ -165,7 +165,25 @@ _blank for opening uri in new window (default if ommitted) or _self to reuse cur
 
 ### form
 A custom class can be attached to an outcome to act as a form
-from = {"class":"PSPRequestResourceForm", "title":"New Resource Request"}
+form = 
+````
+{
+   "class":"<any register react class>", 
+   "title":"New Resource Request", 
+   "icon":"<any bootstrap icon short name>",
+   "message":"Some text to display/nline2"
+}
+````
+The class "SFTMessageBox" is included by default e.g.
+form =
+```` 
+{
+   "class":"SFTMessageBox", 
+   "title":"Please Confirm", 
+   "icon":"exclamation-sign",
+   "message":"Deletion is permanent/Are you sure you wish to continue?"
+}
+````
 
 ## Settings
 
