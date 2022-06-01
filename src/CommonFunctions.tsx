@@ -155,7 +155,12 @@ export default class CommonFunctions {
                 break;
             case eContentType.ContentString:
             default:
-                comparee = compareTo.toLowerCase();
+                comparee = compareTo.toLowerCase().split(",");
+                if(comparee.length>0){
+                    for(let pos=0 ; pos < comparee.length ; pos++) {
+                        comparee[pos] = comparee[pos].trim();
+                    }
+                }
                 comparer = (value as string)?.toLowerCase();
                 break;
         }
@@ -180,10 +185,10 @@ export default class CommonFunctions {
                 result = ('' + comparer).endsWith(comparee);
                 break;
             case 'in':
-                result = comparer.indexOf(comparee) >= 0;
+                result = comparee.indexOf(comparer) >= 0;
                 break;
             case 'not in':
-                result = comparer.indexOf(comparee) < 0;
+                result = comparee.indexOf(comparer) < 0;
                 break;
             case 'lt':
                 result = parseInt('' + comparer) < parseInt('' + comparee);
