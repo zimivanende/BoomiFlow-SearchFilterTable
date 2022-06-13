@@ -161,6 +161,9 @@ export default class CommonFunctions {
                         comparee[pos] = comparee[pos].trim();
                     }
                 }
+                if(["in","not in"].indexOf(comparator.toLowerCase()) < 0) {
+                    comparator=comparator[0];
+                }
                 comparer = (value as string)?.toLowerCase();
                 break;
         }
