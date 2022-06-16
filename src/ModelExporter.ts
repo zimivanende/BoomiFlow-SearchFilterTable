@@ -18,9 +18,10 @@ export default class ModelExporter {
             body += row;
         });
 
-        file = headers + body;
-
-        const blob = new Blob([file], { type: 'text/csv' });
+        let BOM = "\uFEFF";
+        file = BOM + headers + body;
+        
+        const blob = new Blob([file], { type: 'text/csv;charset=utf-8' });
         // if (navigator.msSaveBlob) { // IE 10+
         //    navigator.msSaveBlob(blob, fileName);
         // } else {

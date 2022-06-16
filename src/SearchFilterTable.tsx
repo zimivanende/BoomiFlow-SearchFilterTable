@@ -849,52 +849,55 @@ export default class SearchFilterTable extends FlowComponent {
                 }
             });
 
-            listItems.set('exportall', (
-                <li
-                    className="sft-cm-item"
-                    title={'Export All'}
-                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.rowMap); }}
-                >
-                    <span
-                        className={'glyphicon glyphicon-floppy-save sft-cm-item-icon'} />
-                    <span
-                        className={'sft-cm-item-label'}
-                    >
-                        Export All
-                    </span>
-                </li>
-            ));
-            listItems.set('exportshown', (
-                <li
-                    className="sft-cm-item"
-                    title={'Export Search Results'}
-                    onClick={(e: any) => {e.stopPropagation(); this.doExport(this.currentRowMap); }}
-                >
-                    <span
-                        className={'glyphicon glyphicon-floppy-save sft-cm-item-icon'} />
-                    <span
-                        className={'sft-cm-item-label'}
-                    >
-                        Export Search Results
-                    </span>
-                </li>
-            ));
-            if (this.selectedRowMap.size > 0) {
-                listItems.set('exportselected', (
+            const canExport: boolean = (this.getAttribute('canExport', 'true').toLowerCase() === 'true');
+            if(canExport) {
+                listItems.set('exportall', (
                     <li
                         className="sft-cm-item"
-                        title={'Export Selected Items'}
-                        onClick={(e: any) => {e.stopPropagation(); this.doExport(this.selectedRowMap); }}
+                        title={'Export All'}
+                        onClick={(e: any) => {e.stopPropagation(); this.doExport(this.rowMap); }}
                     >
                         <span
                             className={'glyphicon glyphicon-floppy-save sft-cm-item-icon'} />
                         <span
                             className={'sft-cm-item-label'}
                         >
-                            Export Selected
+                            Export All
                         </span>
                     </li>
                 ));
+                listItems.set('exportshown', (
+                    <li
+                        className="sft-cm-item"
+                        title={'Export Search Results'}
+                        onClick={(e: any) => {e.stopPropagation(); this.doExport(this.currentRowMap); }}
+                    >
+                        <span
+                            className={'glyphicon glyphicon-floppy-save sft-cm-item-icon'} />
+                        <span
+                            className={'sft-cm-item-label'}
+                        >
+                            Export Shown
+                        </span>
+                    </li>
+                ));
+                if (this.selectedRowMap.size > 0) {
+                    listItems.set('exportselected', (
+                        <li
+                            className="sft-cm-item"
+                            title={'Export Selected Items'}
+                            onClick={(e: any) => {e.stopPropagation(); this.doExport(this.selectedRowMap); }}
+                        >
+                            <span
+                                className={'glyphicon glyphicon-floppy-save sft-cm-item-icon'} />
+                            <span
+                                className={'sft-cm-item-label'}
+                            >
+                                Export Selected
+                            </span>
+                        </li>
+                    ));
+                }
             }
             this.contextMenu.showContextMenu(e.clientX, e.clientY, listItems);
             this.forceUpdate();
@@ -1065,7 +1068,20 @@ export default class SearchFilterTable extends FlowComponent {
         data.forEach((item, key) => {
             opdata.set(key, this.rowMap.get(key));
         });
-        ModelExporter.export(this.colMap, opdata, 'export.csv');
+
+        let cols: Map<string,FlowDisplayColumn>;
+        if(this.getAttribute("exportUserColumns","false").toLowerCase() === 'true'){
+            cols = new Map();
+            this.userColumns.forEach((cname: string) => {
+                if(this.colMap.has(cname)){
+                    cols.set(cname, this.colMap.get(cname));
+                }
+            });
+        }
+        else {
+            cols = this.colMap;
+        }
+        ModelExporter.export(cols, opdata, 'export.csv');
         if (this.outcomes['OnExport']) {
             this.triggerOutcome('OnExport');
         }
@@ -1117,10 +1133,11 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.model.width) {
             style.width = this.model.width + 'px';
         }
-        if (this.model.height) {
+        if (this.model.height > 0) {
             style.height = this.model.height + 'px';
-        } else {
-            style.height = '600px';
+        } 
+        else {
+            style.height = this.getAttribute("height",'60vh');
         }
 
         const title: string = this.model.label || '';

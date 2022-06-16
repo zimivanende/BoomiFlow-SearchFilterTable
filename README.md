@@ -206,6 +206,11 @@ If specified then this will be used as the content of the info popup dialog and 
 
 ## Component Attributes
 
+### height
+
+allows passing a strig to use as the component's height e.g. "600px" or "60vh".
+
+
 ### PaginationSize
 
 Sets the default max number of rows to show per pagination page if the user hasn't selected a different page size.
@@ -217,6 +222,10 @@ Like all components, adding a "classes" attribute will cause that string to be a
 ### canExport
 
 enables or disables the export to csv options.  defaults to "true".  Set to "false" to remove the feature.
+
+### exportUserColumns
+
+sets if all columns are exported or only those shown / selected by user.  defaults to "false".  Set to "true" to export only the user's displayed columns.
 
 ### RowLevelState
 
