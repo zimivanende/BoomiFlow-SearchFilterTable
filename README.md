@@ -394,7 +394,23 @@ The maximum length of a column's text before it's converted to a popout button.
 ### QuickCheck
 Boolean.
 
-If true then check boxes appear in the column headers allowing quick application of true/false criteria to boolean columns
+If true then check boxes appear in the column headers allowing quick application of true/false criteria to boolean columns.
+
+### noResults
+
+String.
+
+The message to be displayed when there are no results.
+
+Default = "No Results Available"
+
+### noResultsFilter
+
+String.
+
+The sub message to be displayed when there are no results and there are filters applied.
+
+Default = "( This may be due to the filters applied )"
 
 ## Styling
 

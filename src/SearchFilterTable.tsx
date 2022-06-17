@@ -783,7 +783,7 @@ export default class SearchFilterTable extends FlowComponent {
     async buildTableRows() {
         this.rowElements = [];
         // loop over rowmap if defined
-        if (this.currentRowPages && this.currentRowPages.length > 0 && this.currentRowPages[this.currentRowPage]) {
+        if (this.currentRowMap && this.currentRowMap.size > 0 && this.currentRowPages && this.currentRowPages.length > 0 && this.currentRowPages[this.currentRowPage]) {
             this.currentRowPages[this.currentRowPage].forEach((node: RowItem, key: string) => {
                 this.rowElements.push(
                     <SearchFilterTableRow
@@ -794,6 +794,21 @@ export default class SearchFilterTable extends FlowComponent {
                     />,
                 );
             });
+        }
+        else {
+            //there's no row or pages
+            this.rowElements.push(
+                <tr
+                    className="sft-table-row"
+                >
+                    <td colSpan={1000}>
+                        <div className="sft-table-row-noresults" >
+                            <span className="sft-table-row-noresults-title">{this.getAttribute("noResults","No Results Available")}</span>
+                            {this.filters.isFiltered ? <span className="sft-table-row-noresults-subtitle">{this.getAttribute("noResultsFilter","( This may be due to the filters applied )")}</span> : null}
+                        </div>
+                    </td>
+                </tr>
+            );
         }
         await this.buildRibbon();
         this.buildFooter();
