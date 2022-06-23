@@ -804,7 +804,7 @@ export default class SearchFilterTable extends FlowComponent {
                     <td colSpan={1000}>
                         <div className="sft-table-row-noresults" >
                             <span className="sft-table-row-noresults-title">{this.getAttribute("noResults","No Results Available")}</span>
-                            {this.filters.isFiltered ? <span className="sft-table-row-noresults-subtitle">{this.getAttribute("noResultsFilter","( This may be due to the filters applied )")}</span> : null}
+                            {this.filters.isFiltered() ? <span className="sft-table-row-noresults-subtitle">{this.getAttribute("noResultsFilter","( This may be due to the filters applied )")}</span> : null}
                         </div>
                     </td>
                 </tr>
