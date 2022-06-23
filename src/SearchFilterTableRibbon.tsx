@@ -22,7 +22,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         this.rightButtons = [];
 
         const root: SearchFilterTable = this.props.root;
-        const canExport: boolean = (root.getAttribute('canExport', 'true').toLowerCase() === 'true');
+        const canExport: boolean = (root.getAttribute('canExport', 'false').toLowerCase() === 'true');
 
         // ad export if allowed
         if (canExport === true) {
