@@ -1492,6 +1492,14 @@
     margin-top: 0 !important;
 }
 
+.sft-header-sticky {
+    position: sticky;
+    z-index: 1020;
+    width: 5rem;
+    min-width: 5rem;
+    left: 49px;
+}
+
 .sft-dlg {
     display: flex;
     flex-direction: column;

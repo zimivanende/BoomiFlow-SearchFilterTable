@@ -33,6 +33,10 @@ Text columns containing a dataUri are handled as specials: -
 
 Columns are configurable at run time if the UserColumnsField is specified as an attribute.
 
+Support for outcome modal popups.
+
+Support for remembering the row that triggered an outcome and to bring that same row into view on any page on re-render.
+
 Only supports model data from a list NOT A SERVICE
 
 ## Height
@@ -106,11 +110,13 @@ Row level outcomes allow for adding rules which will control if the outcome shou
 Top Level Outcomes allow for adding rules based of other non-row data.
 
 The attribute value string should be in JSON format like this: -
+'''
 {
    "field":"fieldDeveloperName",
    "comparator":"enumeratedComparator",
    "value":"valueToTest"
 }
+'''
 
 In the case of row level outcomes, the "field" is set to the developerName of the column to test.
 
@@ -120,18 +126,18 @@ In this case put the field name and optionally attribute name in curly brace not
 
 The "comparator" must be one of the following: - 
 
-"equals"          Value must match
-"not equals"      Value must not match
-"contains"        Value must contain
-"not contains"    Value must contain
-"starts with"     Value must start with 
-"ends with"       Value must end with
-"in"              Value must appear in the comma/space separated opions
-"not in"          Value must not appear in the comma/space separated opions
-"lt"              Value must be less than - number columns only
-"lte"             Value must be less than or equal to - number columns only
-"gt"              Value must be greater than - number columns only
-"gte"             Value must be greater than or equal to - number columns only
+* "equals"          Value must match
+* "not equals"      Value must not match
+* "contains"        Value must contain
+* "not contains"    Value must contain
+* "starts with"     Value must start with 
+* "ends with"       Value must end with
+* "in"              Value must appear in the comma/space separated opions
+* "not in"          Value must not appear in the comma/space separated opions
+* "lt"              Value must be less than - number columns only
+* "lte"             Value must be less than or equal to - number columns only
+* "gt"              Value must be greater than - number columns only
+* "gte"             Value must be greater than or equal to - number columns only
 
 The value should be a string, if "in" or "not in" then supply a list of values space, comma, semi-colon or pipe delimited,
 
