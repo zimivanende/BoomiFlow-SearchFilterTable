@@ -130,6 +130,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                 );
             }
 
+            let fixedCols: number = parseInt(root.getAttribute("stickyColumns","0"));
             root.userColumns.forEach((collName: string) => {
 
                 if (collName === '#BUTTONS#') {
@@ -142,6 +143,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                                 static={true}
                                 inlineSearch={this.props.inlineSearch}
                                 ref={(element: SearchFilterTableHeader) => {this.setHeader('#BUTTONS#', element); }}
+                                sticky={fixedCols > 0}
                             />,
                         );
                     }
@@ -155,6 +157,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                                 column={col}
                                 inlineSearch={this.props.inlineSearch}
                                 ref={(element: SearchFilterTableHeader) => {this.setHeader(col.developerName, element); }}
+                                sticky={fixedCols > 0}
                             />,
                         );
                     } else {
@@ -162,6 +165,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                         root.saveUserColumns();
                     }
                 }
+                if(fixedCols > 0) fixedCols--;
             });
         }
 

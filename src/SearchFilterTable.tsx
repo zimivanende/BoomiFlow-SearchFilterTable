@@ -116,6 +116,10 @@ export default class SearchFilterTable extends FlowComponent {
 
     supressedOutcomes: Map<string,boolean> = new Map();;
 
+    rowRememberColumn: string;
+    lastRememberedRow: string;
+    tableBody: any;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -159,6 +163,11 @@ export default class SearchFilterTable extends FlowComponent {
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
+        this.rowRememberColumn = this.getAttribute("RetainRowColumn");
+        if(this.rowRememberColumn){
+            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
+            //sessionStorage.setItem('sft-lastrow-' + this.componentId, null);
+        }
         
     }
 
@@ -682,18 +691,32 @@ export default class SearchFilterTable extends FlowComponent {
         const start: Date = new Date();
         this.currentRowPages = [];
         let currentPage: Map<string, RowItem> = new Map();
+        this.currentRowPage = 0;
+        
+
         this.currentRowMap.forEach((item: RowItem, key: string) => {
+            let objData: FlowObjectData = this.rowMap.get(key).objectData;
+            let objKey: string;
+            if(this.lastRememberedRow) {
+                objKey = objData.properties[this.rowRememberColumn]?.value as string;
+            }
             if (currentPage.size < this.maxPageRows) {
                 currentPage.set(key, item);
+                if(objKey && this.lastRememberedRow && objKey===this.lastRememberedRow){
+                    this.currentRowPage = this.currentRowPages.length;
+                }
             } else {
                 this.currentRowPages.push(currentPage);
                 currentPage = new Map();
                 currentPage.set(key, item);
+                if(objKey && this.lastRememberedRow && objKey===this.lastRememberedRow){
+                    this.currentRowPage = this.currentRowPages.length;
+                }
             }
         });
         // add any stragglers
         this.currentRowPages.push(currentPage);
-        this.currentRowPage = 0;
+        
         const end: Date = new Date();
         this.buildTableRows();
     }
@@ -782,6 +805,7 @@ export default class SearchFilterTable extends FlowComponent {
     ////////////////////////////////////////////////////////////////////
     async buildTableRows() {
         this.rowElements = [];
+    
         // loop over rowmap if defined
         if (this.currentRowMap && this.currentRowMap.size > 0 && this.currentRowPages && this.currentRowPages.length > 0 && this.currentRowPages[this.currentRowPage]) {
             this.currentRowPages[this.currentRowPage].forEach((node: RowItem, key: string) => {
@@ -793,6 +817,7 @@ export default class SearchFilterTable extends FlowComponent {
                         ref={(element: SearchFilterTableRow) => {this.setRow(key , element); }}
                     />,
                 );
+                
             });
         }
         else {
@@ -953,6 +978,10 @@ export default class SearchFilterTable extends FlowComponent {
             if (val) {
                 val.value = objData;
                 await this.updateValues(val);
+            }
+            // reload last selected row if any
+            if(this.rowRememberColumn){
+                sessionStorage.setItem('sft-lastrow-' + this.componentId,objData.properties[this.rowRememberColumn]?.value as string);
             }
         }
         if (this.outcomes[outcomeName]) {
@@ -1198,9 +1227,11 @@ export default class SearchFilterTable extends FlowComponent {
             body = (
                 <div
                     className="sft-scroller-body"
+                    ref={(element: any) => {this.tableBody = element}}
                 >
                     <table
                         style={{minWidth: '100%'}}
+                        
                     >
                         <thead>
                             {this.headersElement}

@@ -40,11 +40,15 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
             }
             quickCheck = root.filters.getQuickCheck(col.developerName);
         }
+        let cls: string = "sft-column-header";
+        if(this.props.sticky) {
+            cls += " sft-header-sticky"
+        }
 
         return (
             <th
                 key={col.developerName}
-                className="sft-column-header"
+                className={cls}
                 style={{pointerEvents: 'all'}}
                 ref={(element: any) => {this.th = element; }}
             >

@@ -248,6 +248,14 @@ Valid options are "text" or "iconandtext" or "icon".
 
 Default is text only.
 
+### RetainRowColumn
+
+String.
+
+The name of a column which should be used as the primary key for a row so that it can be brought back into view on return to the table.
+
+It will calculate the page the row now exists in and scroll to bring that row to center screen.
+
 
 ### IsSelectedColumn
 
