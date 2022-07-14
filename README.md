@@ -129,7 +129,7 @@ The "comparator" must be one of the following: -
 * "equals"          Value must match
 * "not equals"      Value must not match
 * "contains"        Value must contain
-* "not contains"    Value must contain
+* "not contains"    Value must not contain
 * "starts with"     Value must start with 
 * "ends with"       Value must end with
 * "in"              Value must appear in the comma/space separated opions
