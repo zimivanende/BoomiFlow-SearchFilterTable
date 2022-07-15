@@ -160,6 +160,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.cancelOutcomeForm = this.cancelOutcomeForm.bind(this);
         this.okOutcomeForm = this.okOutcomeForm.bind(this);
 
+        this.bringColumnIntoView = this.bringColumnIntoView.bind(this);
+
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
@@ -229,13 +231,6 @@ export default class SearchFilterTable extends FlowComponent {
 
     filtersChanged(key: string, event: eFilterEvent) {
         // get the column header for key column if exists
-        let offset: any;
-        let sortKey: String;
-        // if (key) {
-        //    const col: HTMLElement = this.headers.headers.get(key);
-        //    offset = col.offsetLeft;
-        // }
-
         this.headers?.forceUpdate();
         localStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
         // this.buildRibbon();
@@ -243,8 +238,6 @@ export default class SearchFilterTable extends FlowComponent {
             case eFilterEvent.sort:
                 if (this.filters.get(key).sort !== eSortDirection.none) {
                     const col: SearchFilterTableHeader = this.headers.headers.get(key);
-                    // offset = col.offsetLeft;
-                    // sortKey = key;
                 }
 
                 break;
@@ -257,13 +250,15 @@ export default class SearchFilterTable extends FlowComponent {
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate(() => {
-            if (offset && sortKey && sortKey === key) {
-                // const col: HTMLElement = this.headers.headers.get(key);
-                // offset = col.offsetLeft;
-                // this.scroller.scrollLeft =  offset;
+            if(event === eFilterEvent.sort) {
+                this.bringColumnIntoView(key)
             }
         });
+    }
 
+    bringColumnIntoView(col: any) {
+        let header: any =  this.headers.headers.get(col);
+        header.th.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
     }
 
     globalFilterChanged(value: string) {
