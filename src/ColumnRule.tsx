@@ -54,6 +54,15 @@ export class ColumnRule {
                 break;
             case 'outcome':
                 colRule.outcomeName = rule.outcomeName;
+                break;
+            case 'lookup':
+                colRule.lookupTable = new Map();
+                if(rule.options) {
+                    Object.keys(rule.options).forEach((key: any) => {
+                        colRule.lookupTable.set(key,rule.options[key]);
+                    });
+                }
+                break;
 
             default:
                 break;
@@ -72,6 +81,7 @@ export class ColumnRule {
     whiteSpace: string;
     cssClass: string;
     outcomeName: string;
+    lookupTable: Map<any,any>;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -208,7 +218,14 @@ export class ColumnRule {
                 return (
                     <span className={classes} style={style}>{result}</span>
                 );
-
+            case "lookup":
+                let enval: any = value;
+                if(this.lookupTable.has(value)){
+                    enval = this.lookupTable.get(value)
+                }
+                return(
+                    <span className={classes} style={style}>{enval}</span>
+                );
             default:
                 return(
                     <span className={classes} style={style}>{value}</span>

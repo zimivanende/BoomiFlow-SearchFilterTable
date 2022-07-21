@@ -358,11 +358,18 @@ The value is a JSON object with one attribute per column.
    "MyColumn":{
       "mode":"outcome",
       "outcomeName":"MyOutcome",
+   },
+   "Status":{
+      "mode":"lookup",
+      "options":{
+         "A": "Active",
+         "P":"Passive"
+      },
    }
 }
 ```
 
-Currently mode only supports "url","outcome", "class" & "dateFormat".
+Currently mode only supports "url","outcome", "class", lookup & "dateFormat".
 
 Note: If there is a column rule with mode outcome then that outcome will be forcibly hidden from the actions column
 
@@ -380,6 +387,8 @@ For "dateFormat" you can use: -
 "iso"       shows date & time in ISO format
 "utc"       shows date & time in UTC format
 "year"      shows only the year element
+
+For "lookup" you are providing a value to display text conversion set.  The actual column's value will be compared to the key and if found replaced with the corresponding value.
 
 ### OutcomesPosition
 
