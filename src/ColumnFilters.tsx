@@ -335,6 +335,7 @@ export default class ColumnFilters {
             item.criteria.forEach((criteria: ColumnCriteria) => {
                 let val: any;
                 let crit: any;
+                let crit2: any;
                 switch (objData.properties[item.key]?.contentType) {
                     case eContentType.ContentString:
                         val = (objData.properties[item.key].value as string)?.toLowerCase();
@@ -346,7 +347,8 @@ export default class ColumnFilters {
                         break;
                     case eContentType.ContentNumber:
                         val = (objData.properties[item.key].value as number);
-                        crit = criteria.value;
+                        crit = parseInt(criteria.value);
+                        crit2 = parseInt(criteria.value2);
                         break;
                     case eContentType.ContentBoolean:
                         val = (objData.properties[item.key].value as boolean);
@@ -357,6 +359,8 @@ export default class ColumnFilters {
                         if (isNaN(val)) {val = 0; } else {(val = val.getTime()); }
                         crit = new Date(criteria.value);
                         if (isNaN(crit)) {crit = 0; } else {(crit = crit.getTime()); }
+                        crit2 = new Date(criteria.value2);
+                        if (isNaN(crit2)) {crit2 = 0; } else {(crit2 = crit2.getTime()); }
                         break;
                     default:
                         val = '';
@@ -423,12 +427,17 @@ export default class ColumnFilters {
                         }
                         break;
                     case eColumnComparator.lessThan:
-                        if (crit < val) {
+                        if (crit <= val) {
                             matches = false;
                         }
                         break;
                     case eColumnComparator.greaterThan:
-                        if (crit > val) {
+                        if (crit >= val) {
+                            matches = false;
+                        }
+                        break;
+                    case eColumnComparator.between:
+                        if (val < crit || val > crit2 ) {
                             matches = false;
                         }
                         break;

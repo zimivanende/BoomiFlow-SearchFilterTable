@@ -23,7 +23,7 @@ export default class FilterManagementForm extends React.Component<any, any> {
     }
 
     addCriteria(fieldName: string) {
-        this.newFilters.items.set(fieldName, new ColumnFilter(fieldName, this.newFilters, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, '')]));
+        this.newFilters.items.set(fieldName, new ColumnFilter(fieldName, this.newFilters, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, '', '')]));
         this.forceUpdate();
     }
 

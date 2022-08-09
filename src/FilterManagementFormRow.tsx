@@ -12,6 +12,7 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.valueChanged = this.valueChanged.bind(this);
+        this.valueToChanged = this.valueToChanged.bind(this);
         this.comparatorChanged = this.comparatorChanged.bind(this);
         this.removeCriteria = this.removeCriteria.bind(this);
     }
@@ -26,6 +27,11 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
         this.forceUpdate();
     }
 
+    valueToChanged(e: any) {
+        this.props.criteria.value2 = e.target.value;
+        this.forceUpdate();
+    }
+
     comparatorChanged(e: any) {
         if (this.comparatorElement && this.comparatorElement.options[this.comparatorElement.selectedIndex].value) {
             const value = this.comparatorElement.options[this.comparatorElement.selectedIndex].value;
@@ -33,9 +39,14 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
             this.props.criteria.comparator = comparator;
             if ((comparator !== eColumnComparator.in && comparator !== eColumnComparator.notIn) && typeof this.props.criteria.value !== 'string') {
                 this.props.criteria.value = '';
+                this.props.criteria.value2 = '';
+
             } else {
                 if ((comparator === eColumnComparator.in || comparator === eColumnComparator.notIn) && typeof this.props.criteria.value === 'string') {
                     this.props.criteria.value = new Map();
+                }
+                if(comparator !== eColumnComparator.between) {
+                    this.props.criteria.value2 = '';
                 }
             }
             this.forceUpdate();
@@ -62,16 +73,16 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
         } else {
             const fieldOptions: any[] = [];
             parent.columns.forEach((field: FlowDisplayColumn) => {
-            fieldOptions.push(
-                <option
-                    className="sft-fmf-row-criteria-select-option"
-                    value={field.developerName}
-                    selected={field.developerName === fieldDef.developerName}
-                >
-                    {field.label}
-                </option>,
-            );
-        });
+                fieldOptions.push(
+                    <option
+                        className="sft-fmf-row-criteria-select-option"
+                        value={field.developerName}
+                        selected={field.developerName === fieldDef.developerName}
+                    >
+                        {field.label}
+                    </option>,
+                );
+            });
             fieldInput = (
                 <select
                     className="sft-fmf-row-criteria-select"
@@ -84,7 +95,9 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
         const criteriaOptions: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', fieldDef.contentType);
 
         let input: any;
-
+        let input2: any;
+        let label1: string = "Value";
+        let label2: any;
         if (criteria.comparator === eColumnComparator.in || criteria.comparator === eColumnComparator.notIn) {
             input = (this.props.parent.props.parent as SearchFilterTable).getColumnUniques(fieldDef.developerName, criteria.value);
         } else {
@@ -98,6 +111,28 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                             onChange={this.valueChanged}
                         />
                     );
+                    if(criteria.comparator === eColumnComparator.between){
+                        input2 = (
+                            <div
+                                className="sft-fmf-row-value"
+                            >
+                                <input
+                                    className="sft-fmf-row-criteria-date"
+                                    type="date"
+                                    value={this.props.criteria.value2}
+                                    onChange={this.valueToChanged}
+                                />
+                            </div>
+                        );
+                        label1="From";
+                        label2=(
+                            <div
+                                className="sft-fmf-row-caption"
+                            >
+                                {"To"}
+                            </div>
+                        );  
+                    }
                     break;
 
                 case eContentType.ContentNumber:
@@ -109,6 +144,29 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                             onChange={this.valueChanged}
                         />
                     );
+                    if(criteria.comparator === eColumnComparator.between){
+                        input2 = (
+                            <div
+                                className="sft-fmf-row-value"
+                            >
+                                <input
+                                    className="sft-fmf-row-criteria-number"
+                                    type="number"
+                                    value={this.props.criteria.value2}
+                                    onChange={this.valueToChanged}
+                                />
+                            </div>
+                            
+                        );  
+                        label1="From";
+                        label2=(
+                            <div
+                                className="sft-fmf-row-caption"
+                            >
+                                {"To"}
+                            </div>
+                        ); 
+                    }
                     break;
                 case eContentType.ContentBoolean:
                     input = (
@@ -153,8 +211,9 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                     <div
                         className="sft-fmf-row-caption"
                     >
-                        Value
+                        {label1}
                     </div>
+                    {label2}
                 </div>
                 <div
                     className="sft-fmf-row-values"
@@ -180,6 +239,7 @@ export default class FilterManagementFormRow extends React.Component<any, any> {
                     >
                         {input}
                     </div>
+                    {input2}
                     <button
                         className="sft-ribbon-search-button-wrapper"
                         title="Remove criteria"

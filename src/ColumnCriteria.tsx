@@ -6,6 +6,7 @@ export enum eColumnComparator {
     notEqualTo,
     greaterThan,
     lessThan,
+    between,
     startsWith,
     endsWith,
     contains,
@@ -29,6 +30,7 @@ export default class ColumnCriteria {
             case eColumnComparator.notIn: return 'Is Not In';
             case eColumnComparator.greaterThan: return 'Greater Than';
             case eColumnComparator.lessThan: return 'Less Than';
+            case eColumnComparator.between: return 'Between';
         }
     }
 
@@ -55,6 +57,7 @@ export default class ColumnCriteria {
             // numeric & date
             case eColumnComparator.lessThan:
             case eColumnComparator.greaterThan:
+            case eColumnComparator.between:
                 if ([eContentType.ContentDateTime, eContentType.ContentNumber].indexOf(fieldType) >= 0) {
                     return true;
                 } else {
@@ -84,29 +87,20 @@ export default class ColumnCriteria {
     }
     comparator: eColumnComparator;
     value: any;
+    value2: any;
 
-    constructor(comparator: eColumnComparator, value: any) {
+    constructor(comparator: eColumnComparator, value: any, value2?: any) {
         this.comparator = comparator;
         switch (comparator) {
             case eColumnComparator.in:
             case eColumnComparator.notIn:
-                // let vals: any[];
-                // if (typeof value === 'string') {
-                //    vals = value.split(',');
-                // } else {
-                //    vals = JSON.parse(value);
-                // }
-
-                // this.value = new Map();
-                // vals?.forEach((val: any) => {
-                //    this.value.set(val, val);
-                // });
-                // this.value.push(value);
                 this.value = value;
+                this.value2 = value2;
                 break;
 
             default:
                 this.value = value;
+                this.value2 = value2;
         }
     }
 
@@ -121,6 +115,7 @@ export default class ColumnCriteria {
             result.value = JSON.stringify(vals);
         } else {
             result.value = this.value;
+            result.value2 = this.value2;
         }
         return JSON.stringify(result);
     }

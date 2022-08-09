@@ -28,7 +28,7 @@ export default class ColumnFilter {
                     crit.value = vmap;
                 }
             }
-            this.criteria.push(new ColumnCriteria(crit.comparator, crit.value));
+            this.criteria.push(new ColumnCriteria(crit.comparator, crit.value, crit.value2));
         });
         this.notify = this.notify.bind(this);
     }

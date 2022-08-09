@@ -57,12 +57,30 @@ export default class FilterConfigForm extends React.Component<any, any> {
             this.newCriteria.forEach((criteria: ColumnCriteria) => {
                 const options: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', this.props.contentType);
                 let critBox: any;
+                let critBox2: any;
                 switch (criteria.comparator) {
                     case eColumnComparator.in:
                     case eColumnComparator.notIn:
                         critBox = this.props.root.getColumnUniques(this.props.developerName, criteria);
                         break;
-
+                    case eColumnComparator.between:
+                        critBox = (
+                            <input
+                                type="text"
+                                className="sft-fmf-row-criteria-text"
+                                defaultValue={criteria.value}
+                                onChange={(e: any) => {criteria.value = e.target.value; }}
+                            />
+                        );
+                        critBox2 = (
+                            <input
+                                type="text"
+                                className="sft-fmf-row-criteria-text"
+                                defaultValue={criteria.value2}
+                                onChange={(e: any) => {criteria.value2 = e.target.value; }}
+                            />
+                        );
+                        break;
                     default:
                         critBox = (
                             <input
@@ -114,6 +132,7 @@ export default class FilterConfigForm extends React.Component<any, any> {
                                 className="sft-fmf-row-value"
                             >
                                 {critBox}
+                                {critBox2}
                             </div>
                             <button
                                 className="sft-ribbon-search-button-wrapper"
