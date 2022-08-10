@@ -365,11 +365,22 @@ The value is a JSON object with one attribute per column.
          "A": "Active",
          "P":"Passive"
       },
+   },
+   "PCColumn":{
+      "mode":"percent"
+   },
+   "StyleColumn":{
+      "mode":"format",
+      "format":"whatever {{value}} you want"
+   },
+   "DollarColumn":{
+      "mode":"currency",
+      "currency":"USD"
    }
 }
 ```
 
-Currently mode only supports "url","outcome", "class", lookup & "dateFormat".
+Currently mode only supports "url","outcome", "class", "lookup", "percent", "format", "currency" & "dateFormat".
 
 Note: If there is a column rule with mode outcome then that outcome will be forcibly hidden from the actions column
 
@@ -389,6 +400,12 @@ For "dateFormat" you can use: -
 "year"      shows only the year element
 
 For "lookup" you are providing a value to display text conversion set.  The actual column's value will be compared to the key and if found replaced with the corresponding value.
+
+For "percent" the value will be converted to an int and the % symbol appended.
+
+For "format" you need to add a "format" argument, this will be displayed with the {{value}} token replaced with the column's value.
+
+For "currency" you need to add a "currency" argument which should be the 3 char currency enum value like USD, GBP etc.
 
 ### OutcomesPosition
 

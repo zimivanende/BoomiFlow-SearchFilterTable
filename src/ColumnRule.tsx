@@ -63,7 +63,12 @@ export class ColumnRule {
                     });
                 }
                 break;
-
+            case 'format':
+                colRule.format = rule.format;
+                break;
+            case 'currency':
+                colRule.currency = rule.currency;
+                break;
             default:
                 break;
         }
@@ -82,6 +87,8 @@ export class ColumnRule {
     cssClass: string;
     outcomeName: string;
     lookupTable: Map<any,any>;
+    format: string;
+    currency: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -195,7 +202,7 @@ export class ColumnRule {
                                 result = dt.toLocaleString();
                                 break;
                             case 'date':
-                                result = dt.toLocaleDateString();
+                                result = dt.toLocaleDateString("en-GB",{day:"2-digit", month:"short", year:"numeric"});
                                 break;
                             case 'time':
                                 result = dt.toLocaleTimeString();
@@ -225,6 +232,29 @@ export class ColumnRule {
                 }
                 return(
                     <span className={classes} style={style}>{enval}</span>
+                );
+            case "percent":
+                let pc: string = parseInt(""+value) + "%";
+                return(
+                    <span className={classes} style={style}>{pc}</span>
+                );
+            case "format":
+                let res: string = this.format.replaceAll("{{value}}",value);
+                return(
+                    <span className={classes} style={style}>{res}</span>
+                );
+            case "currency":
+                var formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: this.currency,
+                  
+                    // These options are needed to round to whole numbers if that's what you want.
+                    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                    maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+                  });
+                let amt: string = formatter.format(value);
+                return(
+                    <span className={classes} style={style}>{amt}</span>
                 );
             default:
                 return(
