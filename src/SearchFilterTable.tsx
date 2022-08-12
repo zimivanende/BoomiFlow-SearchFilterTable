@@ -326,9 +326,10 @@ export default class SearchFilterTable extends FlowComponent {
     async flowMoved(xhr: any, request: any) {
         const me: any = this;
         if (xhr.invokeType === 'FORWARD') {
-            if (this.loadingState !== eLoadingState.ready && this.retries < 3) {
+            if (this.loadingState !== eLoadingState.ready && this.retries < 20) {
                 this.loaded=false;
                 this.retries ++;
+                console.log("retry " + this.retries + " after flow move");
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
                 this.retries = 0;
