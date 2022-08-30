@@ -643,6 +643,8 @@ export default class SearchFilterTable extends FlowComponent {
 
             this.rowMap.set(node.id, node);
         });
+        // save the selected items to state
+        await this.saveSelected();
         const end: Date = new Date();
     
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
