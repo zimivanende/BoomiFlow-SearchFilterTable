@@ -120,8 +120,10 @@ The attribute value string should be in JSON format like this: -
 
 In the case of row level outcomes, the "field" is set to the developerName of the column to test.
 
-For top level outcomes the field specifies the name of a flow field or one of its attributes to test.
-In this case put the field name and optionally attribute name in curly brace notation: -
+The "field" specifies either the name of a row's column (only in the case of row level outcomes) or the name of a flow field or one of its attributes to test.
+The "value" specifies either a fixed value or the name of a flow field or one of its attributes to compare to.
+
+In the case either the field or value is a flow field then put the field name and optionally attribute name in curly brace notation: -
 {{FlowFieldName}} or {{FlowFieldName->PropertyName}}
 
 The "comparator" must be one of the following: - 

@@ -17,12 +17,15 @@ export default class CommonFunctions {
         if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
             try {
                 const rule = JSON.parse(outcome.attributes.rule.value);
-                let value: any;
+                
                 let contentType: eContentType;
                 // since this is a global then the value of the rule.field must be a flow field or the property of one
                 // split the rule.field on the separator
                 let match: any;
                 let fld: string = rule.field;
+                let fld2 = rule.value;
+                let value: any = fld;
+                let compareTo: any = fld2;
                 while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
                     // is it a known static
                     switch (match[1]) {
@@ -63,8 +66,49 @@ export default class CommonFunctions {
                     }
                     fld = fld.replace(match[0], value);
                 }
+                
+                while (match = RegExp(/{{([^}]*)}}/).exec(fld2)) {
+                    // is it a known static
+                    switch (match[1]) {
+                        case 'TENANT_ID':
+                            contentType = eContentType.ContentString;
+                            value = 'MyTenentId';
+                            break;
 
-                result = result && CommonFunctions.assessRule(value, rule.comparator, rule.value, contentType);
+                        default:
+                            const fldElements: string[] = match[1].split('->');
+                            // element[0] is the flow field name
+                            let val: FlowField;
+                            if (root.fields[fldElements[0]]) {
+                                val = root.fields[fldElements[0]];
+                            } else {
+                                val = await root.loadValue(fldElements[0]);
+                            }
+
+                            if (val) {
+                                let od: FlowObjectData = val.value as FlowObjectData;
+                                if (od) {
+                                    if (fldElements.length > 1) {
+                                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                            contentType = (od as FlowObjectData).properties[fldElements[epos]]?.contentType;
+                                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                        }
+                                        compareTo = od;
+                                    } else {
+                                        compareTo = val.value;
+                                        contentType = val.contentType;
+                                    }
+                                } else {
+                                    compareTo = val.value;
+                                    contentType = val.contentType;
+                                }
+                            }
+                            break;
+                    }
+                    fld2 = fld2.replace(match[0], value);
+                }
+
+                result = result && CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
             } catch (e) {
                 console.log('The rule on top level outcome ' + outcome.developerName + ' is invalid');
             }
@@ -81,10 +125,13 @@ export default class CommonFunctions {
         if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
             try {
                 const rule = JSON.parse(outcome.attributes.rule.value);
-                let value: any;
+                
                 let contentType: eContentType;
                 let match: any;
                 let fld: string = rule.field;
+                let fld2: string = rule.value;
+                let value: any = fld;
+                let compareTo: any= fld2;
                 while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
                     // is it a known static
                     switch (match[1]) {
@@ -122,11 +169,48 @@ export default class CommonFunctions {
                     fld = fld.replace(match[0], value);
                 }
 
+                while (match = RegExp(/{{([^}]*)}}/).exec(fld2)) {
+                    // is it a known static
+                    switch (match[1]) {
+                        case 'TENANT_ID':
+                            contentType = eContentType.ContentString;
+                            value = 'MyTenentId';
+                            break;
+
+                        default:
+                            const fldElements: string[] = match[1].split('->');
+                            // element[0] is the flow field name
+                            let val: FlowField;
+                            val = root.fields[fldElements[0]];
+                            
+                            if (val) {
+                                let od: FlowObjectData = val.value as FlowObjectData;
+                                if (od) {
+                                    if (fldElements.length > 1) {
+                                        for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                            contentType = (od as FlowObjectData).properties[fldElements[epos]]?.contentType;
+                                            od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                                        }
+                                        compareTo = od;
+                                    } else {
+                                        compareTo = val.value;
+                                        contentType = val.contentType;
+                                    }
+                                } else {
+                                    compareTo = val.value;
+                                    contentType = val.contentType;
+                                }
+                            }
+                            break;
+                    }
+                    fld2 = fld2.replace(match[0], value);
+                }
+
                 if (row.properties[fld]) {
                     const property: FlowObjectDataProperty = row.properties[fld];
-                    result = CommonFunctions.assessRule(property.value, rule.comparator, rule.value, property.contentType);
+                    result = CommonFunctions.assessRule(property.value, rule.comparator, compareTo, property.contentType);
                 } else {
-                    result = CommonFunctions.assessRule(value, rule.comparator, rule.value, contentType);
+                    result = CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
                 }
 
             } catch (e) {
