@@ -1500,6 +1500,14 @@
     left: 49px;
 }
 
+.bad-cell {
+    background-color: red;
+}
+
+.bad-row {
+    background-color: rgb(255 236 236) !important;
+}
+
 .sft-dlg {
     display: flex;
     flex-direction: column;

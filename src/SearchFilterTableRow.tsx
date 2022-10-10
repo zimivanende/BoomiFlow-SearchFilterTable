@@ -52,7 +52,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         const root: SearchFilterTable = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
-
+        let rowClass: string="";
         const buttons: any[] = [];
         let anyoutcomes: boolean = false;
         Object.keys(root.outcomes).forEach((key: string) => {
@@ -141,11 +141,16 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
                 // root.colMap.forEach((col: FlowDisplayColumn) => {
                 if (col) {
-                const val: any = this.formatValue(col.componentType, col.contentType, root, objData?.properties[col.developerName], objData);
+                    let cellResult: any = this.formatValue(col.componentType, col.contentType, root, objData?.properties[col.developerName], objData);
+                    const val: any = cellResult.result;
+                    if(rowClass.length > 0) {
+                        rowClass+= " ";
+                    }
+                    rowClass+= cellResult.rowClass;
 
                 cols.push(
                         <td
-                            className="sft-table-cell"
+                            className={"sft-table-cell " + cellResult.cellClass}
                         >
                             {val}
                         </td>,
@@ -158,7 +163,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         });
         return (
             <tr
-                className="sft-table-row"
+                className={"sft-table-row " + rowClass}
                 ref={(element: any) => {this.rowElement = element}}
             >
                 {cols}
@@ -169,9 +174,14 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     // handles special contents like uris & dataUri
     formatValue(componentType: string, contentType: eContentType,  root: SearchFilterTable, value: FlowObjectDataProperty, row: FlowObjectData): any {
         let result: any;
+        let rowClass: string = "";
+        let cellClass: string = "";
         if (value && value.developerName) {
             if (root.columnRules.has(value.developerName)) {
-                result = root.columnRules.get(value.developerName).generateColumnContent(value.value, row, root);
+                let ruleResult: any = root.columnRules.get(value.developerName).generateColumnContent(value.value, row, root);
+                result = ruleResult.content;
+                rowClass = ruleResult.rowClass;
+                cellClass = ruleResult.cellClass;
             } else {
                 if (componentType?.length > 0) {
                     const columnProps = {
@@ -366,7 +376,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         } else {
             console.log('One of the columns in the table had a null name.  Check the table display columns settings in Flow');
         }
-        return result;
+        return {result,rowClass, cellClass};
     }
 
     isUrlImage(url: string): boolean {

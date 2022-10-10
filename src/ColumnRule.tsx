@@ -1,5 +1,6 @@
 import { eContentType, FlowField, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
 import React, { CSSProperties } from 'react';
+import { eColumnComparator } from './ColumnCriteria';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
 
@@ -23,7 +24,7 @@ export class ColumnRules {
                     rules.set(key, ColumnRule.parse(key, rObj[key], parent));
                 });
             } catch (e) {
-
+                console.log("Column rules attribute badly formatted");
             }
         }
 
@@ -40,6 +41,7 @@ export class ColumnRule {
         colRule.parent = parent;
         colRule.whiteSpace = rule.whitespace || '';
         colRule.cssClass = rule.classes || '';
+        colRule.condition = rule.condition;
         switch (colRule.mode) {
             case 'url':
                 colRule.target = rule.target || '_blank';
@@ -50,7 +52,9 @@ export class ColumnRule {
                 colRule.dateFormat = rule.dateFormat;
                 break;
             case 'class':
+            case 'style':
                 colRule.className = rule.className;
+                colRule.rowClassName = rule.rowClassName;
                 break;
             case 'outcome':
                 colRule.outcomeName = rule.outcomeName;
@@ -89,6 +93,8 @@ export class ColumnRule {
     lookupTable: Map<any,any>;
     format: string;
     currency: string;
+    condition: ColumnRuleCondition;
+    rowClassName: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -120,146 +126,192 @@ export class ColumnRule {
         if (this.cssClass) {
             classes += ' ' + this.cssClass;
         }
+
+        let applyRule: boolean = true;
+        if(this.condition) {
+            switch(this.condition.comparator.toLowerCase()){
+                case "equals":
+                    applyRule = value===this.condition.value;
+                    break;
+                case "not equals":
+                    applyRule = value!==this.condition.value;
+                    break;
+            }
+        }
         let label: string;
         let match: any;
+        let content: any;
+        let rowClass: string="";
+        let cellClass: string="";
+
         const matches: any[] = [];
-        switch (this.mode) {
-            case 'outcome':
-                label = this.label || value;
-                let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
-                
+        if(applyRule === true) {
+            rowClass=this.rowClassName;
+            switch (this.mode) {
+                case 'outcome':
+                    label = this.label || value;
+                    let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
+                    
 
-                // use regex to find any {{}} tags in content and save them in matches
-                
-                
-                while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
-                    const prop: any = row.properties[match[1].replace('&amp;', '&')];
-                    if (prop) {
-                        const subs: string = this.getTextValue(prop);
-                        label = label.replace(match[0], subs);
-                    }
-                }
-                if(show) {
-                    let toolTip: string = sft.outcomes[this.outcomeName].label;
-                    return(
-                        <span
-                            className="sft-table-cell-href"
-                            onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
-                            title={toolTip}
-                        >
-                            {label}
-                        </span>
-                    );
-                }
-                else {
-                    return(
-                        <span className={classes} style={style}>{value}</span>
-                    );
-                }
-                
-
-            case 'url':
-                const href: string = this.url.replace('{{VALUE}}', value);
-                label = this.label || value;
-
-                // use regex to find any {{}} tags in content and save them in matches
-                while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
-                    const prop: any = row.properties[match[1].replace('&amp;', '&')];
-                    if (prop) {
-                        const subs: string = this.getTextValue(prop);
-                        label = label.replace(match[0], subs);
-                    }
-                }
-                return(
-                    <a
-                        className="sft-table-cell-href"
-                        href={href}
-                        target={this.target}
-                    >
-                        {label}
-                    </a>
-                );
-            case 'class':
-                const columnProps = {
-                    id: row.internalId,
-                    propertyId: value.typeElementPropertyId,
-                    contentValue: value.value,
-                    objectData: value.value,
-                    flowKey: this.parent.flowKey,
-                    contentType: value.contentType,
-                    contentFormat: value.contentFormat,
-                    row,
-                    sft: this.parent,
-                };
-                return React.createElement(this.className, columnProps);
-            case 'dateformat':
-                let result: string = '';
-                if (value) {
-                    const dt: Date = new Date(value);
-                    if (!isNaN(dt.getTime())) {
-                        switch (this.dateFormat.toLowerCase()) {
-                            case 'datetime':
-                                result = dt.toLocaleString();
-                                break;
-                            case 'date':
-                                result = dt.toLocaleDateString("en-GB",{day:"2-digit", month:"short", year:"numeric"});
-                                break;
-                            case 'time':
-                                result = dt.toLocaleTimeString();
-                                break;
-                            case 'json':
-                                result = dt.toJSON();
-                                break;
-                            case 'iso':
-                                result = dt.toISOString();
-                                break;
-                            case 'utc':
-                                result = dt.toUTCString();
-                                break;
-                            case 'year':
-                                result = '' + dt.getFullYear();
-                                break;
+                    // use regex to find any {{}} tags in content and save them in matches
+                    
+                    
+                    while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
+                        const prop: any = row.properties[match[1].replace('&amp;', '&')];
+                        if (prop) {
+                            const subs: string = this.getTextValue(prop);
+                            label = label.replace(match[0], subs);
                         }
                     }
-                }
-                return (
-                    <span className={classes} style={style}>{result}</span>
-                );
-            case "lookup":
-                let enval: any = value;
-                if(this.lookupTable.has(value)){
-                    enval = this.lookupTable.get(value)
-                }
-                return(
-                    <span className={classes} style={style}>{enval}</span>
-                );
-            case "percent":
-                let pc: string = parseInt(""+value) + "%";
-                return(
-                    <span className={classes} style={style}>{pc}</span>
-                );
-            case "format":
-                let res: string = this.format.replaceAll("{{value}}",value);
-                return(
-                    <span className={classes} style={style}>{res}</span>
-                );
-            case "currency":
-                var formatter = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: this.currency,
-                  
-                    // These options are needed to round to whole numbers if that's what you want.
-                    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-                    maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-                  });
-                let amt: string = formatter.format(value);
-                return(
-                    <span className={classes} style={style}>{amt}</span>
-                );
-            default:
-                return(
-                    <span className={classes} style={style}>{value}</span>
-                );
+                    if(show) {
+                        let toolTip: string = sft.outcomes[this.outcomeName].label;
+                        content = (
+                            <span
+                                className="sft-table-cell-href"
+                                onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
+                                title={toolTip}
+                            >
+                                {label}
+                            </span>
+                        );
+                    }
+                    else {
+                        content = (
+                            <span className={classes} style={style}>{value}</span>
+                        );
+                    }
+                    break;
+                    
+
+                case 'url':
+                    const href: string = this.url.replace('{{VALUE}}', value);
+                    label = this.label || value;
+
+                    // use regex to find any {{}} tags in content and save them in matches
+                    while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
+                        const prop: any = row.properties[match[1].replace('&amp;', '&')];
+                        if (prop) {
+                            const subs: string = this.getTextValue(prop);
+                            label = label.replace(match[0], subs);
+                        }
+                    }
+                    content = (
+                        <a
+                            className="sft-table-cell-href"
+                            href={href}
+                            target={this.target}
+                        >
+                            {label}
+                        </a>
+                    );
+                    break;
+                case 'class':
+                    const columnProps = {
+                        id: row.internalId,
+                        propertyId: value.typeElementPropertyId,
+                        contentValue: value.value,
+                        objectData: value.value,
+                        flowKey: this.parent.flowKey,
+                        contentType: value.contentType,
+                        contentFormat: value.contentFormat,
+                        row,
+                        sft: this.parent,
+                    };
+                    content = React.createElement(this.className, columnProps);
+                    break;
+                case 'dateformat':
+                    let result: string = '';
+                    if (value) {
+                        const dt: Date = new Date(value);
+                        if (!isNaN(dt.getTime())) {
+                            switch (this.dateFormat.toLowerCase()) {
+                                case 'datetime':
+                                    result = dt.toLocaleString();
+                                    break;
+                                case 'date':
+                                    result = dt.toLocaleDateString("en-GB",{day:"2-digit", month:"short", year:"numeric"});
+                                    break;
+                                case 'time':
+                                    result = dt.toLocaleTimeString();
+                                    break;
+                                case 'json':
+                                    result = dt.toJSON();
+                                    break;
+                                case 'iso':
+                                    result = dt.toISOString();
+                                    break;
+                                case 'utc':
+                                    result = dt.toUTCString();
+                                    break;
+                                case 'year':
+                                    result = '' + dt.getFullYear();
+                                    break;
+                            }
+                        }
+                    }
+                    content = (
+                        <span className={classes} style={style}>{result}</span>
+                    );
+                    break;
+                case "lookup":
+                    let enval: any = value;
+                    if(this.lookupTable.has(value)){
+                        enval = this.lookupTable.get(value)
+                    }
+                    content = (
+                        <span className={classes} style={style}>{enval}</span>
+                    );
+                    break;
+                case "percent":
+                    let pc: string = parseInt(""+value) + "%";
+                    content = (
+                        <span className={classes} style={style}>{pc}</span>
+                    );
+                    break;
+                case "format":
+                    let res: string = this.format.replaceAll("{{value}}",value);
+                    content = (
+                        <span className={classes} style={style}>{res}</span>
+                    );
+                    break;
+                case "currency":
+                    var formatter = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: this.currency,
+                    
+                        // These options are needed to round to whole numbers if that's what you want.
+                        //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                        maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+                    });
+                    let amt: string = formatter.format(value);
+                    content = (
+                        <span className={classes} style={style}>{amt}</span>
+                    );
+                    break;
+                case "style":
+                    content = (
+                        <span className={classes + " " + this.className} style={style}>{value}</span>
+                    );
+                    cellClass=this.className;
+                    break;
+                default:
+                    content = (
+                        <span className={classes} style={style}>{value}</span>
+                    );
+                    break;
+            }
         }
+        else {
+            content = (
+                <span className={classes} style={style}>{value}</span>
+            );
+        }
+
+        return {content: content, cellClass: cellClass, rowClass: rowClass}
     }
+}
+
+class ColumnRuleCondition{
+    comparator: string;
+    value: any;
 }

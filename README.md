@@ -330,6 +330,8 @@ Defaults to LOCALE
 
 The "ColumnRules" attribute allows us to specify special formatting / function for one or more columns.
 
+You can optionally add a condition to control if it is applied.
+
 The value is a JSON object with one attribute per column.
 
 
@@ -350,6 +352,10 @@ The value is a JSON object with one attribute per column.
    "Summary":{
       "mode":"class",
       "className":"MyReactClass"
+      "condition":{
+         "comparator":"equals",
+         "value": 200
+      }
    },
    "StartDate":{
       "mode":"dateFormat",
@@ -382,7 +388,7 @@ The value is a JSON object with one attribute per column.
 }
 ```
 
-Currently mode only supports "url","outcome", "class", "lookup", "percent", "format", "currency" & "dateFormat".
+Currently mode only supports "url","outcome", "class", "lookup", "percent", "format", "currency", "style" & "dateFormat".
 
 Note: If there is a column rule with mode outcome then that outcome will be forcibly hidden from the actions column
 
@@ -408,6 +414,8 @@ For "percent" the value will be converted to an int and the % symbol appended.
 For "format" you need to add a "format" argument, this will be displayed with the {{value}} token replaced with the column's value.
 
 For "currency" you need to add a "currency" argument which should be the 3 char currency enum value like USD, GBP etc.
+
+For "style" you need to add a "className" argument which should contain the extra css class name to apply and/or "rowClassName" for a class to add to the parent row.  The style "bad-cell" & "bad-row" are included.
 
 ### OutcomesPosition
 
