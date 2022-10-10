@@ -395,7 +395,7 @@ Note: If there is a column rule with mode outcome then that outcome will be forc
 Note: This can also be the name of a Flow Value containing the json value wrapped in double braces e.g. {{MyFlowValueName}}
 !!! In this case make sure to reference the value in your flow so that it exists in the state !!!
 
-The label (optional) may containe the name of another field surrounded by double curley braces inwhich case that other columns value will be displayed as the value.
+The label (optional) may containe the name of another field surrounded by double curley braces in which case that other columns value will be displayed as the value.
 This allows for making composite columns. 
 
 For "dateFormat" you can use: -
