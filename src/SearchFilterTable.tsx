@@ -120,6 +120,8 @@ export default class SearchFilterTable extends FlowComponent {
     lastRememberedRow: string;
     tableBody: any;
 
+    selectedRow: string;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -161,6 +163,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.okOutcomeForm = this.okOutcomeForm.bind(this);
 
         this.bringColumnIntoView = this.bringColumnIntoView.bind(this);
+        this.selectRow = this.selectRow.bind(this);
 
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
@@ -323,6 +326,7 @@ export default class SearchFilterTable extends FlowComponent {
     setFooter(element: SearchFilterTableFooter) {
         this.footer = element;
     }
+
     async flowMoved(xhr: any, request: any) {
         const me: any = this;
         if (xhr.invokeType === 'FORWARD') {
@@ -487,6 +491,7 @@ export default class SearchFilterTable extends FlowComponent {
                 }
             });
         }
+        this.supressedOutcomes.set("OnSelect",true);
         
         return true;
     }
@@ -759,6 +764,13 @@ export default class SearchFilterTable extends FlowComponent {
         this.currentRowPage = this.currentRowPages.length - 1 ;
         this.buildTableRows();
         this.forceUpdate();
+    }
+
+    async selectRow(id: string) {
+        //if(this.selectedRow !== id){
+            this.selectedRow = id;
+            await this.doOutcome("OnSelect",id);
+        //}
     }
 
     /////////////////////

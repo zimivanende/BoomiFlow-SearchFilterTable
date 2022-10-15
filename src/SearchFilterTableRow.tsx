@@ -11,6 +11,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {enabledOutcomes: []};
+        this.selectRow = this.selectRow.bind(this);
     }
 
     async componentDidMount(): Promise<void> {
@@ -48,11 +49,19 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         root.forceUpdate();
     }
 
+    selectRow(e: any) {
+        const root: SearchFilterTable = this.props.root;
+        root.selectRow(this.props.id);
+    }
+
     render() {
 
         const root: SearchFilterTable = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
         let rowClass: string="";
+        if(root.selectedRow === this.props.id) {
+            rowClass += " sft-table-row-selected "
+        }
         const buttons: any[] = [];
         let anyoutcomes: boolean = false;
         Object.keys(root.outcomes).forEach((key: string) => {
@@ -165,6 +174,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             <tr
                 className={"sft-table-row " + rowClass}
                 ref={(element: any) => {this.rowElement = element}}
+                onClick={this.selectRow}
             >
                 {cols}
             </tr>

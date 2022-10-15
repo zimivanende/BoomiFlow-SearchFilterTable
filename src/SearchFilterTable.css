@@ -294,6 +294,10 @@
     border-bottom: 1px solid #ccc;
 }
 
+.sft-table-row.sft-table-row-selected {
+    background-color: #c3fcf4;
+}
+
 .sft-table-row-noresults {
     display: flex;
     flex-direction: column;
