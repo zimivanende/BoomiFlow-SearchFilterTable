@@ -165,13 +165,15 @@ export default class SearchFilterTable extends FlowComponent {
         this.bringColumnIntoView = this.bringColumnIntoView.bind(this);
         this.selectRow = this.selectRow.bind(this);
 
+        this.loadSelected = this.loadSelected.bind(this);
+        this.loadSingleSelected = this.loadSingleSelected.bind(this);
+
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
         this.rowRememberColumn = this.getAttribute("RetainRowColumn");
         if(this.rowRememberColumn){
             this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
-            //sessionStorage.setItem('sft-lastrow-' + this.componentId, null);
         }
         
     }
@@ -342,10 +344,6 @@ export default class SearchFilterTable extends FlowComponent {
                 this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
                 this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
                 await this.buildCoreTable();
-                //this.filterRows();
-                //this.sortRows();
-                //this.buildTableRows();
-                //this.forceUpdate();
             }
         }
 
@@ -630,6 +628,10 @@ export default class SearchFilterTable extends FlowComponent {
             />
         );
 
+        if(this.rowRememberColumn){
+            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
+        }
+
         this.selectedRowMap.clear();
         const start: Date = new Date();
         const stateSelectedItems: Map<string, any> = await this.loadSelected();
@@ -665,18 +667,18 @@ export default class SearchFilterTable extends FlowComponent {
             node.objectData = item;
 
             this.rowMap.set(node.id, node);
+
         });
         // save the selected items to state
         await this.saveSelected();
         const end: Date = new Date();
     
+        //load selectedSingleItem
+        this.loadSingleSelected();
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
-        //this.sortRows();
-        //this.paginateRows();
-
-        //await this.buildRibbon();
-        //this.buildFooter();
+        
+        //sessionStorage.setItem('sft-lastrow-' + this.componentId, null);
     }
 
     // filters the currentRowMap
@@ -827,6 +829,23 @@ export default class SearchFilterTable extends FlowComponent {
             }
         }
         return stateSelected;
+    }
+
+    //gets the single selected item from rowlevelstate
+    async loadSingleSelected(): Promise<any> {
+        if (this.getAttribute('RowLevelState', '').length > 0 && this.rowRememberColumn) {
+            const rls: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
+            if(rls.value){
+                for(let val of this.rowMap.values()) {
+                    let objData: FlowObjectData = val?.objectData;
+                    if((rls.value as FlowObjectData).properties[this.rowRememberColumn].value ===
+                        objData.properties[this.rowRememberColumn].value) {
+                            this.selectedRow = objData.internalId;
+                        }
+                    
+                }
+            }         
+        }
     }
     /////////////////////////////////////////////////////////////////////
     // Builds the rowElements from the currentRowMap and forces a redraw

@@ -14,6 +14,7 @@ module.exports = function(env) {
             extensions: [".ts", ".tsx", ".js", ".json"]
         },
         mode: 'production',
+        //devtool: 'inline-source-map',
         module: {
             rules: [
                 { 

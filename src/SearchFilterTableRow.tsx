@@ -30,18 +30,6 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         }
         if(root.lastRememberedRow){
             if(objData.properties[root.rowRememberColumn]?.value === root.lastRememberedRow){
-                //console.log("scroll into view " + root.lastRememberedRow);
-                //root.scroller.scrollIntoView()
-                //let containerTop: number = root.tableBody.scrollTop;
-                //let containerBottom: number = containerTop + root.tableBody.offsetHeight;
-                //let elemTop = this.rowElement.offsetTop;
-                //let elemBottom = elemTop + (this.rowElement.offsetHeight || 0); 
-                //if (elemTop > containerTop) {
-                    //root.tableBody.scrollTop =elemTop;
-                //} 
-                //else if (elemBottom >= containerBottom) {
-                //    root.tableBody.scrollTop(elemBottom - root.tableBody.offsetHeight);
-                //  }
                 this.rowElement.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
             }
         }
