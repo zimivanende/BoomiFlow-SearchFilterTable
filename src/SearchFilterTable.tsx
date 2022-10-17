@@ -431,7 +431,7 @@ export default class SearchFilterTable extends FlowComponent {
         //preload any column rule values
         let alreadyDone: string[] = [];
         let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
-        for(let pos = 1 ; pos < outcomes.length ; pos++) {
+        for(let pos = 0 ; pos < outcomes.length ; pos++) {
             let outcome: FlowOutcome = outcomes[pos];
             if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
                 try {
