@@ -508,6 +508,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.colMap = new Map();
         // use the cols from the displayColumns if defined
         let cols: FlowDisplayColumn[];
+        let colMap: Map<string,FlowDisplayColumn> = new Map();;
         if (this.model.displayColumns && this.model.displayColumns.length > 0) {
             cols = this.model.displayColumns?.sort((a: any, b: any) => {
                 switch (true) {
@@ -519,8 +520,33 @@ export default class SearchFilterTable extends FlowComponent {
                         return -1;
                 }
             });
+            cols.forEach((col: FlowDisplayColumn) => {
+                colMap.set(col.developerName, col);
+            });
         } else {
             // use whole model
+            if(this.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
+                let colsName: string = this.getAttribute("ComplexColumnsChildren","Columns");
+                let colName: string = this.getAttribute("ComplexColumnName","Name");
+                let colType: string = this.getAttribute("ComplexColumnType","Type");
+                this.model.dataSource.items?.forEach((item: FlowObjectData) => {
+                    (item.properties[colsName].value as FlowObjectDataArray).items.forEach((col: FlowObjectData) => {
+                        let cname: string = col.properties[colName].value as string;
+                        if(!colMap.has(cname)) {
+                            let cdef: any = 
+                                {
+                                    developerName: cname,
+                                    label: cname,
+                                    contentType: eContentType.ContentObject,
+                                }
+                            colMap.set(cname, cdef);
+                        }
+                    });
+
+                    
+                });
+            }
+            
             // this.model.dataSource
         }
 
@@ -534,7 +560,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.userColumns = [];
         }
 
-        cols.forEach((col: FlowDisplayColumn) => {
+        colMap.forEach((col: FlowDisplayColumn) => {
             this.colMap.set(col.developerName, col);
             this.colValMap.set(col.developerName, new Map());
             if (populateDefaults) {

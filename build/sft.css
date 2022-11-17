@@ -993,6 +993,7 @@
     padding: 0.3rem !important;
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
+    padding: 0 !important;
     
 }
 
@@ -1003,6 +1004,10 @@
 .sft-table-cell-text {
     font-size: 0.8rem;
     color: #111;
+    padding: 0.3rem !important;
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    display: flex;
 }
 
 .sft-table-cell-check {
@@ -1542,4 +1547,19 @@
     margin: auto;
     font-size: 2rem;
     padding-right: 1rem;
+}
+.sftcc-info {
+    margin: auto 0 auto auto;
+    color: blue;
+    cursor: pointer;
+    font-size: 1rem;
+    top: 0;
+}
+
+.sftcc-error {
+    margin: auto 0 auto auto;
+    color: red;
+    cursor: pointer;
+    font-size: 1rem;
+    top: 0;
 }

@@ -3,6 +3,7 @@ import React, { CSSProperties } from 'react';
 import { eColumnComparator } from './ColumnCriteria';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
+declare var manywho: any;
 
 export class ColumnRules {
     static async parse(ruleStr: string, parent: SearchFilterTable): Promise<Map<string, ColumnRule>> {
@@ -117,7 +118,7 @@ export class ColumnRule {
         return result;
     }
 
-    generateColumnContent(value: any, row: FlowObjectData, sft?: SearchFilterTable): any {
+    generateColumnContent(value: FlowObjectDataProperty, row: FlowObjectData, sft?: SearchFilterTable): any {
         const style: CSSProperties = {};
         let classes: string = 'sft-table-cell-text';
         if (this.whiteSpace) {
@@ -131,10 +132,10 @@ export class ColumnRule {
         if(this.condition) {
             switch(this.condition.comparator.toLowerCase()){
                 case "equals":
-                    applyRule = value===this.condition.value;
+                    applyRule = value.value===this.condition.value;
                     break;
                 case "not equals":
-                    applyRule = value!==this.condition.value;
+                    applyRule = value.value!==this.condition.value;
                     break;
             }
         }
@@ -149,7 +150,7 @@ export class ColumnRule {
             rowClass=this.rowClassName;
             switch (this.mode) {
                 case 'outcome':
-                    label = this.label || value;
+                    label = this.label || value.value as string;
                     let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
                     
 
@@ -184,8 +185,8 @@ export class ColumnRule {
                     
 
                 case 'url':
-                    const href: string = this.url.replace('{{VALUE}}', value);
-                    label = this.label || value;
+                    const href: string = this.url.replace('{{VALUE}}', value.value as string);
+                    label = this.label || value.value as string;
 
                     // use regex to find any {{}} tags in content and save them in matches
                     while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
@@ -217,12 +218,12 @@ export class ColumnRule {
                         row,
                         sft: this.parent,
                     };
-                    content = React.createElement(this.className, columnProps);
+                    content = React.createElement(manywho.component.getByName(this.className), columnProps);
                     break;
                 case 'dateformat':
                     let result: string = '';
                     if (value) {
-                        const dt: Date = new Date(value);
+                        const dt: Date = new Date(value.value as string);
                         if (!isNaN(dt.getTime())) {
                             switch (this.dateFormat.toLowerCase()) {
                                 case 'datetime':
@@ -269,7 +270,7 @@ export class ColumnRule {
                     );
                     break;
                 case "format":
-                    let res: string = this.format.replaceAll("{{value}}",value);
+                    let res: string = this.format.replaceAll("{{value}}",value.value as string);
                     content = (
                         <span className={classes} style={style}>{res}</span>
                     );
@@ -283,27 +284,27 @@ export class ColumnRule {
                         //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
                         maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
                     });
-                    let amt: string = formatter.format(value);
+                    let amt: string = formatter.format(value.value as number);
                     content = (
                         <span className={classes} style={style}>{amt}</span>
                     );
                     break;
                 case "style":
                     content = (
-                        <span className={classes + " " + this.className} style={style}>{value}</span>
+                        <span className={classes + " " + this.className} style={style}>{value.value}</span>
                     );
                     cellClass=this.className;
                     break;
                 default:
                     content = (
-                        <span className={classes} style={style}>{value}</span>
+                        <span className={classes} style={style}>{value.value}</span>
                     );
                     break;
             }
         }
         else {
             content = (
-                <span className={classes} style={style}>{value}</span>
+                <span className={classes} style={style}>{value.value}</span>
             );
         }
 

@@ -1,4 +1,4 @@
-import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
 import React from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
@@ -138,7 +138,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 const col: FlowDisplayColumn = root.colMap.get(collName);
                 // root.colMap.forEach((col: FlowDisplayColumn) => {
                 if (col) {
-                    let cellResult: any = this.formatValue(col.componentType, col.contentType, root, objData?.properties[col.developerName], objData);
+                    let cellResult: any = this.formatValue(col.componentType, col.contentType, root, col.developerName, objData);
                     const val: any = cellResult.result;
                     if(rowClass.length > 0) {
                         rowClass+= " ";
@@ -170,13 +170,31 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     // handles special contents like uris & dataUri
-    formatValue(componentType: string, contentType: eContentType,  root: SearchFilterTable, value: FlowObjectDataProperty, row: FlowObjectData): any {
+    formatValue(componentType: string, contentType: eContentType,  root: SearchFilterTable, columnName: string, row: FlowObjectData): any {
         let result: any;
         let rowClass: string = "";
         let cellClass: string = "";
-        if (value && value.developerName) {
-            if (root.columnRules.has(value.developerName)) {
-                let ruleResult: any = root.columnRules.get(value.developerName).generateColumnContent(value.value, row, root);
+        let col: FlowObjectDataProperty;
+        if(root.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
+            let colsName: string = root.getAttribute("ComplexColumnsChildren","Columns");
+            let colName: string = root.getAttribute("ComplexColumnName","Name");
+            let colValue: string = root.getAttribute("ComplexColumnValue","Value");
+            
+            (row.properties[colsName].value as FlowObjectDataArray).items.forEach((c: FlowObjectData) => {
+                let cname: string = c.properties[colName].value as string;
+                if(cname===columnName) {
+                    let val: any = c.properties[colValue].value;
+                    let colType: eContentType = root.colMap.get(columnName).contentType;
+                    col=FlowObjectDataProperty.newInstance(cname,colType,c);
+                }
+            });
+        }
+        else {
+            col = row?.properties[columnName]
+        }
+        if (col && col.developerName) {
+            if (root.columnRules.has(col.developerName)) {
+                let ruleResult: any = root.columnRules.get(col.developerName).generateColumnContent(col, row, root);
                 result = ruleResult.content;
                 rowClass = ruleResult.rowClass;
                 cellClass = ruleResult.cellClass;
@@ -184,12 +202,12 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 if (componentType?.length > 0) {
                     const columnProps = {
                         id: row.internalId,
-                        propertyId: value.typeElementPropertyId,
-                        contentValue: value.value,
-                        objectData: value.value,
+                        propertyId: col.typeElementPropertyId,
+                        contentValue: col.value,
+                        objectData: col.value,
                         flowKey: root.flowKey,
-                        contentType: value.contentType,
-                        contentFormat: value.contentFormat,
+                        contentType: col.contentType,
+                        contentFormat: col.contentFormat,
                         row,
                         sft: root,
                     };
@@ -197,7 +215,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 } else {
                     switch (contentType) {
                         case eContentType.ContentDateTime:
-                            const dt: Date = new Date(value.value as string);
+                            const dt: Date = new Date(col.value as string);
                             if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
                                 let str: string = '';
                                 switch (root.getAttribute('DateFormat', 'LOCALE')) {
@@ -225,44 +243,44 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                         case eContentType.ContentString:
                             switch (true) {
-                                case this.isJSON(value.value as string) === true:
+                                case this.isJSON(col.value as string) === true:
                                     result = (
                                         <button
-                                            onClick={(e: any) => {this.showJSON(value.developerName, value.value as string); }}
+                                            onClick={(e: any) => {this.showJSON(col.developerName, col.value as string); }}
                                         >
                                             {'View JSON'}
                                         </button>
                                     );
                                     break;
 
-                                case this.isContent(value.value as string) === true:
+                                case this.isContent(col.value as string) === true:
                                     result = (
                                         <button
-                                            onClick={(e: any) => {this.showContent(value.developerName, value.value as string); }}
+                                            onClick={(e: any) => {this.showContent(col.developerName, col.value as string); }}
                                         >
                                             {'View Content'}
                                         </button>
                                     );
                                     break;
 
-                                case (value.value as string).startsWith('http:'):
-                                case (value.value as string).startsWith('https:'):
+                                case (col.value as string).startsWith('http:'):
+                                case (col.value as string).startsWith('https:'):
                                     let inner: any;
-                                    if (this.isUrlImage(value.value as string)) {
+                                    if (this.isUrlImage(col.value as string)) {
                                         inner = (
                                             <img
-                                                src={value.value as string}
+                                                src={col.value as string}
                                                 style={{height: '2rem', width: 'auto'}}
-                                                alt={value.value as string}
-                                                title={value.value as string}
+                                                alt={col.value as string}
+                                                title={col.value as string}
                                             />
                                         );
                                     } else {
-                                        inner = value.value;
+                                        inner = col.value;
                                     }
                                     result = (
                                         <a
-                                            href={(value.value as string)}
+                                            href={(col.value as string)}
                                             target="_blank"
                                         >
                                             {inner}
@@ -270,15 +288,15 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                     );
                                     break;
 
-                                case (value.value as string).startsWith('data:'):
-                                    const mime = (value.value as string).split(';')[0].split(':')[1];
+                                case (col.value as string).startsWith('data:'):
+                                    const mime = (col.value as string).split(';')[0].split(':')[1];
                                     switch (true) {
                                         case mime.startsWith('audio/'):
                                             result = (
                                                 <audio
                                                     controls={true}
                                                     style={{width: '100%', minWidth: '9rem'}}>
-                                                    <source src={(value.value as string)} type={mime}/>
+                                                    <source src={(col.value as string)} type={mime}/>
                                                 </audio>
                                             );
                                             break;
@@ -287,7 +305,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                             result = (
                                                 <button
                                                     className="sft-table-cell-button"
-                                                    onClick={(e: any) => {root.playVideo('Video', (value.value as string), mime); }}
+                                                    onClick={(e: any) => {root.playVideo('Video', (col.value as string), mime); }}
                                                 >
                                                     Play Video
                                                 </button>
@@ -297,17 +315,17 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                         default:
                                             const dnld: string = this.makeFileName('file', mime);
                                             result = (
-                                                <a href={(value.value as string)} target="_blank" download={dnld}>Download File</a>
+                                                <a href={(col.value as string)} target="_blank" download={dnld}>Download File</a>
                                             );
                                             break;
                                     }
 
                                     break;
 
-                                case root.maxColText > 0 && (value.value as string).length > root.maxColText:
+                                case root.maxColText > 0 && (col.value as string).length > root.maxColText:
                                     result = (
                                         <button
-                                            onClick={(e: any) => {this.showContent(value.developerName, value.value as string); }}
+                                            onClick={(e: any) => {this.showContent(col.developerName, col.value as string); }}
                                         >
                                             {'View Content'}
                                         </button>
@@ -319,7 +337,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                         <span
                                             className="sft-table-cell-text"
                                         >
-                                            {(value.value as string)}
+                                            {(col.value as string)}
                                         </span>
                                     );
                                     break;
@@ -327,7 +345,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                             break;
                         case eContentType.ContentNumber:
-                            if (((value as any).Value as string) === '') {
+                            if (((col as any).Value as string) === '') {
                                 result = (
                                     <span
                                         className="sft-table-cell-text"
@@ -338,13 +356,13 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                     <span
                                         className="sft-table-cell-text"
                                     >
-                                        {(value.value as string)}
+                                        {(col.value as string)}
                                     </span>
                                 );
                             }
                             break;
                         case eContentType.ContentBoolean:
-                            if (((value as any).Value as string)?.toLowerCase() === 'true') {
+                            if (((col as any).Value as string)?.toLowerCase() === 'true') {
                                 result = (
                                     <span
                                         className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-true glyphicon glyphicon-ok"
@@ -364,7 +382,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                 <span
                                     className="sft-table-cell-text"
                                 >
-                                    {(value.value as string)}
+                                    ???
                                 </span>
                             );
                             break;
