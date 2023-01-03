@@ -164,6 +164,7 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.bringColumnIntoView = this.bringColumnIntoView.bind(this);
         this.selectRow = this.selectRow.bind(this);
+        this.refreshRows = this.refreshRows.bind(this);
 
         this.loadSelected = this.loadSelected.bind(this);
         this.loadSingleSelected = this.loadSingleSelected.bind(this);
@@ -263,7 +264,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     bringColumnIntoView(col: any) {
         let header: any =  this.headers.headers.get(col);
-        header.th.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
+        header?.th?.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
     }
 
     globalFilterChanged(value: string) {
@@ -350,6 +351,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async componentDidMount() {
+        console.log(this.model.developerName + "=" + this.componentId);
         // will get this from a component attribute
         this.loaded=false;
         await super.componentDidMount();
@@ -795,10 +797,17 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async selectRow(id: string) {
-        //if(this.selectedRow !== id){
+        if(this.selectedRow !== id){
             this.selectedRow = id;
             await this.doOutcome("OnSelect",id);
-        //}
+            this.refreshRows();
+        }
+    }
+
+    refreshRows() {
+        this.rows.forEach((row: SearchFilterTableRow) => {
+            row.forceUpdate();
+        });
     }
 
     /////////////////////
