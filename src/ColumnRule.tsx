@@ -264,7 +264,7 @@ export class ColumnRule {
                     );
                     break;
                 case "percent":
-                    let pc: string = parseInt(""+value) + "%";
+                    let pc: string = parseInt((""+value?.value) || "0") + "%";
                     content = (
                         <span className={classes} style={style}>{pc}</span>
                     );
