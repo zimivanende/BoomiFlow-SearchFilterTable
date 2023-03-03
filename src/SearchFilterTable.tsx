@@ -164,6 +164,7 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.bringColumnIntoView = this.bringColumnIntoView.bind(this);
         this.selectRow = this.selectRow.bind(this);
+        this.refreshRows = this.refreshRows.bind(this);
 
         this.loadSelected = this.loadSelected.bind(this);
         this.loadSingleSelected = this.loadSingleSelected.bind(this);
@@ -263,7 +264,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     bringColumnIntoView(col: any) {
         let header: any =  this.headers.headers.get(col);
-        header.th.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
+        header?.th?.scrollIntoView({inline: "center", block: "center", behavior: "auto"});
     }
 
     globalFilterChanged(value: string) {
@@ -350,6 +351,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async componentDidMount() {
+        console.log(this.model.developerName + "=" + this.componentId);
         // will get this from a component attribute
         this.loaded=false;
         await super.componentDidMount();
@@ -508,6 +510,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.colMap = new Map();
         // use the cols from the displayColumns if defined
         let cols: FlowDisplayColumn[];
+        let colMap: Map<string,FlowDisplayColumn> = new Map();;
         if (this.model.displayColumns && this.model.displayColumns.length > 0) {
             cols = this.model.displayColumns?.sort((a: any, b: any) => {
                 switch (true) {
@@ -519,8 +522,33 @@ export default class SearchFilterTable extends FlowComponent {
                         return -1;
                 }
             });
+            cols.forEach((col: FlowDisplayColumn) => {
+                colMap.set(col.developerName, col);
+            });
         } else {
             // use whole model
+            if(this.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
+                let colsName: string = this.getAttribute("ComplexColumnsChildren","Columns");
+                let colName: string = this.getAttribute("ComplexColumnName","Name");
+                let colType: string = this.getAttribute("ComplexColumnType","Type");
+                this.model.dataSource.items?.forEach((item: FlowObjectData) => {
+                    (item.properties[colsName].value as FlowObjectDataArray).items.forEach((col: FlowObjectData) => {
+                        let cname: string = col.properties[colName].value as string;
+                        if(!colMap.has(cname)) {
+                            let cdef: any = 
+                                {
+                                    developerName: cname,
+                                    label: cname,
+                                    contentType: eContentType.ContentObject,
+                                }
+                            colMap.set(cname, cdef);
+                        }
+                    });
+
+                    
+                });
+            }
+            
             // this.model.dataSource
         }
 
@@ -534,7 +562,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.userColumns = [];
         }
 
-        cols.forEach((col: FlowDisplayColumn) => {
+        colMap.forEach((col: FlowDisplayColumn) => {
             this.colMap.set(col.developerName, col);
             this.colValMap.set(col.developerName, new Map());
             if (populateDefaults) {
@@ -769,10 +797,17 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async selectRow(id: string) {
-        //if(this.selectedRow !== id){
+        if(this.selectedRow !== id){
             this.selectedRow = id;
             await this.doOutcome("OnSelect",id);
-        //}
+            this.refreshRows();
+        }
+    }
+
+    refreshRows() {
+        this.rows.forEach((row: SearchFilterTableRow) => {
+            row.forceUpdate();
+        });
     }
 
     /////////////////////

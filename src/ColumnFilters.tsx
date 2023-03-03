@@ -3,6 +3,7 @@ import React, { Fragment } from 'react';
 import CellItem from './CellItem';
 import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
 import ColumnFilter from './ColumnFilter';
+import { ColumnRule } from './ColumnRule';
 import FilterConfigForm from './FilterConfigForm';
 import RowItem from './RowItem';
 import SearchFilterTable from './SearchFilterTable';
@@ -472,35 +473,47 @@ export default class ColumnFilters {
 
     // this will sort the passed map based on the current filter's sorts and return a new map
     sort(items: Map<string, RowItem>, source: Map<string, RowItem>): Map<string, RowItem> {
-        const sortColumn: ColumnFilter = this.getSortColumn();
-
+        //get all the rows
         const candidates: Map<string, RowItem> = new Map(Array.from(source).filter((item) => {
             if (items.has(item[0])) {
                 return true;
             }
         }));
 
-        if (sortColumn) {
-            const colDef: FlowDisplayColumn = this.parent.colMap.get(sortColumn.key);
-            if (colDef) {
-                let sorted: any;
+        const sortColumn: ColumnFilter = this.getSortColumn();
+        if(sortColumn) {
+            let sorted: any;
+            let sortPropertyName: string = sortColumn.key;
+            // see if there's a columnRule
+            let colRule: ColumnRule = this.parent.columnRules.get(sortColumn.key);
+            if(colRule){
+                if(["url"].indexOf(colRule.mode) >= 0 ) {
+                    if(colRule.label && colRule.label.startsWith("{{") && colRule.label.endsWith("}}")) {
+                        sortPropertyName = colRule.label.replaceAll("{{","").replaceAll("}}","");
+                    }
+                }
+            }
+            //get the matching display column
+            const colDef: FlowDisplayColumn = this.parent.colMap.get(sortPropertyName);
 
+            if(colDef) {
+        
                 switch (colDef?.contentType) {
 
                     case eContentType.ContentDateTime:
                         sorted = Array.from(candidates).sort((a: any, b: any) => {
-                            const d1: Date = new Date(a[1].objectData.properties[sortColumn.key].value);
-                            const d2: Date = new Date(b[1].objectData.properties[sortColumn.key].value);
+                            const d1: Date = new Date(a[1].objectData.properties[sortPropertyName].value);
+                            const d2: Date = new Date(b[1].objectData.properties[sortPropertyName].value);
                             if (d1 < d2) { return -1; }
                             if (d1 > d2) { return 1; }
-                            return 0; // a[1].objectData.properties[sortColumn.key].value - b[1].objectData.properties[sortColumn.key].value,
+                            return 0; 
                         });
                         break;
 
                     default:
                         const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
                         sorted = Array.from(candidates).sort((a: any, b: any) =>
-                            collator.compare(a[1].objectData.properties[sortColumn.key].value, b[1].objectData.properties[sortColumn.key].value),
+                            collator.compare(a[1].objectData.properties[sortPropertyName].value, b[1].objectData.properties[sortPropertyName].value),
                         );
                         break;
 
