@@ -1,6 +1,6 @@
 {
   "name": "sftable",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "devDependencies": {
     "@types/react": "^16.14.23",
