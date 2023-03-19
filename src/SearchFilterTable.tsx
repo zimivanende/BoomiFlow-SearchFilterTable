@@ -169,6 +169,8 @@ export default class SearchFilterTable extends FlowComponent {
         this.loadSelected = this.loadSelected.bind(this);
         this.loadSingleSelected = this.loadSingleSelected.bind(this);
 
+        this.loadModelData = this.loadModelData.bind(this);
+
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
@@ -660,6 +662,8 @@ export default class SearchFilterTable extends FlowComponent {
             this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
         }
 
+        await this.loadModelData();
+        /*
         this.selectedRowMap.clear();
         const start: Date = new Date();
         const stateSelectedItems: Map<string, any> = await this.loadSelected();
@@ -697,6 +701,7 @@ export default class SearchFilterTable extends FlowComponent {
             this.rowMap.set(node.id, node);
 
         });
+        */
         // save the selected items to state
         await this.saveSelected();
         const end: Date = new Date();
@@ -709,13 +714,84 @@ export default class SearchFilterTable extends FlowComponent {
         //sessionStorage.setItem('sft-lastrow-' + this.componentId, null);
     }
 
+    async loadModelData() {
+        // construct Item
+        this.rowMap=new Map();
+        this.selectedRowMap.clear();
+        const stateSelectedItems: Map<string, any> = await this.loadSelected();
+        const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
+        this.model.dataSource.items.forEach((item: FlowObjectData) => {
+            
+            if (stateSelectedItems) {
+                if (stateSelectedItems.has(item.internalId) && stateSelectedItems.get(item.internalId).isSelected === true) {
+                    this.selectedRowMap.set(item.internalId, undefined);
+                }
+            } else {
+                // if it's selected in the model or we have an IsSelectedField attribute then pre-select it
+                if (
+                    item.isSelected === true || (
+                        isSelectedColumn && (
+                            item.properties[isSelectedColumn].value as boolean === true ||
+                            item.properties[isSelectedColumn].value as number > 0
+                        )
+                    )
+                ) {
+                    this.selectedRowMap.set(item.internalId, undefined);
+                }
+            }
+
+            const node = new RowItem();
+            node.id = item.internalId;
+
+            this.colMap.forEach((col: FlowDisplayColumn) => {
+                node.columns.set(col.developerName, new CellItem(col.developerName, item.properties[col.developerName]?.value as any));
+                this.colValMap.get(col.developerName).set(item.properties[col.developerName]?.value, item.properties[col.developerName]?.value);
+            });
+
+            node.objectData = item;
+
+            this.rowMap.set(node.id, node);
+        });
+    }
+
     // filters the currentRowMap
-    filterRows() {
+    async filterRows() {
         const start: Date = new Date();
+        // list or service
+        let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
+        if(model.objectDataRequest){
+            //service - we need to send an objectDataRequst
+            //
+            let odr = model.objectDataRequest;
+            let newOdr = JSON.parse(JSON.stringify(odr));
+            newOdr.listFilter.where = [
+                {
+                    columnName:"Filters",
+                    criteriaType:"EQUAL",
+                    value:this.filters.getForStorage()
+                },
+                {
+                    columnName:"Contains",
+                    criteriaType:"EQUAL",
+                    value:this.filters.globalCriteria
+                }
+            ];
+            //odr.listFilter.limit=200;
+            //odr.listFilter.search=this.filters.globalCriteria || "";
+            let sortColumn: any = this.filters?.getSortColumn();
+            let XHR = await manywho.engine.objectDataRequest(
+                this.componentId,
+                newOdr,
+                this.flowKey
+            );
+            this.loadModel();
+            await this.loadModelData();
+        }
         this.currentRowMap = new Map();
         if (this.rowMap.size > 0) {
             this.currentRowMap = this.filters.filter(this.rowMap);
         }
+        
 
         // remove any selected items not in the currentRowMap
         this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
