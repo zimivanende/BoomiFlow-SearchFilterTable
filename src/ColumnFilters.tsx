@@ -558,4 +558,32 @@ export default class ColumnFilters {
         }
 
     }
+
+    getForFSS(): string {
+        let filters: any = {};
+        let sort: any;
+        if(this.getSortColumn()) {
+            sort = {
+                developerName: this.getSortColumn().key,
+                direction: this.getSortColumn().sortAscending?"ASC":"DESC"
+            };
+            filters.sort = sort;
+        }
+        if(this.items.size > 0 || this.globalCriteria) {
+            filters.filters = [];
+            if(this.globalCriteria) {
+                filters.filters.push(
+                    {
+                        developerName: "stringSearch",
+                        comparator: "CONTAINS",
+                        value: this.globalCriteria
+                    }
+                );
+            }
+            this.items.forEach((item: ColumnFilter) => {
+                filters.filters.push(item.getForFSS());
+            });
+        }
+        return JSON.stringify(filters);
+    }
 }
