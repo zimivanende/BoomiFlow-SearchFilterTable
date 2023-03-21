@@ -92,4 +92,16 @@ export default class ColumnFilter {
 
         return JSON.stringify(filter);
     }
+
+    getForFSS(): String {
+        const filter: any = {};
+        filter.developerName = this.key;
+        this.criteria.forEach((crit: ColumnCriteria) => {
+            let val: any = crit.getForFSS();
+            filter.comparator=crit.comparator.toString();
+            filter.value = val.value;
+            filter.value2 = val.value2;
+        });
+        return filter;
+    }
 }

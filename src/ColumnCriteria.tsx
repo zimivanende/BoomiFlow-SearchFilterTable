@@ -119,4 +119,20 @@ export default class ColumnCriteria {
         }
         return JSON.stringify(result);
     }
+
+    getForFSS(): any {
+        const result: any = {};
+        result.comparator = this.comparator;
+        if (this.value instanceof Map) {
+            const vals: any[] = [];
+            this.value.forEach((val: any, key: any) => {
+                vals.push(key);
+            });
+            result.value = JSON.stringify(vals);
+        } else {
+            result.value = this.value;
+            result.value2 = this.value2;
+        }
+        return result;
+    }
 }

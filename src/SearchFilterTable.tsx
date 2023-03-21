@@ -768,12 +768,7 @@ export default class SearchFilterTable extends FlowComponent {
                 {
                     columnName:"Filters",
                     criteriaType:"EQUAL",
-                    value:this.filters.getForStorage()
-                },
-                {
-                    columnName:"Contains",
-                    criteriaType:"EQUAL",
-                    value:this.filters.globalCriteria
+                    value:this.filters.getForFSS()
                 }
             ];
             //odr.listFilter.limit=200;
@@ -786,13 +781,20 @@ export default class SearchFilterTable extends FlowComponent {
             );
             this.loadModel();
             await this.loadModelData();
+            this.currentRowMap = new Map();
+            if (this.rowMap.size > 0) {
+                this.rowMap.forEach((item: RowItem, key: string) => {
+                    this.currentRowMap.set(key, item);
+                });
+            }
         }
-        this.currentRowMap = new Map();
-        if (this.rowMap.size > 0) {
-            this.currentRowMap = this.filters.filter(this.rowMap);
+        else {
+            this.currentRowMap = new Map();
+            if (this.rowMap.size > 0) {
+                this.currentRowMap = this.filters.filter(this.rowMap);
+            }
         }
         
-
         // remove any selected items not in the currentRowMap
         this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
             if (!this.currentRowMap.has(internalId)) {
@@ -800,7 +802,12 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
         const end: Date = new Date();
-        this.sortRows();
+        if(model.objectDataRequest){
+            this.paginateRows();
+        }
+        else {
+            this.sortRows();
+        }
     }
 
     // sorts the currentRowMap by getting the current sort column from filters
