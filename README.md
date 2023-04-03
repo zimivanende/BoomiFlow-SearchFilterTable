@@ -54,7 +54,9 @@ If set then a title bar is drawn above the table containing the label value
 
 ## Datasource
 
-Set the datasource to a list of objects
+Set the datasource to a list of objects.
+
+BETA !! or a service.
 
 
 ## State
@@ -216,7 +218,7 @@ If specified then this will be used as the content of the info popup dialog and 
 
 ### height
 
-allows passing a strig to use as the component's height e.g. "600px" or "60vh".
+allows passing a string to use as the component's height e.g. "600px" or "60vh".
 
 
 ### PaginationSize

@@ -1,0 +1,69 @@
+{
+  "attributes": {
+    "Height": "Height.  The height of the component in any unit e.g. 60vh, 50% etc. Overrides height configuration.",
+    "classes": "Classes. An addition class string to ad the the component's class.",
+    "InfoIcon": "Info button icon.  The glyphicon to use on the table's info button.",
+    "canExport": "Export.  If \"true\" then the export buttons are available.",
+    "noResults": "noResults.  The message to show when there are no rows.",
+    "DateFormat": "Date format.  UTC, JSON, LOCALE",
+    "QuickCheck": "QuickCheck.  Adds a checkbox to the column on boolean cols for quick filtering.",
+    "ColumnRules": "Column Rules.  Allows seting special functions on columns.  See the GitHub documentation.",
+    "ColumnsIcon": "Column picker icon.  The glyphicon to use for the column picker button.",
+    "LoadingIcon": "Loading Icon.  The url of an image to show while loading.",
+    "RibbonStyle": "Ribbon Style.  The display style of the header ribbon. \"ribbon\" or \"search\".",
+    "OutcomesLabel": "Outcomes Label.  The label for the outcomes column.",
+    "RibbonDisplay": "Ribbon Button Style.  \"text\", \"icon\" or \"iconandtext\"",
+    "RowLevelState": "Row Level State.  Tells the table which flow field will receive the row object.",
+    "PaginationSize": "Pagination Size.  The default number of rows per page.",
+    "RetainRowColumn": "Primary key column name.  Tells the table which column is the primary key allowing the last row to be brought back into view after a redraw.",
+    "noResultsFilter": "noResultsFilter.  The extra message to show if there are rows but none shown due to filtering.",
+    "IsSelectedColumn": "Selected Flag Column.  Tells the table which column should be used as the selected flag.  Boolean or number only.",
+    "OutcomesPosition": "Outcomes Position.  The default buttons column position.  Overridden by user column selection / ordering.",
+    "UserColumnsValue": "User Columns.  The FLow field name to store the user's selected columns into.  Can be used to persist to a DB.  \"LOCAL_STORAGE\" will persist them into local storage.",
+    "exportUserColumns": "Export User Columns.  If true then only the user's displayed columns are exported.",
+    "MaxColumnTextLength": "MaxColumnTextLength.  The maximum col text length before being replaced with a button."
+  },
+  "configurationEditors": [
+    "LABEL",
+    "WIDTH",
+    "HEIGHT",
+    "MULTISELECT",
+    "SEARCHABLE",
+    "STATE_VALUE",
+    "DATA_SOURCE_LIST",
+    "DATA_SOURCE_CONNECTOR",
+    "DATA_PRESENTATION"
+  ],
+  "dateCreated": "0001-01-01T00:00:00+00:00",
+  "dateModified": "2023-04-03T08:16:35.4756866+00:00",
+  "designTimeImageURL": null,
+  "designTimeRenderType": null,
+  "developerName": "SearchFilterTable",
+  "developerSummary": "An extended table implementation",
+  "elementType": "CUSTOM_PAGE_COMPONENT",
+  "icon": "Table",
+  "id": "98069209-d037-4e63-8d73-e906e348d3bb",
+  "key": "searchfiltertable",
+  "legacyScriptURL": "http://localhost:8080/sft.js",
+  "legacyStyleSheetURL": "http://localhost:8080/sft.css",
+  "scriptURL": null,
+  "styleSheetURL": null,
+  "whoCreated": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "4e027512-3134-4403-91c2-227e8256a7f0",
+    "lastName": "Watts"
+  },
+  "whoModified": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "4e027512-3134-4403-91c2-227e8256a7f0",
+    "lastName": "Watts"
+  },
+  "whoOwner": {
+    "email": "markwatts@boomi.com",
+    "firstName": "Mark",
+    "id": "4e027512-3134-4403-91c2-227e8256a7f0",
+    "lastName": "Watts"
+  }
+}

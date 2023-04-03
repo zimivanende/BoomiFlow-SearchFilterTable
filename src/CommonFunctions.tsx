@@ -1,4 +1,4 @@
-import { eContentType, FlowField, FlowObjectData, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowField, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import SearchFilterTable from './SearchFilterTable';
 
 export default class CommonFunctions {
@@ -291,5 +291,35 @@ export default class CommonFunctions {
                 break;
         }
         return result;
+    }
+
+    static makeObjectDataArrayFromJSON(json: string, primaryKey: string, columns: FlowDisplayColumn[]) : FlowObjectDataArray {
+        let objDataArray: FlowObjectDataArray = new FlowObjectDataArray();
+        let model: any[] = JSON.parse(json);
+        model.forEach((item: any) => {
+            let objData: FlowObjectData = FlowObjectData.newInstance("GetOpportunities RESPONSE - Opportunity");
+            columns.forEach((col: FlowDisplayColumn) => {
+                let val: any = item[col.developerName]; 
+                if(col.developerName===primaryKey){
+                    objData.internalId = val;
+                    objData.externalId = val;
+                }
+                switch(col.contentType){
+                    case eContentType.ContentDateTime:
+                        val = new Date(val);
+                        break;
+                    case eContentType.ContentNumber:
+                        val = parseFloat(val);
+                        break;
+                    case eContentType.ContentBoolean:
+                        val = val === "true";
+                        break;
+                }
+                objData.addProperty(FlowObjectDataProperty.newInstance(col.developerName, col.contentType, val));
+            });
+            objDataArray.addItem(objData);
+        });
+
+        return objDataArray;
     }
 }

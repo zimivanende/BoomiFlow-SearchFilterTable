@@ -18,6 +18,7 @@ import SearchFilterTableHeaders from './SearchFilterTableHeaders';
 import SearchFilterTableRibbon from './SearchFilterTableRibbon';
 import SearchFilterTableRibbonSearch from './SearchFilterTableRibbonSearch';
 import SearchFilterTableRow from './SearchFilterTableRow';
+import CommonFunctions from './CommonFunctions';
 
 // declare const manywho: IManywho;
 declare const manywho: any;
@@ -720,7 +721,17 @@ export default class SearchFilterTable extends FlowComponent {
         this.selectedRowMap.clear();
         const stateSelectedItems: Map<string, any> = await this.loadSelected();
         const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
-        this.model.dataSource.items.forEach((item: FlowObjectData) => {
+        let JSONStateName: string = this.getAttribute('JSONModelValue');
+        let model: FlowObjectDataArray;
+        if(JSONStateName) {
+            let jsonField: FlowField = await this.loadValue(JSONStateName);
+            model = CommonFunctions.makeObjectDataArrayFromJSON(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns);
+        }
+        else {
+            model = this.model.dataSource;
+        }
+        
+        model.items.forEach((item: FlowObjectData) => {
             
             if (stateSelectedItems) {
                 if (stateSelectedItems.has(item.internalId) && stateSelectedItems.get(item.internalId).isSelected === true) {
