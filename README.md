@@ -464,6 +464,20 @@ The sub message to be displayed when there are no results and there are filters 
 
 Default = "( This may be due to the filters applied )"
 
+### JSONModelValue
+String.
+
+The name of a Flow Value which contains the model in a JSON string form.  This will load the datasource data ignoring the standard one.
+
+Exclude this to operate normally.
+
+### JSONModelPrimaryKey
+String.
+
+The name of the property on the JSON data which is the primary key.
+
+Only works with JSONModelValue.
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.
