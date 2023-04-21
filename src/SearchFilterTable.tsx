@@ -1357,8 +1357,9 @@ export default class SearchFilterTable extends FlowComponent {
             style.height = this.model.height + 'px';
         } 
         else {
-            style.height = this.getAttribute("height",'60vh');
+            style.height = this.getAttribute("height",'auto');
         }
+        
 
         const title: string = this.model.label || '';
 

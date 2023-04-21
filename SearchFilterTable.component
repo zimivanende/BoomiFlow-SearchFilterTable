@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "Height": "Height.  The height of the component in any unit e.g. 60vh, 50% etc. Overrides height configuration.",
+    "height": "Height.  The height of the component in any unit e.g. 60vh, 50% etc. Overrides height configuration.",
     "classes": "Classes. An addition class string to ad the the component's class.",
     "InfoIcon": "Info button icon.  The glyphicon to use on the table's info button.",
     "canExport": "Export.  If \"true\" then the export buttons are available.",

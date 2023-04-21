@@ -2,6 +2,7 @@
     display: block;
     flex-direction: column;
     position: relative;
+    min-height: 20vhk
 }
 
 .sft-title {
