@@ -770,7 +770,7 @@ export default class SearchFilterTable extends FlowComponent {
         const start: Date = new Date();
         // list or service
         let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
-        if(model.objectDataRequest){
+        if(model?.objectDataRequest){
             //service - we need to send an objectDataRequst
             //
             let odr = model.objectDataRequest;
@@ -813,7 +813,7 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
         const end: Date = new Date();
-        if(model.objectDataRequest){
+        if(model?.objectDataRequest){
             this.paginateRows();
         }
         else {
