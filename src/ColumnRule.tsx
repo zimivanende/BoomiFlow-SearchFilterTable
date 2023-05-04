@@ -178,7 +178,7 @@ export class ColumnRule {
                     }
                     else {
                         content = (
-                            <span className={classes} style={style}>{value}</span>
+                            <span className={classes} style={style}>{label}</span>
                         );
                     }
                     break;
