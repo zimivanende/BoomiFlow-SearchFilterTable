@@ -162,6 +162,11 @@ Sets the glyphicon to show for the outcome.
 Only shows the outcome button if there are selected rows
 "true" / "false" - default is "false"
 
+### RequiresRows
+
+Only shows the outcome button if there are rows
+"true" / "false" - default is "false"
+
 ### uri
 
 Will launch a uri when clicked rather than trigger an outcome.

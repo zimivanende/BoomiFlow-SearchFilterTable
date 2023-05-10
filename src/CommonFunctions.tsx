@@ -14,6 +14,10 @@ export default class CommonFunctions {
             result = false;
         }
 
+        if (outcome.attributes['RequiresRows']?.value === 'true' && root.rowMap.size < 1) {
+            result = false;
+        }
+
         if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
             try {
                 const rule = JSON.parse(outcome.attributes.rule.value);
