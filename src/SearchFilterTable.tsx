@@ -1370,9 +1370,14 @@ export default class SearchFilterTable extends FlowComponent {
         if (this.model.visible === false) {
             style.display = 'none';
         }
+
         if (this.model.width) {
             style.width = this.model.width + 'px';
         }
+        else {
+            style.width = this.getAttribute("width",'-webkit-fill-available');
+        }
+
         if (this.model.height > 0) {
             style.height = this.model.height + 'px';
         } 
