@@ -1,7 +1,8 @@
-import { eContentType, FlowDisplayColumn, FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty } from 'flow-component-model';
 import React from 'react';
 import CommonFunctions from './CommonFunctions';
 import SearchFilterTable from './SearchFilterTable';
+import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 // declare const manywho: IManywho;
 declare const manywho: any;
 
@@ -454,7 +455,11 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             </div>
 
         );
-        root.messageBox.showMessageBox(title, content, [new modalDialogButton('Ok', root.messageBox.hideMessageBox)]);
+        root.messageBox.showDialog(
+            null,
+            title, 
+            content, 
+            [new FCMModalButton('Ok', root.messageBox.hideDialog)]);
     }
 
     isContent(value: string): boolean {
@@ -489,7 +494,11 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         );
         const root: SearchFilterTable = this.props.root;
-        root.messageBox.showMessageBox(title, content, [new modalDialogButton('Ok', root.messageBox.hideMessageBox)]);
+        root.messageBox.showDialog(
+            null,
+            title, 
+            content, 
+            [new FCMModalButton('Ok', root.messageBox.hideDialog)]);
     }
 
     makeFileName(name: string, mimeType: string): string {

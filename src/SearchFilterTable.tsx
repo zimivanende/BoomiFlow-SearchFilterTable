@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 
-import { eContentType, eLoadingState, FlowComponent, FlowContextMenu, FlowDisplayColumn, FlowField,  FlowMessageBox, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome, modalDialogButton } from 'flow-component-model';
+import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowField,  FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import CellItem from './CellItem';
 import ColumnCriteria from './ColumnCriteria';
 import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
@@ -19,6 +19,8 @@ import SearchFilterTableRibbon from './SearchFilterTableRibbon';
 import SearchFilterTableRibbonSearch from './SearchFilterTableRibbonSearch';
 import SearchFilterTableRow from './SearchFilterTableRow';
 import CommonFunctions from './CommonFunctions';
+import { FCMContextMenu, FCMModal } from 'fcmkit';
+import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 
 // declare const manywho: IManywho;
 declare const manywho: any;
@@ -27,8 +29,8 @@ export default class SearchFilterTable extends FlowComponent {
     version: string = '1.0.0';
     context: any;
 
-    contextMenu: FlowContextMenu;
-    messageBox: FlowMessageBox;
+    contextMenu: FCMContextMenu;
+    messageBox: FCMModal;
     form: any;  // this is the form being shown by the message box
 
     // this contains the master copy of the model data, it doesn't change unless data reloaded
@@ -188,7 +190,12 @@ export default class SearchFilterTable extends FlowComponent {
                 dangerouslySetInnerHTML={{__html: this.model.content}}
             />
         );
-        this.messageBox.showMessageBox('Information', content, [new modalDialogButton('Close', this.messageBox.hideMessageBox)]);
+        this.messageBox.showDialog(
+            null,
+            'Information', 
+            content, 
+            [new FCMModalButton('Close', this.messageBox.hideDialog)]
+        );
     }
 
     showColumnPicker() {
@@ -198,18 +205,22 @@ export default class SearchFilterTable extends FlowComponent {
                 ref={(element: ColumnPickerForm) => {this.form = element; }}
             />
         );
-        this.messageBox.showMessageBox('Select Columns', content, [new modalDialogButton('Apply', this.applyColumns), new modalDialogButton('Cancel', this.cancelColumns)]);
+        this.messageBox.showDialog(
+            null,
+            'Select Columns', 
+            content, 
+            [new FCMModalButton('Apply', this.applyColumns), new FCMModalButton('Cancel', this.cancelColumns)]);
     }
 
     cancelColumns() {
-        this.messageBox.hideMessageBox();
+        this.messageBox.hideDialog();
         this.form = undefined;
     }
 
     async applyColumns() {
         this.userColumns = this.form.selectedColumns;
         this.saveUserColumns();
-        this.messageBox.hideMessageBox();
+        this.messageBox.hideDialog();
         this.form = undefined;
         this.headers.forceUpdate();
         this.rows.forEach((row: SearchFilterTableRow) => {
@@ -284,18 +295,22 @@ export default class SearchFilterTable extends FlowComponent {
                 ref={(form: FilterManagementForm) => {this.form = form; }}
             />
         );
-        this.messageBox.showMessageBox('Manage Filters', content, [new modalDialogButton('Apply', this.applyFilters), new modalDialogButton('Cancel', this.cancelFilters)]);
+        this.messageBox.showDialog(
+            null,
+            'Manage Filters', 
+            content, 
+            [new FCMModalButton('Apply', this.applyFilters), new FCMModalButton('Cancel', this.cancelFilters)]);
     }
 
     cancelFilters() {
         this.form = undefined;
-        this.messageBox.hideMessageBox();
+        this.messageBox.hideDialog();
     }
 
     applyFilters() {
         this.filters = this.form.newFilters;
         this.form = undefined;
-        this.messageBox.hideMessageBox();
+        this.messageBox.hideDialog();
         this.filtersChanged('', eFilterEvent.filter);
     }
 
@@ -1233,8 +1248,11 @@ export default class SearchFilterTable extends FlowComponent {
                     };
                     const comp: any = manywho.component.getByName(form.class);
                     const content: any = React.createElement(comp, formProps);
-                    this.messageBox.showMessageBox(
-                        form.title, content, [new modalDialogButton('Ok', this.okOutcomeForm), new modalDialogButton('Cancel', this.cancelOutcomeForm)],
+                    this.messageBox.showDialog(
+                        null,
+                        form.title, 
+                        content, 
+                        [new FCMModalButton('Ok', this.okOutcomeForm), new FCMModalButton('Cancel', this.cancelOutcomeForm)],
                     );
                     this.forceUpdate();
                     break;
@@ -1258,7 +1276,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     cancelOutcomeForm() {
-        this.messageBox.hideMessageBox();
+        this.messageBox.hideDialog();
         this.form = null;
         this.forceUpdate();
     }
@@ -1276,7 +1294,7 @@ export default class SearchFilterTable extends FlowComponent {
                     await this.updateValues(state);
                 }
             }
-            this.messageBox.hideMessageBox();
+            this.messageBox.hideDialog();
             this.form = null;
             this.doOutcome(outcome.developerName, objDataId, true);
             this.forceUpdate();
@@ -1308,7 +1326,8 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     playVideo(title: string, dataUri: string, mimetype: string) {
-        this.messageBox.showMessageBox(
+        this.messageBox.showDialog(
+            null,
             title,
             (
                 <video
@@ -1319,12 +1338,13 @@ export default class SearchFilterTable extends FlowComponent {
                     <source src={dataUri} type={mimetype}/>
                     Your browser does not support the video tag.
                 </video>
-            ), [new modalDialogButton('Close', this.messageBox.hideMessageBox)],
+            ), [new FCMModalButton('Close', this.messageBox.hideDialog)],
         );
     }
 
     playAudio(title: string, dataUri: string, mimetype: string) {
-        this.messageBox.showMessageBox(
+        this.messageBox.showDialog(
+            null,
             title,
             (
                 <audio
@@ -1335,7 +1355,7 @@ export default class SearchFilterTable extends FlowComponent {
                     <source src={dataUri} type={mimetype}/>
                     Your browser does not support the audio tag.
                 </audio>
-            ), [new modalDialogButton('Close', this.messageBox.hideMessageBox)],
+            ), [new FCMModalButton('Close', this.messageBox.hideDialog)],
         );
     }
 
@@ -1427,13 +1447,13 @@ export default class SearchFilterTable extends FlowComponent {
                 style={style}
                 onContextMenu={this.showContextMenu}
             >
-                <FlowMessageBox
+                <FCMModal
                     parent={this}
-                    ref={(element: FlowMessageBox) => {this.messageBox = element; }}
+                    ref={(element: FCMModal) => {this.messageBox = element; }}
                 />
-                <FlowContextMenu
+                <FCMContextMenu
                     parent={this}
-                    ref={(element: FlowContextMenu) => {this.contextMenu = element; }}
+                    ref={(element: FCMContextMenu) => {this.contextMenu = element; }}
                 />
                 {this.titleElement}
                 {this.ribbonElement}

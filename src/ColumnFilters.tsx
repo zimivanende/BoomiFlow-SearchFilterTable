@@ -1,4 +1,4 @@
-import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataProperty, modalDialogButton } from 'flow-component-model';
+import { eContentType, FlowDisplayColumn, FlowObjectData } from 'flow-component-model';
 import React, { Fragment } from 'react';
 import CellItem from './CellItem';
 import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
@@ -7,6 +7,7 @@ import { ColumnRule } from './ColumnRule';
 import FilterConfigForm from './FilterConfigForm';
 import RowItem from './RowItem';
 import SearchFilterTable from './SearchFilterTable';
+import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 
 export enum eFilterEvent {
     none = 0,
@@ -140,7 +141,9 @@ export default class ColumnFilters {
 
         const col: FlowDisplayColumn = this.parent.colMap.get(key);
 
-        this.parent.messageBox.showMessageBox('Filter ' + col.label,
+        this.parent.messageBox.showDialog(
+            null,
+            'Filter ' + col.label,
             (
                 <FilterConfigForm
                     root={root}
@@ -152,7 +155,7 @@ export default class ColumnFilters {
                     ref={(element: FilterConfigForm) => {this.setDialog(element); }}
                 />
             ),
-            [new modalDialogButton('Apply', this.saveFilter), new modalDialogButton('Cancel', this.cancelFilter)]);
+            [new FCMModalButton('Apply', this.saveFilter), new FCMModalButton('Cancel', this.cancelFilter)]);
     }
 
     filterClear(key: string) {
@@ -164,14 +167,14 @@ export default class ColumnFilters {
         this.dialog.filter.criteria = this.dialog.newCriteria;
         this.items.set(key, this.dialog.filter);
         this.dialog = undefined;
-        this.parent.messageBox.hideMessageBox();
+        this.parent.messageBox.hideDialog();
         this.notify(key, eFilterEvent.filter);
     }
 
     cancelFilter() {
         const key: string = this.dialog.filter.key;
         this.dialog = undefined;
-        this.parent.messageBox.hideMessageBox();
+        this.parent.messageBox.hideDialog();
         this.notify(key, eFilterEvent.filter);
     }
 
