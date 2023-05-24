@@ -43,6 +43,7 @@ export class ColumnRule {
         colRule.whiteSpace = rule.whitespace || '';
         colRule.cssClass = rule.classes || '';
         colRule.condition = rule.condition;
+
         switch (colRule.mode) {
             case 'url':
                 colRule.target = rule.target || '_blank';
@@ -74,6 +75,9 @@ export class ColumnRule {
             case 'currency':
                 colRule.currency = rule.currency;
                 break;
+            case 'icon':
+                colRule.icon = rule.icon;
+                break;
             default:
                 break;
         }
@@ -96,6 +100,7 @@ export class ColumnRule {
     currency: string;
     condition: ColumnRuleCondition;
     rowClassName: string;
+    icon: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -137,6 +142,9 @@ export class ColumnRule {
                 case "not equals":
                     applyRule = value.value!==this.condition.value;
                     break;
+                case "gt":
+                    applyRule = value.value>this.condition.value;
+                    break;
             }
         }
         let label: string;
@@ -146,7 +154,7 @@ export class ColumnRule {
         let cellClass: string="";
 
         const matches: any[] = [];
-        if(applyRule === true) {
+        if(applyRule === true || this.mode==="icon") {
             rowClass=this.rowClassName;
             switch (this.mode) {
                 case 'outcome':
@@ -182,8 +190,6 @@ export class ColumnRule {
                         );
                     }
                     break;
-                    
-
                 case 'url':
                     const href: string = this.url.replace('{{VALUE}}', value.value as string);
                     label = this.label || value.value as string;
@@ -295,6 +301,22 @@ export class ColumnRule {
                     );
                     cellClass=this.className;
                     break;
+                case "icon":
+                    let iconClass: string = "glyphicon glyphicon-";
+                    if(applyRule) {
+                        iconClass+=(this.condition.trueIcon || this.icon) + " " + this.condition.trueClass;
+                    }
+                    else {
+                        iconClass+=this.icon;
+                    }
+                    content = (
+                        <span
+                            title={""+ value.value}
+                            className={classes + " " + this.className + " " + iconClass } style={style}
+                        />
+                    );
+                    cellClass=this.className;
+                    break;
                 default:
                     content = (
                         <span className={classes} style={style}>{value.value}</span>
@@ -315,4 +337,6 @@ export class ColumnRule {
 class ColumnRuleCondition{
     comparator: string;
     value: any;
+    trueIcon: any;
+    trueClass: any;
 }
