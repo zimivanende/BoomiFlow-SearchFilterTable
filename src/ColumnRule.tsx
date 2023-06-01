@@ -43,6 +43,8 @@ export class ColumnRule {
         colRule.whiteSpace = rule.whitespace || '';
         colRule.cssClass = rule.classes || '';
         colRule.condition = rule.condition;
+        colRule.cellClass = rule.cellClass;
+        colRule.rowClass = rule.rowClass;
 
         switch (colRule.mode) {
             case 'url':
@@ -54,9 +56,8 @@ export class ColumnRule {
                 colRule.dateFormat = rule.dateFormat;
                 break;
             case 'class':
+                colRule.componentClass = rule.componentClass || rule.className;
             case 'style':
-                colRule.className = rule.className;
-                colRule.rowClassName = rule.rowClassName;
                 break;
             case 'outcome':
                 colRule.outcomeName = rule.outcomeName;
@@ -77,6 +78,7 @@ export class ColumnRule {
                 break;
             case 'icon':
                 colRule.icon = rule.icon;
+                colRule.iconClass = rule.iconClass
                 break;
             default:
                 break;
@@ -89,7 +91,7 @@ export class ColumnRule {
     target: string;
     url: string;
     label: string;
-    className: string;
+    cellClass: string;
     parent: SearchFilterTable;
     dateFormat: string;
     whiteSpace: string;
@@ -99,8 +101,10 @@ export class ColumnRule {
     format: string;
     currency: string;
     condition: ColumnRuleCondition;
-    rowClassName: string;
+    rowClass: string;
     icon: string;
+    iconClass: string;
+    componentClass: string;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -150,12 +154,14 @@ export class ColumnRule {
         let label: string;
         let match: any;
         let content: any;
-        let rowClass: string="";
-        let cellClass: string="";
+
+        //if there's a rule then we always apply the base cell & row classes
+        let rowClass: string =this.rowClass || "";
+        let cellClass: string=this.cellClass || "";
 
         const matches: any[] = [];
         if(applyRule === true || this.mode==="icon") {
-            rowClass=this.rowClassName;
+            rowClass=this.rowClass;
             switch (this.mode) {
                 case 'outcome':
                     label = this.label || value.value as string;
@@ -224,7 +230,7 @@ export class ColumnRule {
                         row,
                         sft: this.parent,
                     };
-                    content = React.createElement(manywho.component.getByName(this.className), columnProps);
+                    content = React.createElement(manywho.component.getByName(this.componentClass), columnProps);
                     break;
                 case 'dateformat':
                     let result: string = '';
@@ -297,25 +303,26 @@ export class ColumnRule {
                     break;
                 case "style":
                     content = (
-                        <span className={classes + " " + this.className} style={style}>{value.value}</span>
+                        <span className={classes + " " + cellClass} style={style}>{value.value}</span>
                     );
-                    cellClass=this.className;
                     break;
                 case "icon":
-                    let iconClass: string = "glyphicon glyphicon-";
+                    let iconClass: string = this.iconClass + " glyphicon glyphicon-";
                     if(applyRule) {
-                        iconClass+=(this.condition.trueIcon || this.icon) + " " + this.condition.trueClass;
+                        iconClass += (this.condition.icon || this.icon) + " " + this.condition.iconClass;
+                        rowClass += " " + this.condition.rowClass;
+                        cellClass += " " + this.condition.cellClass 
                     }
                     else {
-                        iconClass+=this.icon;
+                        iconClass += this.icon;
                     }
                     content = (
                         <span
                             title={""+ value.value}
-                            className={classes + " " + this.className + " " + iconClass } style={style}
+                            className={classes + " " + iconClass } 
+                            style={style}
                         />
                     );
-                    cellClass=this.className;
                     break;
                 default:
                     content = (
@@ -337,6 +344,8 @@ export class ColumnRule {
 class ColumnRuleCondition{
     comparator: string;
     value: any;
-    trueIcon: any;
-    trueClass: any;
+    icon: any;
+    cellClass: any;
+    rowClass: any;
+    iconClass: any;
 }

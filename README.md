@@ -391,6 +391,32 @@ The value is a JSON object with one attribute per column.
    "DollarColumn":{
       "mode":"currency",
       "currency":"USD"
+   },
+   "someColumn": {
+      "mode":"style",
+      "cellClass":"default-cell-class"
+      "rowClass":"default-row-class";
+      "condition":{
+         "comparator":"equals / not equals / gt",
+         "value": 200,
+         "cellClass":"cell-true-class",
+         "rowClass":"true-row-class"
+      }
+   },
+   "someOtherColumn": {
+      "mode":"icon",
+      "callClass":"default-cell-class"
+      "rowClass":"default-row-class";
+      "icon":"wrench",
+      "iconClass":"def-icon-class",
+      "condition":{
+         "comparator":"equals / not equals / gt",
+         "value": 200,
+         "cellClass":"cell-true-class",
+         "rowClass":"true-row-class",
+         "icon":"remove-sign",
+         "iconClass":"extra-icon-class"
+      }
    }
 }
 ```
@@ -422,7 +448,7 @@ For "format" you need to add a "format" argument, this will be displayed with th
 
 For "currency" you need to add a "currency" argument which should be the 3 char currency enum value like USD, GBP etc.
 
-For "style" you need to add a "className" argument which should contain the extra css class name to apply and/or "rowClassName" for a class to add to the parent row.  The style "bad-cell" & "bad-row" are included.
+For "style" you need to add a "className" argument which should contain the extra css class name to apply and/or "rowClass" for a class to add to the parent row.  The style "bad-cell" & "bad-row" are included.
 
 ### OutcomesPosition
 
