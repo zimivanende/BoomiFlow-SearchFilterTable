@@ -297,11 +297,12 @@ export default class CommonFunctions {
         return result;
     }
 
-    static makeObjectDataArrayFromJSON(json: string, primaryKey: string, columns: FlowDisplayColumn[]) : FlowObjectDataArray {
+    /* MOVED TO FLOW COMPONENT MODEL
+    static makeObjectDataArrayFromJSON(json: string, primaryKey: string, columns: FlowDisplayColumn[], flowTypeName: string) : FlowObjectDataArray {
         let objDataArray: FlowObjectDataArray = new FlowObjectDataArray();
         let model: any[] = JSON.parse(json);
         model.forEach((item: any) => {
-            let objData: FlowObjectData = FlowObjectData.newInstance("GetOpportunities RESPONSE - Opportunity");
+            let objData: FlowObjectData = FlowObjectData.newInstance(flowTypeName);
             columns.forEach((col: FlowDisplayColumn) => {
                 let val: any = item[col.developerName]; 
                 if(col.developerName===primaryKey){
@@ -327,4 +328,5 @@ export default class CommonFunctions {
 
         return objDataArray;
     }
+    */
 }

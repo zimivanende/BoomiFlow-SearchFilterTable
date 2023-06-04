@@ -22,7 +22,9 @@
     "OutcomesPosition": "Outcomes Position.  The default buttons column position.  Overridden by user column selection / ordering.",
     "UserColumnsValue": "User Columns.  The FLow field name to store the user's selected columns into.  Can be used to persist to a DB.  \"LOCAL_STORAGE\" will persist them into local storage.",
     "exportUserColumns": "Export User Columns.  If true then only the user's displayed columns are exported.",
-    "MaxColumnTextLength": "MaxColumnTextLength.  The maximum col text length before being replaced with a button."
+    "MaxColumnTextLength": "MaxColumnTextLength.  The maximum col text length before being replaced with a button.",
+    "JSONModelValue":"The name of a Flow value which contians the actual datasource data in a JSON string",
+    "ModelTypeName":"The name of a Flow type for the datasource objects.  Allows creating state value of correct type."
   },
   "configurationEditors": [
     "LABEL",

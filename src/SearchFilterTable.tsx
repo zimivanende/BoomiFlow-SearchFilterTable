@@ -21,9 +21,16 @@ import SearchFilterTableRow from './SearchFilterTableRow';
 import CommonFunctions from './CommonFunctions';
 import { FCMContextMenu, FCMModal } from 'fcmkit';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
+import { GenericDB } from './DB/GenericDB';
 
 // declare const manywho: IManywho;
 declare const manywho: any;
+
+export enum ePaginationMode {
+    none,
+    local,
+    external
+}
 
 export default class SearchFilterTable extends FlowComponent {
     version: string = '1.0.0';
@@ -125,6 +132,12 @@ export default class SearchFilterTable extends FlowComponent {
 
     selectedRow: string;
 
+    // flag to switch on / off all pagination
+    paginationMode: ePaginationMode;
+
+    //beta
+    db: GenericDB;
+
     constructor(props: any) {
         super(props);
         this.handleMessage = this.handleMessage.bind(this);
@@ -174,6 +187,18 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.loadModelData = this.loadModelData.bind(this);
 
+        let pmode: string = this.getAttribute('PaginationMode', "local").toLowerCase();
+        switch(pmode) {
+            case "none":
+                this.paginationMode = ePaginationMode.none;
+                break;
+            case "local":
+                this.paginationMode = ePaginationMode.local;
+                break;
+            case "external":
+                this.paginationMode = ePaginationMode.external;
+                break;
+        }
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
@@ -731,20 +756,25 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async loadModelData() {
+        
         // construct Item
         this.rowMap=new Map();
         this.selectedRowMap.clear();
         const stateSelectedItems: Map<string, any> = await this.loadSelected();
         const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
         let JSONStateName: string = this.getAttribute('JSONModelValue');
+        let modelTypeName: string = this.getAttribute('ModelTypeName',"GetOpportunities RESPONSE - Opportunity");
         let model: FlowObjectDataArray;
         if(JSONStateName) {
             let jsonField: FlowField = await this.loadValue(JSONStateName);
-            model = CommonFunctions.makeObjectDataArrayFromJSON(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns);
+            model = FlowObjectDataArray.fromJSONString(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns, modelTypeName);
         }
         else {
             model = this.model.dataSource;
         }
+
+        //this.db = await GenericDB.newInstance(this.componentId, this.colMap);
+        //this.db.ingestObjectDataArray(model);
         
         model.items.forEach((item: FlowObjectData) => {
             
@@ -860,7 +890,7 @@ export default class SearchFilterTable extends FlowComponent {
             if(this.lastRememberedRow) {
                 objKey = objData.properties[this.rowRememberColumn]?.value as string;
             }
-            if (currentPage.size < this.maxPageRows) {
+            if ((currentPage.size < this.maxPageRows) || this.paginationMode !== ePaginationMode.local) {
                 currentPage.set(key, item);
                 if(objKey && this.lastRememberedRow && objKey===this.lastRememberedRow){
                     this.currentRowPage = this.currentRowPages.length;

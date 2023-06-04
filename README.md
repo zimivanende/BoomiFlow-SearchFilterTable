@@ -509,6 +509,13 @@ The name of the property on the JSON data which is the primary key.
 
 Only works with JSONModelValue.
 
+### ModelTypeName
+String.
+
+The name of the Flow object type to create when setting the state & row level state.
+
+Only works with JSONModelValue.
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.
