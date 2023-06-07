@@ -82,7 +82,7 @@ bootstrap glyphicons without the "glyphicon-" prefix e.g. "trash","edit" etc.
 
 * If the outcome has a "Label" set then this is used as the tooltip otherwise the outcome's name is used.
 
-* "OnSelect" is a special case and is attached to the action of clicking a tree node.
+* "OnSelect" is a special case and is attached to the action of clicking a table row.
 
 * If the outcome's developer name begins with "CM" (case insensitive) then the outcome is added to either the main tree or the current node's context menu rather than as a button.
 

@@ -970,6 +970,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     toggleSelect(event: any, key: string) {
+        event.stopPropagation();
         if (event.target.checked) {
             this.selectedRowMap.set(key, '');
         } else {
