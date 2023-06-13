@@ -930,6 +930,9 @@
     background-color: rgb(255 236 236) !important;
 }
 
+.sft table {
+    border-collapse: separate;
+}
 .fcmmod-redaction {
     display: flex;
     position: fixed;

@@ -846,3 +846,7 @@
 .bad-row {
     background-color: rgb(255 236 236) !important;
 }
+
+.sft table {
+    border-collapse: separate;
+}
