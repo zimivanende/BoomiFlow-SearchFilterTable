@@ -1,6 +1,6 @@
 import { FlowDisplayColumn } from 'flow-component-model';
 import React from 'react';
-import SearchFilterTable from './SearchFilterTable';
+import SearchFilterTable, { ePaginationMode } from './SearchFilterTable';
 
 export default class SearchFilterTableFooter extends React.Component<any, any> {
 
@@ -114,6 +114,39 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
             </select>
         );
 
+        let pagination: any;
+        let perPageBlock: any;
+        if(root.paginationMode===ePaginationMode.local) {
+            pagination = (
+                <div
+                    className="sft-footer-pagination"
+                >
+                    {firstPage}
+                    {prevPage}
+                    <span className="sft-footer-pagination-label">{pag}</span>
+                    {nextPage}
+                    {lastPage}
+                </div>
+            );
+            perPageBlock=(
+                <div
+                    className="sft-footer-perpage"
+                >
+                    <div
+                        className="sft-footer-perpage-label"
+                    >
+                        {'Items per page'}
+                    </div>
+                    <div
+                        className="sft-footer-perpage-dropdown"
+                    >
+                        {perPage}
+                    </div>
+                </div>
+            );
+        }
+
+
         return (
             <div
                 className="sft-footer"
@@ -130,29 +163,8 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                 <div
                     className="sft-footer-spacer"
                 />
-                <div
-                    className="sft-footer-perpage"
-                >
-                    <div
-                        className="sft-footer-perpage-label"
-                    >
-                        {'Items per page'}
-                    </div>
-                    <div
-                        className="sft-footer-perpage-dropdown"
-                    >
-                        {perPage}
-                    </div>
-                </div>
-                <div
-                    className="sft-footer-pagination"
-                >
-                    {firstPage}
-                    {prevPage}
-                    <span className="sft-footer-pagination-label">{pag}</span>
-                    {nextPage}
-                    {lastPage}
-                </div>
+                {perPageBlock}
+                {pagination}
             </div>
         );
     }
