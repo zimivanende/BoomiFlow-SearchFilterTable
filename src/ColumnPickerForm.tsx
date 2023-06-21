@@ -32,7 +32,13 @@ export default class ColumnPickerForm extends React.Component<any, any> {
         const root: SearchFilterTable = this.props.root;
         const cols: any[] = [];
         let rows: any[] = [];
-        root.colMap.forEach((column: FlowDisplayColumn) => {
+        let colArray: FlowDisplayColumn[] = Array.from(root.colMap.values());
+        colArray.sort((a: FlowDisplayColumn,b: FlowDisplayColumn) =>{
+            if(a.label > b.label){return 1}
+            if(a.label < b.label){return -1} 
+            return 0
+        });
+        colArray.forEach((column: FlowDisplayColumn) => {
             if (rows.length > 11) {
                 cols.push(
                     <div
