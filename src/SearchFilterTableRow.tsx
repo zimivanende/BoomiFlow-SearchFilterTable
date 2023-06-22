@@ -397,6 +397,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     isUrlImage(url: string): boolean {
+        url+="";
         if (
             url.endsWith('jpg') ||
             url.endsWith('jpeg') ||
@@ -411,8 +412,14 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     isJSON(value: string): boolean {
+        value+="";
         if (value === 'null') { value = ''; }
-        if (value.indexOf('{') < 0) { return false; }
+        try{
+            if (value.indexOf('{') < 0) { return false; }
+        }
+        catch(e){
+            console.log("bang")
+        }
         try {
             value = value.replaceAll('\\n ', '');
             value = value.replaceAll('\\n}', '}');
@@ -463,6 +470,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     isContent(value: string): boolean {
+        value+="";
         if (value === 'null') { value = ''; }
         if (value.indexOf('\\n') > 0 || /<\/?[a-z][\s\S]*>/i.test(value)) {
             return true;
