@@ -1272,6 +1272,7 @@ export default class SearchFilterTable extends FlowComponent {
                         flowKey: this.flowKey,
                         okOutcome: this.okOutcomeForm,
                         cancelOutcome: this.cancelOutcomeForm,
+                        objData: selectedItem,
                         selectedItem,
                         outcome,
                         form,
