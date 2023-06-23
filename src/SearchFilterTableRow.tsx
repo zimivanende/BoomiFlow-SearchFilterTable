@@ -40,7 +40,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
     selectRow(e: any) {
         const root: SearchFilterTable = this.props.root;
-        root.selectRow(this.props.id);
+        const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
+        root.selectRow(objData);
     }
 
     render() {
@@ -48,7 +49,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const root: SearchFilterTable = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
         let rowClass: string="";
-        if(root.selectedRow === this.props.id) {
+        if(root.selectedRow === objData.externalId) {
             rowClass += " sft-table-row-selected "
         }
         const buttons: any[] = [];
@@ -90,7 +91,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                 className="sft-table-cell-button"
                                 title={root.outcomes[key].label}
                                 onClick={(event: any) => {
-                                    root.doOutcome(key, objData.internalId);
+                                    root.doOutcome(key, objData);
                                 }}
                             >
                                 {icon}
@@ -141,7 +142,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 if (col) {
                     let cellResult: any = this.formatValue(col.componentType, col.contentType, root, col.developerName, objData);
                     const val: any = cellResult.result;
-                    if(rowClass.length > 0) {
+                    if(rowClass.length > 0 && cellResult.rowClass.length>0) {
                         rowClass+= " ";
                     }
                     rowClass+= cellResult.rowClass;
@@ -197,8 +198,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             if (root.columnRules.has(col.developerName)) {
                 let ruleResult: any = root.columnRules.get(col.developerName).generateColumnContent(col, row, root);
                 result = ruleResult.content;
-                rowClass = ruleResult.rowClass;
-                cellClass = ruleResult.cellClass;
+                rowClass = (ruleResult.rowClass? ruleResult.rowClass : "");
+                cellClass = (ruleResult.cellClass? ruleResult.cellClass : "");
             } else {
                 if (componentType?.length > 0) {
                     const columnProps = {

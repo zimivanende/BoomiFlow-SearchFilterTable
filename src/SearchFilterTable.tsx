@@ -935,12 +935,12 @@ export default class SearchFilterTable extends FlowComponent {
         this.forceUpdate();
     }
 
-    async selectRow(id: string) {
-        if(this.selectedRow !== id){
-            this.selectedRow = id;
-            await this.doOutcome("OnSelect",id);
+    async selectRow(objData: FlowObjectData) {
+        //if(this.selectedRow !== id){
+            this.selectedRow = objData.externalId;
+            await this.doOutcome("OnSelect",objData);
             this.refreshRows();
-        }
+        //}
     }
 
     refreshRows() {
@@ -1015,7 +1015,7 @@ export default class SearchFilterTable extends FlowComponent {
                     let objData: FlowObjectData = val?.objectData;
                     if((rls.value as FlowObjectData).properties[this.rowRememberColumn].value ===
                         objData.properties[this.rowRememberColumn].value) {
-                            this.selectedRow = objData.internalId;
+                            this.selectedRow = objData.externalId;
                         }
                     
                 }
@@ -1191,19 +1191,20 @@ export default class SearchFilterTable extends FlowComponent {
         }
     }
 
-    async doOutcome(outcomeName: string, selectedItem?: string, ignoreRules?: boolean) {
-        let objData: FlowObjectData;
+    async doOutcome(outcomeName: string, selectedItem?: FlowObjectData, ignoreRules?: boolean) {
+        if(typeof selectedItem === 'string') {
+            selectedItem = this.rowMap.get(selectedItem).objectData;
+        }
         // if there's a row level state then set it
         if (selectedItem && this.getAttribute('RowLevelState', '').length > 0) {
-            objData = this.rowMap.get(selectedItem)?.objectData;
             const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if (val) {
-                val.value = objData;
+                val.value = selectedItem;
                 await this.updateValues(val);
             }
             // reload last selected row if any
             if(this.rowRememberColumn){
-                sessionStorage.setItem('sft-lastrow-' + this.componentId,objData.properties[this.rowRememberColumn]?.value as string);
+                sessionStorage.setItem('sft-lastrow-' + this.componentId, selectedItem.properties[this.rowRememberColumn]?.value as string);
             }
         }
         if (this.outcomes[outcomeName]) {
@@ -1216,13 +1217,13 @@ export default class SearchFilterTable extends FlowComponent {
                     while (match = RegExp(/{{([^}]*)}}/).exec(href)) {
                         // could be a property of the selected item or a global variable or a static value - depends also on isBulkAction
                         // if it's not bulk then grab selected row objdata
-                        if (outcome.isBulkAction === false) {
-                            objData = this.rowMap.get(selectedItem)?.objectData;
-                        }
+                        //if (outcome.isBulkAction === false) {
+                        //    objData = this.rowMap.get(selectedItem)?.objectData;
+                        //}
 
-                        if (objData && objData.properties[match[1]]) {
+                        if (selectedItem && selectedItem.properties[match[1]]) {
                             // objdata had this prop
-                            href = href.replace(match[0], (objData.properties[match[1]] ? this.getTextValue(objData.properties[match[1]]) : ''));
+                            href = href.replace(match[0], (selectedItem.properties[match[1]] ? this.getTextValue(selectedItem.properties[match[1]]) : ''));
                         } else {
                             // is it a known static
                             switch (match[1]) {
@@ -1266,13 +1267,12 @@ export default class SearchFilterTable extends FlowComponent {
 
                 case outcome.attributes?.form?.value.length > 0 && ignoreRules !== true:
                     const form: any = JSON.parse(outcome.attributes.form.value);
-                    objData = this.rowMap.get(selectedItem)?.objectData;
-                    const formProps = {
+                        const formProps = {
                         id: this.componentId,
                         flowKey: this.flowKey,
                         okOutcome: this.okOutcomeForm,
                         cancelOutcome: this.cancelOutcomeForm,
-                        objData,
+                        selectedItem,
                         outcome,
                         form,
                         sft: this,
@@ -1315,7 +1315,7 @@ export default class SearchFilterTable extends FlowComponent {
     async okOutcomeForm() {
         if (this.form.validate() === true) {
             const objData: FlowObjectData = await this.form?.makeObjectData();
-            const objDataId: string = this.form.props.objData?.internalId;
+            //const objDataId: string = this.form.props.objData?.internalId;
             const outcome: FlowOutcome = this.form.props.outcome;
             const form: any = this.form.props.form;
             if (form.state && objData) {
@@ -1327,7 +1327,7 @@ export default class SearchFilterTable extends FlowComponent {
             }
             this.messageBox.hideDialog();
             this.form = null;
-            this.doOutcome(outcome.developerName, objDataId, true);
+            this.doOutcome(outcome.developerName, objData, true);
             this.forceUpdate();
         }
     }

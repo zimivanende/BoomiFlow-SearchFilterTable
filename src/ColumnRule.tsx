@@ -183,7 +183,7 @@ export class ColumnRule {
                         content = (
                             <span
                                 className="sft-table-cell-href"
-                                onClick={(e: any) => {sft.doOutcome(this.outcomeName,row.internalId)}}
+                                onClick={(e: any) => {sft.doOutcome(this.outcomeName,row)}}
                                 title={toolTip}
                             >
                                 {label}
