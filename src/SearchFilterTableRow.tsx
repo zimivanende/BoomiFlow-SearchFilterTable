@@ -347,7 +347,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                             break;
                         case eContentType.ContentNumber:
-                            if (((col as any).Value as string) === '') {
+                            if (((col as any).value as string) === '') {
                                 result = (
                                     <span
                                         className="sft-table-cell-text"
@@ -364,7 +364,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             }
                             break;
                         case eContentType.ContentBoolean:
-                            if (((col as any).Value as string)?.toLowerCase() === 'true') {
+                            if (((col as any).value as string)?.toLowerCase() === 'true') {
                                 result = (
                                     <span
                                         className="sft-table-cell-text sft-table-cell-boolean sft-table-cell-boolean-true glyphicon glyphicon-ok"
