@@ -854,7 +854,7 @@ export default class SearchFilterTable extends FlowComponent {
         // remove any selected items not in the currentRowMap
         this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
             if (!this.currentRowMap.has(internalId)) {
-                this.selectedRowMap.delete(internalId);
+                //this.selectedRowMap.delete(internalId);
             }
         });
         const end: Date = new Date();
