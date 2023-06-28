@@ -416,11 +416,6 @@ export default class SearchFilterTable extends FlowComponent {
         this.loaded = true;
 
         await this.buildCoreTable();
-        //this.filterRows();
-        //this.sortRows();
-        //this.buildTableRows();
-        //this.forceUpdate();
-
     }
 
     async componentWillUnmount() {
@@ -546,8 +541,7 @@ export default class SearchFilterTable extends FlowComponent {
     ///////////////////////////////////////////////////////////////////////////////////////////
     async buildCoreTable() {
         // await this.loadSelected();
-        this.rowMap = new Map();
-        this.rows = new Map();
+        
 
         // sort display cols on order
         this.colMap = new Map();
@@ -703,46 +697,8 @@ export default class SearchFilterTable extends FlowComponent {
             this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
         }
 
-        await this.loadModelData();
-        /*
-        this.selectedRowMap.clear();
-        const start: Date = new Date();
-        const stateSelectedItems: Map<string, any> = await this.loadSelected();
-        const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
-        this.model.dataSource.items.forEach((item: FlowObjectData) => {
-            // construct Item
-            if (stateSelectedItems) {
-                if (stateSelectedItems.has(item.internalId) && stateSelectedItems.get(item.internalId).isSelected === true) {
-                    this.selectedRowMap.set(item.internalId, undefined);
-                }
-            } else {
-                // if it's selected in the model or we have an IsSelectedField attribute then pre-select it
-                if (
-                    item.isSelected === true || (
-                        isSelectedColumn && (
-                            item.properties[isSelectedColumn].value as boolean === true ||
-                            item.properties[isSelectedColumn].value as number > 0
-                        )
-                    )
-                ) {
-                    this.selectedRowMap.set(item.internalId, undefined);
-                }
-            }
-
-            const node = new RowItem();
-            node.id = item.internalId;
-
-            this.colMap.forEach((col: FlowDisplayColumn) => {
-                node.columns.set(col.developerName, new CellItem(col.developerName, item.properties[col.developerName]?.value as any));
-                this.colValMap.get(col.developerName).set(item.properties[col.developerName]?.value, item.properties[col.developerName]?.value);
-            });
-
-            node.objectData = item;
-
-            this.rowMap.set(node.id, node);
-
-        });
-        */
+        //await this.loadModelData();
+    
         // save the selected items to state
         await this.saveSelected();
         const end: Date = new Date();
@@ -751,8 +707,6 @@ export default class SearchFilterTable extends FlowComponent {
         this.loadSingleSelected();
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
-        
-        //sessionStorage.setItem('sft-lastrow-' + this.componentId, null);
     }
 
     async loadModelData() {
@@ -767,7 +721,10 @@ export default class SearchFilterTable extends FlowComponent {
         let model: FlowObjectDataArray;
         if(JSONStateName) {
             let jsonField: FlowField = await this.loadValue(JSONStateName);
-            model = FlowObjectDataArray.fromJSONString(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns, modelTypeName);
+            let jsonString: string = jsonField.value as string;
+            if(jsonString && jsonString.length > 0) {
+                model = FlowObjectDataArray.fromJSONString(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns, modelTypeName);
+            }
         }
         else {
             model = this.model.dataSource;
@@ -775,14 +732,17 @@ export default class SearchFilterTable extends FlowComponent {
 
         //this.db = await GenericDB.newInstance(this.componentId, this.colMap);
         //this.db.ingestObjectDataArray(model);
-        
-        model.items.forEach((item: FlowObjectData) => {
-            
-            if (stateSelectedItems) {
-                if (stateSelectedItems.has(item.internalId) && stateSelectedItems.get(item.internalId).isSelected === true) {
-                    this.selectedRowMap.set(item.internalId, undefined);
+        if(model) {
+            this.rowMap = new Map();
+            this.rows = new Map();
+            model.items.forEach((item: FlowObjectData) => {
+                
+                if (stateSelectedItems) {
+                    if (stateSelectedItems.has(item.internalId) && stateSelectedItems.get(item.internalId).isSelected === true) {
+                        this.selectedRowMap.set(item.internalId, undefined);
+                    }
                 }
-            } else {
+                // also set it its explicitly selected
                 // if it's selected in the model or we have an IsSelectedField attribute then pre-select it
                 if (
                     item.isSelected === true || (
@@ -794,20 +754,21 @@ export default class SearchFilterTable extends FlowComponent {
                 ) {
                     this.selectedRowMap.set(item.internalId, undefined);
                 }
-            }
+        
+                const node = new RowItem();
+                node.id = item.internalId;
 
-            const node = new RowItem();
-            node.id = item.internalId;
+                this.colMap.forEach((col: FlowDisplayColumn) => {
+                    node.columns.set(col.developerName, new CellItem(col.developerName, item.properties[col.developerName]?.value as any));
+                    this.colValMap.get(col.developerName).set(item.properties[col.developerName]?.value, item.properties[col.developerName]?.value);
+                });
 
-            this.colMap.forEach((col: FlowDisplayColumn) => {
-                node.columns.set(col.developerName, new CellItem(col.developerName, item.properties[col.developerName]?.value as any));
-                this.colValMap.get(col.developerName).set(item.properties[col.developerName]?.value, item.properties[col.developerName]?.value);
+                node.objectData = item;
+
+                this.rowMap.set(node.id, node);
             });
-
-            node.objectData = item;
-
-            this.rowMap.set(node.id, node);
-        });
+            await this.saveSelected();
+        }
     }
 
     // filters the currentRowMap
@@ -845,6 +806,7 @@ export default class SearchFilterTable extends FlowComponent {
             }
         }
         else {
+            await this.loadModelData();
             this.currentRowMap = new Map();
             if (this.rowMap.size > 0) {
                 this.currentRowMap = this.filters.filter(this.rowMap);
