@@ -209,6 +209,62 @@ export default class SearchFilterTable extends FlowComponent {
         
     }
 
+    async flowMoved(xhr: any, request: any) {
+        const me: any = this;
+        if (xhr.invokeType === 'FORWARD') {
+            if (this.loadingState !== eLoadingState.ready && this.retries < 20) {
+                this.loaded=false;
+                this.retries ++;
+                console.log("retry " + this.retries + " after flow move");
+                window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
+            } else {
+                this.retries = 0;
+                this.loaded = true;
+                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
+                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
+                let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
+                if(model) {
+                    await this.preLoad();
+                    await this.buildCoreTable();
+                }
+                else{
+                    this.buildTableRows();
+                }
+                
+            }
+        }
+
+    }
+
+    async componentDidMount() {
+        console.log(this.model.developerName + "=" + this.componentId);
+        // will get this from a component attribute
+        this.loaded=false;
+        await super.componentDidMount();
+        (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
+        // build tree
+        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
+        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
+
+        // calculate if we are in dynamic column mode
+        if (this.attributes.UserColumnsValue) {
+            this.dynamicColumns = true;
+        } // it will have defaulted to false
+
+        if (this.attributes.MaxColumnTextLength) {
+            this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
+        } // it defaults to -1 which means dont apply this
+        this.columnRules = await ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
+        await this.preLoad();
+        await this.buildCoreTable();
+        this.loaded = true;
+    }
+
+    async componentWillUnmount() {
+        await super.componentWillUnmount();
+        (manywho as any).eventManager.removeDoneListener(this.componentId);
+    }
+
     showInfo() {
         const content = (
             <div
@@ -284,21 +340,22 @@ export default class SearchFilterTable extends FlowComponent {
                 if (this.filters.get(key).sort !== eSortDirection.none) {
                     const col: SearchFilterTableHeader = this.headers.headers.get(key);
                 }
-
+                this.sortRows();
+                this.bringColumnIntoView(key)
                 break;
 
             case eFilterEvent.filter:
                 this.filterRows();
                 break;
         }
-        this.sortRows();
-        this.paginateRows();
-        this.buildTableRows();
-        this.forceUpdate(() => {
-            if(event === eFilterEvent.sort) {
-                this.bringColumnIntoView(key)
-            }
-        });
+        //this.sortRows();
+        //this.paginateRows();
+        //this.buildTableRows();
+        //this.forceUpdate(() => {
+            //if(event === eFilterEvent.sort) {
+            //    this.bringColumnIntoView(key)
+            //}
+        //});
     }
 
     bringColumnIntoView(col: any) {
@@ -373,55 +430,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.footer = element;
     }
 
-    async flowMoved(xhr: any, request: any) {
-        const me: any = this;
-        if (xhr.invokeType === 'FORWARD') {
-            if (this.loadingState !== eLoadingState.ready && this.retries < 20) {
-                this.loaded=false;
-                this.retries ++;
-                console.log("retry " + this.retries + " after flow move");
-                window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
-            } else {
-                this.retries = 0;
-                await this.preLoad();
-                this.loaded = true;
-                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
-                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
-                await this.buildCoreTable();
-            }
-        }
-
-    }
-
-    async componentDidMount() {
-        console.log(this.model.developerName + "=" + this.componentId);
-        // will get this from a component attribute
-        this.loaded=false;
-        await super.componentDidMount();
-        (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
-        // build tree
-        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
-        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
-
-        // calculate if we are in dynamic column mode
-        if (this.attributes.UserColumnsValue) {
-            this.dynamicColumns = true;
-        } // it will have defaulted to false
-
-        if (this.attributes.MaxColumnTextLength) {
-            this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
-        } // it defaults to -1 which means dont apply this
-        this.columnRules = await ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
-        await this.preLoad();
-        this.loaded = true;
-
-        await this.buildCoreTable();
-    }
-
-    async componentWillUnmount() {
-        await super.componentWillUnmount();
-        (manywho as any).eventManager.removeDoneListener(this.componentId);
-    }
+    
 
     async loadUserColumns() {
         let userFieldsVal: string = '';
@@ -712,10 +721,8 @@ export default class SearchFilterTable extends FlowComponent {
     async loadModelData() {
         
         // construct Item
-        this.rowMap=new Map();
-        this.selectedRowMap.clear();
-        const stateSelectedItems: Map<string, any> = await this.loadSelected();
-        const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
+        
+        
         let JSONStateName: string = this.getAttribute('JSONModelValue');
         let modelTypeName: string = this.getAttribute('ModelTypeName',"GetOpportunities RESPONSE - Opportunity");
         let model: FlowObjectDataArray;
@@ -733,7 +740,10 @@ export default class SearchFilterTable extends FlowComponent {
         //this.db = await GenericDB.newInstance(this.componentId, this.colMap);
         //this.db.ingestObjectDataArray(model);
         if(model) {
+            const stateSelectedItems: Map<string, any> = await this.loadSelected();
+            const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
             this.rowMap = new Map();
+            this.selectedRowMap = new Map();
             this.rows = new Map();
             model.items.forEach((item: FlowObjectData) => {
                 
@@ -776,56 +786,64 @@ export default class SearchFilterTable extends FlowComponent {
         const start: Date = new Date();
         // list or service
         let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
-        if(model?.objectDataRequest){
-            //service - we need to send an objectDataRequst
-            //
-            let odr = model.objectDataRequest;
-            let newOdr = JSON.parse(JSON.stringify(odr));
-            newOdr.listFilter.where = [
-                {
-                    columnName:"Filters",
-                    criteriaType:"EQUAL",
-                    value:this.filters.getForFSS()
+        if(model) {
+            if(model?.objectDataRequest){
+                //service - we need to send an objectDataRequst
+                //
+                let odr = model.objectDataRequest;
+                let newOdr = JSON.parse(JSON.stringify(odr));
+                newOdr.listFilter.where = [
+                    {
+                        columnName:"Filters",
+                        criteriaType:"EQUAL",
+                        value:this.filters.getForFSS()
+                    }
+                ];
+                //odr.listFilter.limit=200;
+                //odr.listFilter.search=this.filters.globalCriteria || "";
+                let sortColumn: any = this.filters?.getSortColumn();
+                let XHR = await manywho.engine.objectDataRequest(
+                    this.componentId,
+                    newOdr,
+                    this.flowKey
+                );
+                this.loadModel();
+                await this.loadModelData();
+                this.currentRowMap = new Map();
+                if (this.rowMap.size > 0) {
+                    this.rowMap.forEach((item: RowItem, key: string) => {
+                        this.currentRowMap.set(key, item);
+                    });
                 }
-            ];
-            //odr.listFilter.limit=200;
-            //odr.listFilter.search=this.filters.globalCriteria || "";
-            let sortColumn: any = this.filters?.getSortColumn();
-            let XHR = await manywho.engine.objectDataRequest(
-                this.componentId,
-                newOdr,
-                this.flowKey
-            );
-            this.loadModel();
-            await this.loadModelData();
-            this.currentRowMap = new Map();
-            if (this.rowMap.size > 0) {
-                this.rowMap.forEach((item: RowItem, key: string) => {
-                    this.currentRowMap.set(key, item);
-                });
+            }
+            else {
+                await this.loadModelData();
+                this.currentRowMap = new Map();
+                if (this.rowMap.size > 0) {
+                    this.currentRowMap = this.filters.filter(this.rowMap);
+                }
+            }
+            // remove any selected items not in the currentRowMap
+            this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
+                if (!this.currentRowMap.has(internalId)) {
+                    //this.selectedRowMap.delete(internalId);
+                }
+            });
+            const end: Date = new Date();
+
+            if(model?.objectDataRequest){
+                this.paginateRows();
+            }
+            else {
+                this.sortRows();
             }
         }
         else {
-            await this.loadModelData();
-            this.currentRowMap = new Map();
-            if (this.rowMap.size > 0) {
-                this.currentRowMap = this.filters.filter(this.rowMap);
-            }
+            this.buildTableRows();
         }
         
-        // remove any selected items not in the currentRowMap
-        this.selectedRowMap.forEach((item: RowItem, internalId: string) => {
-            if (!this.currentRowMap.has(internalId)) {
-                //this.selectedRowMap.delete(internalId);
-            }
-        });
-        const end: Date = new Date();
-        if(model?.objectDataRequest){
-            this.paginateRows();
-        }
-        else {
-            this.sortRows();
-        }
+        
+        
     }
 
     // sorts the currentRowMap by getting the current sort column from filters
@@ -1154,15 +1172,18 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async doOutcome(outcomeName: string, selectedItem?: FlowObjectData, ignoreRules?: boolean) {
+       
         if(typeof selectedItem === 'string') {
             selectedItem = this.rowMap.get(selectedItem).objectData;
         }
+        this.selectedRow = selectedItem.externalId;
         // if there's a row level state then set it
         if (selectedItem && this.getAttribute('RowLevelState', '').length > 0) {
             const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if (val) {
                 val.value = selectedItem;
                 await this.updateValues(val);
+                await this.sync();
             }
             // reload last selected row if any
             if(this.rowRememberColumn){
@@ -1266,7 +1287,7 @@ export default class SearchFilterTable extends FlowComponent {
                 null,
             );
         }
-        this.forceUpdate();
+        //this.forceUpdate();
     }
 
     cancelOutcomeForm() {

@@ -91,6 +91,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                                 className="sft-table-cell-button"
                                 title={root.outcomes[key].label}
                                 onClick={(event: any) => {
+                                    event.stopPropagation();
                                     root.doOutcome(key, objData);
                                 }}
                             >
