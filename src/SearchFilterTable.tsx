@@ -757,8 +757,8 @@ export default class SearchFilterTable extends FlowComponent {
                 if (
                     item.isSelected === true || (
                         isSelectedColumn && (
-                            item.properties[isSelectedColumn].value as boolean === true ||
-                            item.properties[isSelectedColumn].value as number > 0
+                            item.properties[isSelectedColumn]?.value as boolean === true ||
+                            item.properties[isSelectedColumn]?.value as number > 0
                         )
                     )
                 ) {
