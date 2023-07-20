@@ -993,8 +993,8 @@ export default class SearchFilterTable extends FlowComponent {
             if(rls.value){
                 for(let val of this.rowMap.values()) {
                     let objData: FlowObjectData = val?.objectData;
-                    if((rls.value as FlowObjectData).properties[this.rowRememberColumn].value ===
-                        objData.properties[this.rowRememberColumn].value) {
+                    if((rls.value as FlowObjectData).properties[this.rowRememberColumn]?.value ===
+                        objData.properties[this.rowRememberColumn]?.value) {
                             this.selectedRow = objData.externalId;
                         }
                     
