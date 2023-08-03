@@ -18,8 +18,13 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
 
     render() {
         const root: SearchFilterTable = this.props.root;
-
-        const summary: string = 'Selected ' + root.selectedRowMap.size + ' of ' + root.currentRowMap.size + ' items from a total dataset of ' + root.rowMap.size;
+        let summary: string
+        if(root.getAttribute("summaryMode","default").toLowerCase()==="simple"){
+            summary = 'Showing ' + root.currentRowMap.size + ' items of ' + root.rowMap.size;
+        }
+        else {
+            summary = 'Selected ' + root.selectedRowMap.size + ' of ' + root.currentRowMap.size + ' items from a total dataset of ' + root.rowMap.size;
+        }
         const pag: string = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
 
         let firstPage: any;
