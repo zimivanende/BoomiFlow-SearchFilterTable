@@ -832,7 +832,7 @@ export default class SearchFilterTable extends FlowComponent {
 
             //load selectedSingleItem
             await this.loadSingleSelected();
-            
+
             const end: Date = new Date();
 
             if(model?.objectDataRequest){
@@ -1187,7 +1187,7 @@ export default class SearchFilterTable extends FlowComponent {
             if (val) {
                 val.value = selectedItem;
                 await this.updateValues(val);
-                await this.sync();
+                //await this.sync();
             }
             // reload last selected row if any
             if(this.rowRememberColumn){
