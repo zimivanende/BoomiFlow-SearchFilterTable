@@ -713,7 +713,7 @@ export default class SearchFilterTable extends FlowComponent {
         const end: Date = new Date();
     
         //load selectedSingleItem
-        this.loadSingleSelected();
+        await this.loadSingleSelected();
         // we just loaded the core row data, trigger the filters to generate and sort the currentRowMap
         this.filterRows();
     }
@@ -829,6 +829,10 @@ export default class SearchFilterTable extends FlowComponent {
                     //this.selectedRowMap.delete(internalId);
                 }
             });
+
+            //load selectedSingleItem
+            await this.loadSingleSelected();
+            
             const end: Date = new Date();
 
             if(model?.objectDataRequest){
