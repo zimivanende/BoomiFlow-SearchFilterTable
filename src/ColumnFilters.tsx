@@ -498,32 +498,33 @@ export default class ColumnFilters {
             }
             //get the matching display column
             const colDef: FlowDisplayColumn = this.parent.colMap.get(sortPropertyName);
-
+            sorted = Array.from(candidates);
             if(colDef) {
-        
-                switch (colDef?.contentType) {
+                if(sortColumn.sort !== eSortDirection.none) {
+                    switch (colDef?.contentType) {
 
-                    case eContentType.ContentDateTime:
-                        sorted = Array.from(candidates).sort((a: any, b: any) => {
-                            const d1: Date = new Date(a[1].objectData.properties[sortPropertyName].value);
-                            const d2: Date = new Date(b[1].objectData.properties[sortPropertyName].value);
-                            if (d1 < d2) { return -1; }
-                            if (d1 > d2) { return 1; }
-                            return 0; 
-                        });
-                        break;
+                        case eContentType.ContentDateTime:
+                            sorted.sort((a: any, b: any) => {
+                                const d1: Date = new Date(a[1].objectData.properties[sortPropertyName].value);
+                                const d2: Date = new Date(b[1].objectData.properties[sortPropertyName].value);
+                                if (d1 < d2) { return -1; }
+                                if (d1 > d2) { return 1; }
+                                return 0; 
+                            });
+                            break;
 
-                    default:
-                        const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-                        sorted = Array.from(candidates).sort((a: any, b: any) =>
-                            collator.compare(a[1].objectData.properties[sortPropertyName].value, b[1].objectData.properties[sortPropertyName].value),
-                        );
-                        break;
+                        default:
+                            const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+                            sorted.sort((a: any, b: any) =>
+                                collator.compare(a[1].objectData.properties[sortPropertyName].value, b[1].objectData.properties[sortPropertyName].value),
+                            );
+                            break;
 
-                }
+                    }
 
-                if (sortColumn.sort === eSortDirection.descending) {
-                    sorted = sorted.reverse();
+                    if (sortColumn.sort === eSortDirection.descending) {
+                        sorted = sorted.reverse();
+                    }
                 }
 
                 const results: Map<string, RowItem> = new Map(sorted);

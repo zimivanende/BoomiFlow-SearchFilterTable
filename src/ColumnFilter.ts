@@ -64,11 +64,16 @@ export default class ColumnFilter {
     sortToggle() {
         switch (this.sort) {
             case eSortDirection.none:
+                this.sort = eSortDirection.descending;
+                break;
             case eSortDirection.descending:
                 this.sort = eSortDirection.ascending;
                 break;
+            case eSortDirection.ascending:
+                this.sort = eSortDirection.none;
+                break;
             default:
-                this.sort = eSortDirection.descending;
+                this.sort = eSortDirection.none;
                 break;
         }
         this.notify(eFilterEvent.sort);
