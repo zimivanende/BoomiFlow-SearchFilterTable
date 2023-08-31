@@ -1187,7 +1187,6 @@ export default class SearchFilterTable extends FlowComponent {
             if (val) {
                 val.value = selectedItem;
                 await this.updateValues(val);
-                //await this.sync();
             }
             // reload last selected row if any
             if(this.rowRememberColumn){
