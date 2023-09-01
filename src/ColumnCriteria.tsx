@@ -67,7 +67,7 @@ export default class ColumnCriteria {
         }
     }
 
-    static getOptions(currentValue: eColumnComparator = -1, className: string = '', fieldType: eContentType): any[] {
+    static getOptions(currentValue: eColumnComparator, className: string = '', fieldType: eContentType): any[] {
         const options: any[] = [];
         Object.keys(eColumnComparator).filter((key: any) => !isNaN(Number(eColumnComparator[key]))).forEach((item: any) => {
             if (ColumnCriteria.isOptionApplicable(eColumnComparator[item as keyof typeof eColumnComparator ], fieldType)) {
