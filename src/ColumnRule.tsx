@@ -244,7 +244,7 @@ export class ColumnRule {
                             }
                             switch (this.dateFormat.toLowerCase()) {
                                 case 'datetime':
-                                    result = dt.toLocaleString();
+                                    result = dt.toLocaleString("en-GB",{day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"});
                                     break;
                                 case 'date':
                                     result = dt.toLocaleDateString("en-GB",{day:"2-digit", month:"short", year:"numeric"});
