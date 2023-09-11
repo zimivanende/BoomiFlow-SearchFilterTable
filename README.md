@@ -369,7 +369,7 @@ The value is a JSON object with one attribute per column.
       "dateFormat":"date",
       "timeZone":false,
       "classes":"mycssclass",
-      "whitespace":"pre" // any allowed whitespace flag
+      "whitespace":"pre" // any allowed whitespace flag like nowrap etc.
    },
    "MyColumn":{
       "mode":"outcome",
