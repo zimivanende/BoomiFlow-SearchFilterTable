@@ -238,7 +238,7 @@ export class ColumnRule {
                     let result: string = '';
                     if (value) {
                         const dt: Date = new Date(value.value as string);
-                        if (!isNaN(dt.getTime())) {
+                        if (!isNaN(dt.getTime()) && dt.getTime() > 0) {
                             if(this.timeZone===false){
                                 dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
                             }
