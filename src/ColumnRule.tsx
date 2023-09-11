@@ -54,6 +54,7 @@ export class ColumnRule {
                 break;
             case 'dateformat':
                 colRule.dateFormat = rule.dateFormat;
+                colRule.timeZone = !((""+rule.timeZone).toLowerCase()==="false");
                 break;
             case 'class':
                 colRule.componentClass = rule.componentClass || rule.className;
@@ -105,6 +106,7 @@ export class ColumnRule {
     icon: string;
     iconClass: string;
     componentClass: string;
+    timeZone: boolean = true;
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
@@ -237,6 +239,9 @@ export class ColumnRule {
                     if (value) {
                         const dt: Date = new Date(value.value as string);
                         if (!isNaN(dt.getTime())) {
+                            if(this.timeZone===false){
+                                dt.setMinutes(dt.getMinutes() + dt.getTimezoneOffset());
+                            }
                             switch (this.dateFormat.toLowerCase()) {
                                 case 'datetime':
                                     result = dt.toLocaleString();

@@ -367,6 +367,7 @@ The value is a JSON object with one attribute per column.
    "StartDate":{
       "mode":"dateFormat",
       "dateFormat":"date",
+      "timeZone":false,
       "classes":"mycssclass",
       "whitespace":"pre" // any allowed whitespace flag
    },
@@ -439,6 +440,8 @@ For "dateFormat" you can use: -
 "iso"       shows date & time in ISO format
 "utc"       shows date & time in UTC format
 "year"      shows only the year element
+
+Setting "timeZone" to false will display dates without the locale conversion, they will be absolute.
 
 For "lookup" you are providing a value to display text conversion set.  The actual column's value will be compared to the key and if found replaced with the corresponding value.
 

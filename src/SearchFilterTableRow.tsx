@@ -218,7 +218,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 } else {
                     switch (contentType) {
                         case eContentType.ContentDateTime:
-                            const dt: Date = new Date(col.value as string);
+                            let dt: Date = new Date(col.value as string);
                             if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
                                 let str: string = '';
                                 switch (root.getAttribute('DateFormat', 'LOCALE')) {
