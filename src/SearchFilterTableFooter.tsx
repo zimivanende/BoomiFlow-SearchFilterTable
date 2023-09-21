@@ -121,34 +121,46 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
 
         let pagination: any;
         let perPageBlock: any;
-        if(root.paginationMode===ePaginationMode.local) {
-            pagination = (
-                <div
-                    className="sft-footer-pagination"
-                >
-                    {firstPage}
-                    {prevPage}
-                    <span className="sft-footer-pagination-label">{pag}</span>
-                    {nextPage}
-                    {lastPage}
-                </div>
-            );
-            perPageBlock=(
-                <div
-                    className="sft-footer-perpage"
-                >
+        switch(root.paginationMode) {
+            case ePaginationMode.local:
+                pagination = (
                     <div
-                        className="sft-footer-perpage-label"
+                        className="sft-footer-pagination"
                     >
-                        {'Items per page'}
+                        {firstPage}
+                        {prevPage}
+                        <span className="sft-footer-pagination-label">{pag}</span>
+                        {nextPage}
+                        {lastPage}
                     </div>
+                );
+                perPageBlock=(
                     <div
-                        className="sft-footer-perpage-dropdown"
+                        className="sft-footer-perpage"
                     >
-                        {perPage}
+                        <div
+                            className="sft-footer-perpage-label"
+                        >
+                            {'Items per page'}
+                        </div>
+                        <div
+                            className="sft-footer-perpage-dropdown"
+                        >
+                            {perPage}
+                        </div>
                     </div>
-                </div>
-            );
+                );
+                break;
+            case ePaginationMode.external:
+                pagination = (
+                    <div
+                        className="sft-footer-pagination"
+                    >
+                        {prevPage}
+                        {nextPage}
+                    </div>
+                );
+                break;
         }
 
 

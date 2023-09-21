@@ -134,6 +134,8 @@ export default class SearchFilterTable extends FlowComponent {
 
     // flag to switch on / off all pagination
     paginationMode: ePaginationMode;
+    previousPageOutcome: string;
+    nextPageOutcome: string;
 
     //beta
     db: GenericDB;
@@ -197,6 +199,8 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
             case "external":
                 this.paginationMode = ePaginationMode.external;
+                this.previousPageOutcome = this.getAttribute('PreviousPageOutcome');
+                this.nextPageOutcome = this.getAttribute('NextPageOutcome');
                 break;
         }
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
@@ -902,15 +906,33 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     previousPage() {
-        if (this.currentRowPage > 1) { this.currentRowPage -= 1; } else { this.currentRowPage = 0; }
-        this.buildTableRows();
-        this.forceUpdate();
+        switch(this.paginationMode) {
+            case ePaginationMode.local:
+                if (this.currentRowPage > 1) { this.currentRowPage -= 1; } else { this.currentRowPage = 0; }
+                this.buildTableRows();
+                this.forceUpdate();
+                break;
+            case ePaginationMode.external:
+                if(this.previousPageOutcome && this.outcomes[this.previousPageOutcome]){
+                    this.triggerOutcome(this.previousPageOutcome);
+                }
+                break;
+        }      
     }
 
     nextPage() {
-        if (this.currentRowPage < (this.currentRowPages.length - 1)) { this.currentRowPage += 1; } else { this.currentRowPage = this.currentRowPages.length - 1; }
-        this.buildTableRows();
-        this.forceUpdate();
+        switch(this.paginationMode) {
+            case ePaginationMode.local:
+                if (this.currentRowPage < (this.currentRowPages.length - 1)) { this.currentRowPage += 1; } else { this.currentRowPage = this.currentRowPages.length - 1; }
+                this.buildTableRows();
+                this.forceUpdate();
+                break;
+            case ePaginationMode.external:
+                if(this.nextPageOutcome && this.outcomes[this.nextPageOutcome]){
+                    this.triggerOutcome(this.nextPageOutcome);
+                }
+                break;
+        }  
     }
 
     lastPage() {

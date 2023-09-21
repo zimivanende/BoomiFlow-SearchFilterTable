@@ -26,6 +26,8 @@
     "JSONModelValue":"The name of a Flow value which contians the actual datasource data in a JSON string",
     "ModelTypeName":"The name of a Flow type for the datasource objects.  Allows creating state value of correct type.",
     "PaginationMode":"PaginationMode. The mode for row pagination.  none, [local], external.",
+    "PreviousPageOutcome":"PreviousPageOutcome. The outcome to trigger when previous page is pressed. PaginationMode=Extrnal",
+    "NextPageOutcome":"NextPageOutcome. The outcome to trigger when next page is pressed. PaginationMode=Extrnal",
     "summaryMode":"summaryMode. The mode for the footer summary. 'simple' for reduced text"
   },
   "configurationEditors": [
