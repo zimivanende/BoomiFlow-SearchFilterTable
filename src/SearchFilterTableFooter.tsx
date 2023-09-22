@@ -152,6 +152,20 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                 );
                 break;
             case ePaginationMode.external:
+                prevPage = (
+                    <span
+                        className="glyphicon glyphicon-step-backward sft-footer-pagination-button"
+                        title="Previous page"
+                        onClick={root.previousPage}
+                    />
+                );
+                nextPage = (
+                    <span
+                        className="glyphicon glyphicon-step-forward sft-footer-pagination-button"
+                        title="Next page"
+                        onClick={root.nextPage}
+                    />
+                );
                 pagination = (
                     <div
                         className="sft-footer-pagination"

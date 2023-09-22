@@ -200,7 +200,9 @@ export default class SearchFilterTable extends FlowComponent {
             case "external":
                 this.paginationMode = ePaginationMode.external;
                 this.previousPageOutcome = this.getAttribute('PreviousPageOutcome');
+                this.supressedOutcomes.set(this.previousPageOutcome,true);
                 this.nextPageOutcome = this.getAttribute('NextPageOutcome');
+                this.supressedOutcomes.set(this.nextPageOutcome,true);
                 break;
         }
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
