@@ -307,7 +307,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         className="sft-ribbon-search-wrapper"
                     >
                         <span
-                            className="glyphicon glyphicon-search sft-ribbon-search-icon"
+                            className="glyphicon glyphicon-search sft-ribbon-search-icon sft-ribbon-search-icon-search"
                             onClick={this.filterCommitted}
                         />
                         <input
@@ -319,7 +319,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                             value={this.currentFilter}
                         />
                         <span
-                            className="glyphicon glyphicon-remove sft-ribbon-search-icon"
+                            className="glyphicon glyphicon-remove sft-ribbon-search-icon sft-ribbon-search-icon-clear"
                             role="button"
                             onClick={this.clearSearch}
                         />
@@ -330,7 +330,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                     >
                         <span
                             key={'showSearch'}
-                            className={'glyphicon glyphicon-filter sft-ribbon-search-button-icon'}
+                            className={'glyphicon glyphicon-filter sft-ribbon-search-button-icon sft-ribbon-search-icon-advanced'}
                             title={'Advanced Search'}
                         />
                     </div>
