@@ -157,6 +157,17 @@ Any class names in this value are added to the button's class attribute
 
 Sets the glyphicon to show for the outcome.
 
+### iconValue
+
+Defines a uri to an icon to display on the button.
+
+If the iconSuffix attribute is defined at the component level it will attempt to add the suffix (lower cased)
+to the file name.
+
+If the suffixed icon is not found then it reverts to the un-suffixed name.
+
+!! make sure the icon exists or it will loop to infinity. 
+
 ### RequiresSelected
 
 Only shows the outcome button if there are selected rows
