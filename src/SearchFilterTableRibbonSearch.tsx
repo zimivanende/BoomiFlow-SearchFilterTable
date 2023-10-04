@@ -102,6 +102,8 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
                 if (showOutcome === true) {
                     this.rightButtons.push(
+                        CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix)
+                        /*
                         <div
                             className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
                             onClick={(e: any) => {root.doOutcome(outcome.developerName, undefined); }}
@@ -124,6 +126,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                                 null
                             }
                         </div>,
+                        */
                     );
                 }
             }

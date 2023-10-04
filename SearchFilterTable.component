@@ -28,7 +28,8 @@
     "PaginationMode":"PaginationMode. The mode for row pagination.  none, [local], external.",
     "PreviousPageOutcome":"PreviousPageOutcome. The outcome to trigger when previous page is pressed. PaginationMode=Extrnal",
     "NextPageOutcome":"NextPageOutcome. The outcome to trigger when next page is pressed. PaginationMode=Extrnal",
-    "summaryMode":"summaryMode. The mode for the footer summary. 'simple' for reduced text"
+    "summaryMode":"summaryMode. The mode for the footer summary. 'simple' for reduced text",
+    "iconSuffixValue":"Icon Suffix Value.  A string or {{field->prop}} to use to inflate an icon."
   },
   "configurationEditors": [
     "LABEL",

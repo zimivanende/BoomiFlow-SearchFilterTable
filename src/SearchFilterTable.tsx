@@ -137,6 +137,9 @@ export default class SearchFilterTable extends FlowComponent {
     previousPageOutcome: string;
     nextPageOutcome: string;
 
+    //icon suffix to allow optional per org icons
+    iconSuffix: string;
+
     //beta
     db: GenericDB;
 
@@ -205,6 +208,9 @@ export default class SearchFilterTable extends FlowComponent {
                 this.supressedOutcomes.set(this.nextPageOutcome,true);
                 break;
         }
+
+        this.iconSuffix=this.getAttribute("iconSuffixValue","");
+
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
         localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
 
@@ -483,7 +489,8 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async preLoad() : Promise<any> {
-        //preload any column rule values
+        //preload any column rule values & inflate any props
+        
         let alreadyDone: string[] = [];
         let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
         for(let pos = 0 ; pos < outcomes.length ; pos++) {
@@ -546,6 +553,9 @@ export default class SearchFilterTable extends FlowComponent {
         }
         this.supressedOutcomes.set("OnSelect",true);
         
+        //other inflations
+        let flds: Map<string,FlowField> = new Map();
+        this.iconSuffix = await CommonFunctions.inflateValue(this,this.iconSuffix,flds);
         return true;
     }
 

@@ -1,5 +1,6 @@
-import { eContentType, FlowDisplayColumn, FlowField, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
+import { eContentType, FlowComponent, FlowDisplayColumn, FlowField, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import SearchFilterTable from './SearchFilterTable';
+import React from 'react';
 
 export default class CommonFunctions {
 
@@ -329,4 +330,94 @@ export default class CommonFunctions {
         return objDataArray;
     }
     */
+
+    // this will make an outcome button (top or row) based on the outcome name, the suffix & icon
+    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string) : any {
+        let icon: any;
+        if(outcome.attributes?.iconValue?.value?.length > 0){
+            let iconName: string
+            let iconValue: string = outcome.attributes?.iconValue?.value?.toLowerCase();
+            if(suffix && suffix.length>0){
+                let path = iconValue.substring(0,iconValue.lastIndexOf("."));
+                let ext: string = iconValue.substring(iconValue.lastIndexOf("."));
+                iconName = path + "_" + suffix.toLowerCase() + ext;
+            }
+            icon=(
+                <img 
+                    className='sft-ribbon-search-button-image'
+                    src={iconName}
+                    onError={(e: any)=>{e.currentTarget.src=iconValue}}
+                    title={outcome.label || outcome.developerName}
+                />
+            );
+        }
+        else {
+            if(outcome.attributes?.icon?.value?.length > 0) {
+                icon=(
+                    <span
+                        key={outcome.developerName}
+                        className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
+                        title={outcome.label || outcome.developerName}
+                    />
+                );
+            }
+        }
+
+        let button: any = (
+            <div
+                className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
+                onClick={(_e: any) => {comp.doOutcome(outcome.developerName, undefined); }}
+            >
+                {icon}
+                {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
+                    <span
+                        className="sft-ribbon-search-button-label"
+                    >
+                        {outcome.label}
+                    </span> :
+                    null
+                }
+            </div>
+        );
+        return button;
+    }
+
+    static async inflateValue(comp: FlowComponent, input: string, flds: Map<string,FlowField>) : Promise<string> {
+        if(input){
+            // use regex to find any {{}} tags in content and save them in matches
+            let value: any;
+            let match: any;
+            
+            const matches: any[] = [];
+            while (match = RegExp(/{{([^}]*)}}/).exec(input)) {
+                const fldElements: string[] = match[1].split('->');
+                let fld: FlowField;
+                if(!flds.has(fldElements[0])){
+                    fld = await comp.loadValue(fldElements[0]);
+                    flds.set(fldElements[0], fld);
+                }
+                else {
+                    fld = flds.get(fldElements[0]);
+                }
+
+                if (fld) {
+                    let od: FlowObjectData = fld.value as FlowObjectData;
+                    if (od) {
+                        if (fldElements.length > 1) {
+                            for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                            }
+                            value = od;
+                        } else {
+                            value = fld.value;
+                        }
+                    } else {
+                        value = fld.value;
+                    }
+                    input = input.replace(match[0], value);
+                }
+            }
+        }
+        return input;
+    }
 }

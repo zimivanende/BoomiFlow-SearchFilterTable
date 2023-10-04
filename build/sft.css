@@ -724,6 +724,10 @@
     margin: auto;
 }
 
+.sft-ribbon-search-button-image {
+    width: 1.5rem;
+}
+
 .sft-ribbon-search-button-label {
     margin-top: 0.2rem;
     font-size: 1rem;
