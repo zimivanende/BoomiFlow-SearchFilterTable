@@ -184,7 +184,7 @@ export default class ColumnFilters {
                 case eSortDirection.none:
                     return (
                         <div
-                            onClick={(e: any) => {this.sortClicked(key); }}
+                            //onClick={(e: any) => {this.sortClicked(key); }}
                             title="Not sorted - click to toggle"
                             style={{display: 'flex', flexDirection: 'column'}}
                         >

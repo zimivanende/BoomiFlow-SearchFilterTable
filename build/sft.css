@@ -321,9 +321,8 @@
 .sft-column-header-bottom {
     display: flex;
     flex-direction: row; 
-    flex-grow: 1;
+    flex-grow: 0;
     margin-left: auto;
-    width: 100%;
 }
 
 .sft-column-header-title {

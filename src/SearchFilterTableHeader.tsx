@@ -61,18 +61,13 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
                     onDragLeave={(e) => {parent.onDragLeave(e); }}
                     onDragOver={(e) => {parent.onDragOver(e); }}
                     onDrop={(e) => {parent.onDrop(e); }}
+                    onClick={(e) => {root.filters.sortClicked(col.developerName)}}
                     data-fieldName={col.developerName}
                 >
                     <div
                         className="sft-column-header-top"
                         style={{pointerEvents: 'all'}}
                     >
-                        <div
-                            className="sft-column-header-flags"
-                            style={{pointerEvents: 'all'}}
-                        >
-                            {sortIcon}
-                        </div>
                         <div
                             className="sft-column-header-title"
                             style={{pointerEvents: 'all'}}
@@ -82,6 +77,12 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
                             >
                                 {col.label}
                             </span>
+                        </div>
+                        <div
+                            className="sft-column-header-flags"
+                            style={{pointerEvents: 'all'}}
+                        >
+                            {sortIcon}
                         </div>
                         <div
                             style={{pointerEvents: 'all'}}
