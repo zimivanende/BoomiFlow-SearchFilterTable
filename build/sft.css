@@ -259,8 +259,24 @@
     width: auto !important;
 }
 
+.sft-radio {
+    display: block !important;
+    appearance: revert !important;
+    content: unset !important;
+    margin: auto !important;
+    transform: scale(1.1); 
+    width: auto !important;
+    accent-color: #333; 
+}
+
+.sft-radio:checked{
+    accent-color: #333;
+}
+
 .sft-checkbox::after,
-.sft-checkbox::before {
+.sft-checkbox::before,
+.sft-radio::after,
+.sft-radio::before {
     display: none !important;
 }
 

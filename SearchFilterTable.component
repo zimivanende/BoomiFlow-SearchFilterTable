@@ -30,6 +30,7 @@
     "NextPageOutcome":"NextPageOutcome. The outcome to trigger when next page is pressed. PaginationMode=Extrnal",
     "summaryMode":"summaryMode. The mode for the footer summary. 'simple' for reduced text",
     "iconSuffixValue":"Icon Suffix Value.  A string or {{field->prop}} to use to inflate an icon."
+    "showRadio":"Show a radio per row in single select mode"
   },
   "configurationEditors": [
     "LABEL",

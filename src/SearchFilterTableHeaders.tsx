@@ -121,13 +121,31 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                         className="sft-check-header"
                         ref={(element: any) => {this.setHeader('checks', element); }}
                     >
-                        <input
-                            className="sft-checkbox"
-                            type="checkbox"
-                            onClick={(event: any) => {root.toggleSelectAll(event); }}
-                        />
+                        <div
+                            className="sft-thcontainer"
+                        >
+                                <input
+                                    className="sft-checkbox"
+                                    type="checkbox"
+                                    onClick={(event: any) => {root.toggleSelectAll(event); }}
+                                />
+                        </div>
                     </th>,
                 );
+            } else {
+                if (root.getAttribute("showRadio","false").toLowerCase()==="true"){
+                    headers.push(
+                        <th
+                            key="checks"
+                            className="sft-check-header"
+                            ref={(element: any) => {this.setHeader('checks', element); }}
+                        >
+                            <div
+                                className="sft-thcontainer"
+                            />
+                        </th>
+                    );
+                }
             }
 
             let fixedCols: number = parseInt(root.getAttribute("stickyColumns","0"));

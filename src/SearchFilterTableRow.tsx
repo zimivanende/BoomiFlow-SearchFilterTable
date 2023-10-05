@@ -63,47 +63,6 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                 if (showOutcome === true) {
                     buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix));
-                    /*
-                    let icon: any;
-                    let label: any;
-
-                    if ((!root.outcomes[key].attributes['display']) || root.outcomes[key].attributes['display'].value.indexOf('text') >= 0) {
-                        label = (
-                            <span
-                                className="sft-table-cell-button-element sft-table-cell-button-label"
-                            >
-                                {root.outcomes[key].label}
-                            </span>
-                        );
-                    }
-                    if ((root.outcomes[key].attributes['display']) && root.outcomes[key].attributes['display'].value.indexOf('icon') >= 0) {
-                        if(root.outcomes[key].attributes['icon'].value.toLowerCase() === 'null') {
-                            showOutcome = false;
-                        }
-                        icon = (
-                            <span
-                                className={'sft-table-cell-button-element sft-table-cell-button-icon glyphicon glyphicon-' + (root.outcomes[key].attributes['icon'].value || 'plus')}
-                            />
-                        );
-                    }
-
-                    if(showOutcome===true){
-                        buttons.push(
-                            <div
-                                className="sft-table-cell-button"
-                                title={root.outcomes[key].label}
-                                onClick={(event: any) => {
-                                    event.stopPropagation();
-                                    root.doOutcome(key, objData);
-                                }}
-                            >
-                                {icon}
-                                {label}
-
-                            </div>,
-                        );
-                    }
-                    */
                 }
             }
         });
@@ -123,6 +82,20 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                     />
                 </td>,
             );
+        } else {
+            if (root.getAttribute("showRadio","false").toLowerCase()==="true"){
+                cols.push(
+                    <td
+                        className="sft-table-cell sft-table-cell-check"
+                    >
+                        <input
+                            className="sft-radio"
+                            type="radio"
+                            checked={root.selectedRow===this.props.id}
+                        />
+                    </td>,
+                );
+            }
         }
 
         root.userColumns.forEach((collName: string) => {

@@ -53,7 +53,7 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
                 ref={(element: any) => {this.th = element; }}
             >
                 <div
-                    className="sft-column-header-wrapper"
+                    className="sft-column-header-wrapper sft-thcontainer"
                     style={{display: 'flex', flexDirection: 'row', pointerEvents: 'all'}}
                     draggable={root.dynamicColumns}
                     onDragStart={(e) => {parent.dragColumn(e, col.developerName); }}
