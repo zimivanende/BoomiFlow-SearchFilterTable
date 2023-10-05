@@ -954,10 +954,15 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async selectRow(objData: FlowObjectData) {
-        //if(this.selectedRow !== id){
+        //if(this.selectedRow !== objData.externalId){
             this.selectedRow = objData.externalId;
             await this.doOutcome("OnSelect",objData);
             this.refreshRows();
+        //}
+        //else{
+        //    this.selectedRow=undefined; 
+        //    await this.doOutcome("OnSelect",undefined);
+        //    this.refreshRows();
         //}
     }
 
@@ -1216,10 +1221,10 @@ export default class SearchFilterTable extends FlowComponent {
         }
         this.selectedRow = selectedItem?.externalId;
         // if there's a row level state then set it
-        if (selectedItem && this.getAttribute('RowLevelState', '').length > 0) {
+        if (this.getAttribute('RowLevelState', '').length > 0) {
             const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if (val) {
-                val.value = selectedItem;
+                val.value = selectedItem || new FlowObjectDataArray();
                 await this.updateValues(val);
             }
             // reload last selected row if any

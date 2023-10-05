@@ -103,30 +103,6 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 if (showOutcome === true) {
                     this.rightButtons.push(
                         CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix)
-                        /*
-                        <div
-                            className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
-                            onClick={(e: any) => {root.doOutcome(outcome.developerName, undefined); }}
-                        >
-                            {outcome.attributes?.icon ?
-                                <span
-                                    key={outcome.developerName}
-                                    className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
-                                    title={outcome.label || outcome.developerName}
-
-                                /> :
-                                null
-                            }
-                            {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
-                                <span
-                                    className="sft-ribbon-search-button-label"
-                                >
-                                    {outcome.label}
-                                </span> :
-                                null
-                            }
-                        </div>,
-                        */
                     );
                 }
             }

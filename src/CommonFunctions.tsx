@@ -11,9 +11,19 @@ export default class CommonFunctions {
     static async assessGlobalOutcomeRule(outcome: FlowOutcome, root: SearchFilterTable): Promise<boolean> {
         let result: boolean = true;
 
-        if (outcome.attributes['RequiresSelected']?.value === 'true' && root.selectedRowMap.size < 1) {
-            result = false;
-        }
+        if (outcome.attributes['RequiresSelected']?.value === 'true'){
+            if(root.model.multiSelect===true){
+                // must have 1 or more in selectedRowMap
+                if(root.selectedRowMap.size < 1){
+                    result = false;
+                }
+            }
+            else{
+                if(root.selectedRow.length < 1){
+                    result = false;
+                }
+            }
+        } 
 
         if (outcome.attributes['RequiresRows']?.value === 'true' && root.rowMap.size < 1) {
             result = false;
