@@ -19,7 +19,7 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
     render() {
         const root: SearchFilterTable = this.props.root;
         let summary: string
-        if(root.getAttribute("summaryMode","default").toLowerCase()==="simple"){
+        if(root.getAttribute("summaryMode","default").toLowerCase()==="simple" || root.model.multiSelect===false){
             summary = 'Showing ' + root.currentRowMap.size + ' items of ' + root.rowMap.size;
         }
         else {
@@ -143,11 +143,8 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                         >
                             {'Items per page'}
                         </div>
-                        <div
-                            className="sft-footer-perpage-dropdown"
-                        >
-                            {perPage}
-                        </div>
+                        {perPage}
+                        
                     </div>
                 );
                 break;
@@ -182,6 +179,10 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
             <div
                 className="sft-footer"
             >
+                {perPageBlock}
+                <div
+                    className="sft-footer-spacer"
+                />
                 <div
                     className="sft-footer-summary"
                 >
@@ -191,10 +192,6 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                         {summary}
                     </span>
                 </div>
-                <div
-                    className="sft-footer-spacer"
-                />
-                {perPageBlock}
                 {pagination}
             </div>
         );

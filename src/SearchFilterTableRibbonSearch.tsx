@@ -296,6 +296,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                             onKeyUp={(e: any) => {e.stopPropagation(); e.preventDefault(); }}
                             onChange={this.filterChanged}
                             value={this.currentFilter}
+                            placeholder='Search table'
                         />
                         <span
                             className="glyphicon glyphicon-remove sft-ribbon-search-icon sft-ribbon-search-icon-clear"

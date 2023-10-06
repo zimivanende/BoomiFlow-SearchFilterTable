@@ -21,7 +21,6 @@
 
 .sft-ribbon {
     display: flex;
-    height: 6rem;
     background-color: #222;
     position: absolute;
     top: 0;
@@ -98,11 +97,7 @@
 .sft-body {
     display: block;
     background-color: transparent;
-    position: absolute;
-    top: 6rem;
-    left: 0;
-    right: 0;
-    bottom: 2rem;
+    position: relative;
 }
 
 .sft-scroller {
@@ -265,6 +260,7 @@
     color: #333;
     line-height: 1.5rem;
     white-space: nowrap;
+    padding-right: 3rem;
 }
 
 .sft-column-header-flags {
@@ -362,6 +358,7 @@
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
     display: flex;
+    white-space: nowrap;
 }
 
 .sft-table-cell-check {
@@ -433,7 +430,7 @@
     display: flex;
     flex-direction: row;
     flex-grow: 0;
-    background-color: #ccc;
+    background-color: transparent;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -449,8 +446,6 @@
 }
 
 .sft-footer-summary-label {
-    font-size: 1rem;
-    color: #000;
     padding-left: 1rem;
 }
 
@@ -463,39 +458,33 @@
 }
 
 .sft-footer-pagination-label {
-    font-size: 1rem;
-    color: #000;
     margin-right: 0.5rem;
 }
 
 .sft-footer-pagination-button {
     font-size: 1rem;
-    color: #000;
+    color: #033d58;
     margin-right: 0.5rem;
     cursor: pointer;
     top: 0px !important;
 }
 
 .sft-footer-pagination-button-disabled {
-    color: #666;
+    color: #ccc;
     cursor: default;
 }
 
 .sft-footer-perpage {
     display: flex;
     flex-direction: row;
+    position: relative;
     flex-grow: 0;
-    margin-right: 1rem;
+    padding: 0 1rem;
 }
 
 .sft-footer-perpage-label {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 0;
-    line-height: 1rem;
-    margin: auto;
-    margin-right: 0.25rem;
-    color: #000;
+    margin: auto 1rem auto 0;
+    user-select: none;
 }
 
 .sft-footer-perpage-dropdown {
@@ -505,18 +494,23 @@
 }
 
 .sft-footer-select {
-    line-height: 1rem !important;
-    height: 1.3rem;
-    margin: auto !important;
-    padding-left: 0.5rem !important;
-    padding-right: 1rem !important;
-    flex-grow: 1;
+    appearance: revert;
+    -webkit-appearance: listbox;
+    width: fit-content !important;
+    padding: 0 1.5rem 0 1rem !important;
+    border-radius: 1rem !important;
+    border: 2px solid #033d58 !important;
+    font-size: 0.8rem !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
+
 
 .sft-footer-spacer {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
+    position: relative;
+    flex-grow:1;
 }
 
 

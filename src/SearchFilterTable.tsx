@@ -1445,23 +1445,6 @@ export default class SearchFilterTable extends FlowComponent {
 
         const title: string = this.model.label || '';
 
-        let top: number = 6;
-        switch (this.getAttribute('RibbonStyle', 'ribbon')) {
-
-            case 'search':
-                top = 4;
-                break;
-
-            case 'ribbon':
-            default:
-                top = 6;
-                break;
-        }
-
-        if (this.titleElement) {
-            top += 2.5;
-        }
-
         let body: any;
         if (this.loaded===false  && this.loadingState !== eLoadingState.ready) {
             body = (
@@ -1521,7 +1504,6 @@ export default class SearchFilterTable extends FlowComponent {
                 {this.ribbonElement}
                 <div
                     className="sft-body"
-                    style={{top: top + 'rem'}}
                 >
                     <div
                         className="sft-scroller"
