@@ -1221,7 +1221,7 @@ export default class SearchFilterTable extends FlowComponent {
         }
         this.selectedRow = selectedItem?.externalId;
         // if there's a row level state then set it
-        if (this.getAttribute('RowLevelState', '').length > 0) {
+        if (this.getAttribute('RowLevelState', '').length > 0 && selectedItem) {
             const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if (val) {
                 val.value = selectedItem || new FlowObjectDataArray();

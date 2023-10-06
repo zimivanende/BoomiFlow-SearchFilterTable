@@ -1,5 +1,5 @@
 .sft {
-    display: block;
+    display: flex;
     flex-direction: column;
     position: relative;
     min-height: 20vh;
@@ -98,6 +98,8 @@
     display: block;
     background-color: transparent;
     position: relative;
+    flex: 1;
+    min-height: 0;
 }
 
 .sft-scroller {
@@ -431,11 +433,8 @@
     flex-direction: row;
     flex-grow: 0;
     background-color: transparent;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2rem;
+    position: relative;
+    padding-top: 0.5rem;
 }
 
 .sft-footer-summary {
@@ -454,7 +453,7 @@
     flex-direction: row;
     flex-grow: 0;
     align-items: center;
-    padding: 1rem;
+    padding: 0 1rem;
 }
 
 .sft-footer-pagination-label {

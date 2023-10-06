@@ -342,7 +342,7 @@ export default class CommonFunctions {
     */
 
     // this will make an outcome button (top or row) based on the outcome name, the suffix & icon
-    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string) : any {
+    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData) : any {
         let icon: any;
         if(outcome.attributes?.iconValue?.value?.length > 0){
             let iconName: string
@@ -351,6 +351,9 @@ export default class CommonFunctions {
                 let path = iconValue.substring(0,iconValue.lastIndexOf("."));
                 let ext: string = iconValue.substring(iconValue.lastIndexOf("."));
                 iconName = path + "_" + suffix.toLowerCase() + ext;
+            }
+            else {
+                iconName=iconValue;
             }
             icon=(
                 <img 
@@ -376,7 +379,7 @@ export default class CommonFunctions {
         let button: any = (
             <div
                 className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
-                onClick={(_e: any) => {comp.doOutcome(outcome.developerName, undefined); }}
+                onClick={(_e: any) => {comp.doOutcome(outcome.developerName, objectData); }}
             >
                 {icon}
                 {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?

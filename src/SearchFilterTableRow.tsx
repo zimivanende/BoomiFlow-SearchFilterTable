@@ -62,7 +62,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
-                    buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix));
+                    buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData));
                 }
             }
         });
@@ -91,7 +91,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                         <input
                             className="sft-radio"
                             type="radio"
-                            checked={root.selectedRow===this.props.id}
+                            checked={root.selectedRow===objData.externalId}
                         />
                     </td>,
                 );
