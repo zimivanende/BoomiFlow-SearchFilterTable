@@ -271,7 +271,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
         const style: CSSProperties = {};
         if (root.titleElement) {
-            style.top = '2.5rem';
+            style.marginTop = '0.5rem';
         }
 
         return (

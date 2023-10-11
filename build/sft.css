@@ -89,7 +89,6 @@
 }
 
 .sft-title {
-    height: 2.5rem;
     background-color: #033d58;
     padding-left: 1rem;
     display: flex;
@@ -99,7 +98,7 @@
     color: #fefefe;
     margin-top: auto;
     margin-bottom: auto;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .sft-ribbon {
