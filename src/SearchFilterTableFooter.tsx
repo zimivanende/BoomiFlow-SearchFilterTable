@@ -18,14 +18,24 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
 
     render() {
         const root: SearchFilterTable = this.props.root;
-        let summary: string
-        if(root.getAttribute("summaryMode","default").toLowerCase()==="simple" || root.model.multiSelect===false){
-            summary = 'Showing ' + root.currentRowMap.size + ' items of ' + root.rowMap.size;
+        let summary: string;
+        let pag: string;
+        switch(true) {
+            case root.paginationMode===ePaginationMode.external:
+                summary="";
+                pag=root.externalPaginationPage.toString();
+                break;
+            case root.getAttribute("summaryMode","default").toLowerCase()==="simple" || root.model.multiSelect===false:
+                summary = 'Showing ' + root.currentRowMap.size + ' items of ' + root.rowMap.size;
+                pag = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
+                break;
+            default:
+                summary = 'Selected ' + root.selectedRowMap.size + ' of ' + root.currentRowMap.size + ' items from a total dataset of ' + root.rowMap.size;
+                pag = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
+                break;   
         }
-        else {
-            summary = 'Selected ' + root.selectedRowMap.size + ' of ' + root.currentRowMap.size + ' items from a total dataset of ' + root.rowMap.size;
-        }
-        const pag: string = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
+        
+        
 
         let firstPage: any;
         let prevPage: any;
@@ -168,6 +178,7 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                         className="sft-footer-pagination"
                     >
                         {prevPage}
+                        <span className="sft-footer-pagination-label">{pag}</span>
                         {nextPage}
                     </div>
                 );

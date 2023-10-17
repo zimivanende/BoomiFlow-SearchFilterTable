@@ -140,6 +140,10 @@ export default class SearchFilterTable extends FlowComponent {
     //icon suffix to allow optional per org icons
     iconSuffix: string;
 
+    // field to tell us what page we are on
+    externalPage: string;
+    externalPaginationPage: number;
+
     //beta
     db: GenericDB;
 
@@ -206,6 +210,7 @@ export default class SearchFilterTable extends FlowComponent {
                 this.supressedOutcomes.set(this.previousPageOutcome,true);
                 this.nextPageOutcome = this.getAttribute('NextPageOutcome');
                 this.supressedOutcomes.set(this.nextPageOutcome,true);
+                this.externalPage = this.getAttribute('ExternalPaginationPage');
                 break;
         }
 
@@ -556,6 +561,14 @@ export default class SearchFilterTable extends FlowComponent {
         //other inflations
         let flds: Map<string,FlowField> = new Map();
         this.iconSuffix = await CommonFunctions.inflateValue(this,this.iconSuffix,flds);
+
+        if(this.paginationMode===ePaginationMode.external){
+            if(this.externalPage) {
+                let pg: string = await CommonFunctions.inflateValue(this,this.externalPage,flds);
+                this.externalPaginationPage = parseInt(pg);
+                if(isNaN(this.externalPaginationPage)){this.externalPaginationPage=1}
+            }
+        }
         return true;
     }
 
