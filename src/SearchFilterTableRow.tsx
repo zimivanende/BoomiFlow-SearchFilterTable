@@ -63,9 +63,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
-                    let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,undefined);
+                    let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData);
                     buttons.push(btn);
-                    //buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData));
                 }
             }
         };
