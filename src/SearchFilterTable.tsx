@@ -495,7 +495,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     async preLoad() : Promise<any> {
         //preload any column rule values & inflate any props
-        
+        let flds: Map<string,FlowField> = new Map();
         let alreadyDone: string[] = [];
         let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
         for(let pos = 0 ; pos < outcomes.length ; pos++) {
@@ -524,6 +524,7 @@ export default class SearchFilterTable extends FlowComponent {
                         }
                         fld = fld.replace(match[0], "done");
                     }
+                    /*
                     fld = rule.value;
                     while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
                         switch (match[1]) {
@@ -541,10 +542,32 @@ export default class SearchFilterTable extends FlowComponent {
                                 break;
                         }
                         fld = fld.replace(match[0], "done");
-                    }
+                    }*/
                 }
                 catch (e) {
                     console.log('The rule on outcome ' + outcome.developerName + ' is invalid');
+                }
+            }
+            if(outcome.attributes.iconValue && 
+                outcome.attributes.iconValue.value.length>0){
+                let match: any;    
+                let fld: string = outcome.attributes.iconValue.value;
+                while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
+                    switch (match[1]) {
+                        case 'TENANT_ID':
+                            break;
+
+                        default:
+                            const fldElements: string[] = match[1].split('->');
+                            // element[0] is the flow field name
+                            let val: FlowField;
+                            if (alreadyDone.indexOf(fldElements[0]) < 0) {
+                                val = await this.loadValue(fldElements[0]);
+                                alreadyDone.push(fldElements[0]);
+                            }
+                            break;
+                    }
+                    fld = fld.replace(match[0], "done");
                 }
             }
         }
@@ -559,7 +582,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.supressedOutcomes.set("OnSelect",true);
         
         //other inflations
-        let flds: Map<string,FlowField> = new Map();
+        
         this.iconSuffix = await CommonFunctions.inflateValue(this,this.iconSuffix,flds);
 
         if(this.paginationMode===ePaginationMode.external){

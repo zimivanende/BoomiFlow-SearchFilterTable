@@ -101,8 +101,9 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
 
                 if (showOutcome === true) {
+                    let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined);
                     this.rightButtons.push(
-                        CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined)
+                        btn
                     );
                 }
             }

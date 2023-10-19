@@ -54,7 +54,8 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         }
         const buttons: any[] = [];
         let anyoutcomes: boolean = false;
-        Object.keys(root.outcomes).forEach((key: string) => {
+        for(let key of Object.keys(root.outcomes)){
+        //Object.keys(root.outcomes).forEach(async (key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
@@ -62,10 +63,12 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
 
                 if (showOutcome === true) {
-                    buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData));
+                    let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,undefined);
+                    buttons.push(btn);
+                    //buttons.push(CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData));
                 }
             }
-        });
+        };
 
         const cols: any[] = [];
 

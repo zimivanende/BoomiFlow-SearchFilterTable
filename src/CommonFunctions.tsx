@@ -342,11 +342,14 @@ export default class CommonFunctions {
     */
 
     // this will make an outcome button (top or row) based on the outcome name, the suffix & icon
-    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData) : any {
+    // the values, if {{}} ere prepopulated in preLoad
+    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData) : Promise<any> {
         let icon: any;
         if(outcome.attributes?.iconValue?.value?.length > 0){
+            let flds: []
             let iconName: string
-            let iconValue: string = outcome.attributes?.iconValue?.value?.toLowerCase();
+            let iconValue: string = outcome.attributes?.iconValue?.value;
+            iconValue = this.extractValue(comp, iconValue, new Map(Object.entries(comp.fields)));
             if(suffix && suffix.length>0){
                 let path = iconValue.substring(0,iconValue.lastIndexOf("."));
                 let ext: string = iconValue.substring(iconValue.lastIndexOf("."));
@@ -379,7 +382,7 @@ export default class CommonFunctions {
         let button: any = (
             <div
                 className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
-                onClick={(_e: any) => {comp.doOutcome(outcome.developerName, objectData); }}
+                onClick={(e: any) => {e.stopPropagation(); comp.doOutcome(outcome.developerName, objectData); }}
             >
                 {icon}
                 {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?
@@ -393,6 +396,41 @@ export default class CommonFunctions {
             </div>
         );
         return button;
+    }
+
+    static extractValue(comp: FlowComponent, input: string, flds: Map<string,FlowField>) : string {
+        if(input){
+            // use regex to find any {{}} tags in content and save them in matches
+            let value: any;
+            let match: any;
+            
+            const matches: any[] = [];
+            while (match = RegExp(/{{([^}]*)}}/).exec(input)) {
+                const fldElements: string[] = match[1].split('->');
+                let fld: FlowField;
+                if(flds.has(fldElements[0])){
+                    fld = flds.get(fldElements[0]);
+                }
+
+                if (fld) {
+                    let od: FlowObjectData = fld.value as FlowObjectData;
+                    if (od) {
+                        if (fldElements.length > 1) {
+                            for (let epos = 1 ; epos < fldElements.length ; epos ++) {
+                                od = (od as FlowObjectData).properties[fldElements[epos]].value as FlowObjectData;
+                            }
+                            value = od;
+                        } else {
+                            value = fld.value;
+                        }
+                    } else {
+                        value = fld.value;
+                    }
+                    input = input.replace(match[0], value);
+                }
+            }
+        }
+        return input;
     }
 
     static async inflateValue(comp: FlowComponent, input: string, flds: Map<string,FlowField>) : Promise<string> {
