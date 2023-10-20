@@ -88,7 +88,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             if (root.getAttribute("showRadio","false").toLowerCase()==="true"){
                 cols.push(
                     <td
-                        className="sft-table-cell sft-table-cell-check"
+                        className="sft-table-cell"
                     >
                         <input
                             className="sft-radio"

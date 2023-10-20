@@ -137,7 +137,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                     headers.push(
                         <th
                             key="checks"
-                            className="sft-check-header"
+                            className="sft-column-header"
                             ref={(element: any) => {this.setHeader('checks', element); }}
                         >
                             <div
