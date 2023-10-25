@@ -57,14 +57,20 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         for(let key of Object.keys(root.outcomes)){
         //Object.keys(root.outcomes).forEach(async (key: string) => {
             if (root.outcomes[key].isBulkAction === false) {
+                
+                let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
-                }
-                let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
-
-                if (showOutcome === true) {
-                    let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData);
-                    buttons.push(btn);
+                    if(root.getAttribute("greyDissabled","false").toLowerCase()==="true"){
+                        let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,undefined,!showOutcome);
+                        buttons.push(btn);
+                    }
+                    else {
+                        if (showOutcome === true) {
+                            let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,undefined,false);
+                            buttons.push(btn);
+                        }
+                    }
                 }
             }
         };

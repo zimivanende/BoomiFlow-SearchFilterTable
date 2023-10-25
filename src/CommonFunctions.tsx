@@ -19,7 +19,7 @@ export default class CommonFunctions {
                 }
             }
             else{
-                if(root.selectedRow.length < 1){
+                if(!root.selectedRow || root.selectedRow.length < 1){
                     result = false;
                 }
             }
@@ -343,7 +343,7 @@ export default class CommonFunctions {
 
     // this will make an outcome button (top or row) based on the outcome name, the suffix & icon
     // the values, if {{}} ere prepopulated in preLoad
-    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData) : Promise<any> {
+    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData, dissabled: boolean) : Promise<any> {
         let icon: any;
         if(outcome.attributes?.iconValue?.value?.length > 0){
             let flds: []
@@ -358,9 +358,13 @@ export default class CommonFunctions {
             else {
                 iconName=iconValue;
             }
+            let imgClass: string = "sft-ribbon-search-button-image";
+            if(dissabled){
+                imgClass += " sft-ribbon-search-button-image-grey"
+            }
             icon=(
                 <img 
-                    className='sft-ribbon-search-button-image'
+                    className={imgClass}
                     src={iconName}
                     onError={(e: any)=>{e.currentTarget.src=iconValue}}
                     title={outcome.label || outcome.developerName}
@@ -369,10 +373,14 @@ export default class CommonFunctions {
         }
         else {
             if(outcome.attributes?.icon?.value?.length > 0) {
+                let iconClass: string = " sft-ribbon-search-button-icon";
+                if(dissabled){
+                    iconClass += "sft-ribbon-search-button-image-grey"
+                }
                 icon=(
                     <span
                         key={outcome.developerName}
-                        className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' sft-ribbon-search-button-icon'}
+                        className={'glyphicon glyphicon-' + (outcome.attributes['icon']?.value || 'plus') + ' ' + iconClass}
                         title={outcome.label || outcome.developerName}
                     />
                 );
@@ -382,7 +390,7 @@ export default class CommonFunctions {
         let button: any = (
             <div
                 className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
-                onClick={(e: any) => {e.stopPropagation(); comp.doOutcome(outcome.developerName, objectData); }}
+                onClick={(e: any) => {if(!dissabled){e.stopPropagation(); comp.doOutcome(outcome.developerName, objectData);} }}
             >
                 {icon}
                 {!outcome.attributes?.display || outcome.attributes.display?.value.indexOf('text') >= 0 ?

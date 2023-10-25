@@ -99,12 +99,19 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
 
                 const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
-
-                if (showOutcome === true) {
-                    let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined);
+                if(root.getAttribute("greyDissabled","false").toLowerCase()==="true"){
+                    let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,!showOutcome);
                     this.rightButtons.push(
                         btn
                     );
+                }
+                else {
+                    if (showOutcome === true) {
+                        let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,false);
+                        this.rightButtons.push(
+                            btn
+                        );
+                    }
                 }
             }
         }

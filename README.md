@@ -530,6 +530,12 @@ The name of the Flow object type to create when setting the state & row level st
 
 Only works with JSONModelValue.
 
+### greyDissabled
+Boolean
+
+Grey out dissabled outcomes rather than hide them based on column rules
+
+
 ## Styling
 
 All elements of the component can be styled by adding the specific style names to your player.

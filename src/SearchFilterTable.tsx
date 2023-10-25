@@ -993,6 +993,8 @@ export default class SearchFilterTable extends FlowComponent {
         //if(this.selectedRow !== objData.externalId){
             this.selectedRow = objData.externalId;
             await this.doOutcome("OnSelect",objData);
+            this.buildRibbon();
+            this.buildFooter();
             this.refreshRows();
         //}
         //else{
@@ -1067,6 +1069,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     //gets the single selected item from rowlevelstate
     async loadSingleSelected(): Promise<any> {
+        this.selectedRow = undefined;
         if (this.getAttribute('RowLevelState', '').length > 0 && this.rowRememberColumn) {
             const rls: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
             if(rls.value){
