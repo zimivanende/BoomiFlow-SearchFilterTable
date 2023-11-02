@@ -515,8 +515,12 @@ export default class ColumnFilters {
 
                         default:
                             const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
-                            sorted.sort((a: any, b: any) =>
-                                collator.compare(a[1].objectData.properties[sortPropertyName].value, b[1].objectData.properties[sortPropertyName].value),
+                            sorted.sort((a: any, b: any) => {
+                                const v1 = a[1].objectData.properties[sortPropertyName].value? a[1].objectData.properties[sortPropertyName].value : 0;
+                                const v2 = b[1].objectData.properties[sortPropertyName].value? b[1].objectData.properties[sortPropertyName].value : 0;
+                                return collator.compare(v1,v2);
+                                //collator.compare(a[1].objectData.properties[sortPropertyName].value, b[1].objectData.properties[sortPropertyName].value),
+                                }
                             );
                             break;
 
