@@ -924,7 +924,7 @@ export default class SearchFilterTable extends FlowComponent {
             let objData: FlowObjectData = this.rowMap.get(key).objectData;
             let objKey: string;
             if(this.lastRememberedRow) {
-                objKey = objData.properties[this.rowRememberColumn]?.value as string;
+                objKey = "" + objData.properties[this.rowRememberColumn]?.value as string;
             }
             if ((currentPage.size < this.maxPageRows) || this.paginationMode !== ePaginationMode.local) {
                 currentPage.set(key, item);
