@@ -345,6 +345,7 @@ export default class CommonFunctions {
     // the values, if {{}} ere prepopulated in preLoad
     static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData, dissabled: boolean) : Promise<any> {
         let icon: any;
+        let show: boolean = false;
         if(outcome.attributes?.iconValue?.value?.length > 0){
             let flds: []
             let iconName: string
@@ -370,9 +371,10 @@ export default class CommonFunctions {
                     title={outcome.label || outcome.developerName}
                 />
             );
+            show=true;
         }
         else {
-            if(outcome.attributes?.icon?.value?.length > 0) {
+            if(outcome.attributes?.icon?.value?.length > 0 && outcome.attributes?.icon?.value !== "null") {
                 let iconClass: string = " sft-ribbon-search-button-icon";
                 if(dissabled){
                     iconClass += "sft-ribbon-search-button-image-grey"
@@ -384,10 +386,13 @@ export default class CommonFunctions {
                         title={outcome.label || outcome.developerName}
                     />
                 );
+                show=true;
             }
         }
 
-        let button: any = (
+        let button: any;
+        if(show===true){
+            button = (
             <div
                 className={'sft-ribbon-search-button-wrapper ' + (outcome.attributes?.classes?.value)}
                 onClick={(e: any) => {if(!dissabled){e.stopPropagation(); comp.doOutcome(outcome.developerName, objectData);} }}
@@ -402,7 +407,8 @@ export default class CommonFunctions {
                     null
                 }
             </div>
-        );
+            );
+        }
         return button;
     }
 
