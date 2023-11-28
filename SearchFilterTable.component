@@ -12,6 +12,7 @@
     "ColumnsIcon": "Column picker icon.  The glyphicon to use for the column picker button.",
     "LoadingIcon": "Loading Icon.  The url of an image to show while loading.",
     "RibbonStyle": "Ribbon Style.  The display style of the header ribbon. \"ribbon\" or \"search\".",
+    "FooterStyle": "Footer Style,  The display style of the footer.  default or nav",
     "OutcomesLabel": "Outcomes Label.  The label for the outcomes column.",
     "RibbonDisplay": "Ribbon Button Style.  \"text\", \"icon\" or \"iconandtext\"",
     "RowLevelState": "Row Level State.  Tells the table which flow field will receive the row object.",

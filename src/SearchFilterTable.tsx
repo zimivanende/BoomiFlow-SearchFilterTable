@@ -22,6 +22,7 @@ import CommonFunctions from './CommonFunctions';
 import { FCMContextMenu, FCMModal } from 'fcmkit';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 import { GenericDB } from './DB/GenericDB';
+import { SearchFilterTableFooterNav } from './SearchFilterTableFooterNav';
 
 // declare const manywho: IManywho;
 declare const manywho: any;
@@ -90,7 +91,7 @@ export default class SearchFilterTable extends FlowComponent {
     ribbonElement: any;
 
     // this is the footer React component
-    footer: SearchFilterTableFooter;
+    footer: SearchFilterTableFooter | SearchFilterTableFooterNav;
 
     // this is the footer html element
     footerElement: any;
@@ -171,6 +172,7 @@ export default class SearchFilterTable extends FlowComponent {
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.lastPage = this.lastPage.bind(this);
+        this.gotoPage = this.gotoPage.bind(this);
 
         this.maxPerPageChanged = this.maxPerPageChanged.bind(this);
 
@@ -443,7 +445,7 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     // stores / deletes a ref to the footer component
-    setFooter(element: SearchFilterTableFooter) {
+    setFooter(element: SearchFilterTableFooter | SearchFilterTableFooterNav) {
         this.footer = element;
     }
 
@@ -747,12 +749,26 @@ export default class SearchFilterTable extends FlowComponent {
             />
         );
 
-        this.footerElement = (
-            <SearchFilterTableFooter
-                root={this}
-                ref={(element: SearchFilterTableFooter) => {this.setFooter(element); }}
-            />
-        );
+        switch (this.getAttribute('FooterStyle', 'default')) {
+            case "default":
+                this.footerElement = (
+                    <SearchFilterTableFooter
+                        root={this}
+                        ref={(element: SearchFilterTableFooter) => {this.setFooter(element); }}
+                    />
+                );
+                break;
+
+            case "nav":
+                this.footerElement = (
+                    <SearchFilterTableFooterNav
+                        root={this}
+                        ref={(element: SearchFilterTableFooterNav) => {this.setFooter(element); }}
+                    />
+                );
+                break; 
+        }
+        
 
         if(this.rowRememberColumn){
             this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
@@ -985,6 +1001,12 @@ export default class SearchFilterTable extends FlowComponent {
 
     lastPage() {
         this.currentRowPage = this.currentRowPages.length - 1 ;
+        this.buildTableRows();
+        this.forceUpdate();
+    }
+
+    gotoPage(page: number) {
+        this.currentRowPage = page - 1 ;
         this.buildTableRows();
         this.forceUpdate();
     }

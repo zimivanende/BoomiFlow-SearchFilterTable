@@ -1,0 +1,83 @@
+.sft-footer {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    flex-grow:0;
+    padding: 0.5rem 0;
+}
+
+.sft-footer-pagination {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    flex-grow:0;
+    padding: 0 1rem;
+}
+
+.sft-footer-pagination-label {
+    margin: auto 1rem auto 0;
+    user-select: none;
+}
+
+.sft-footer-pagination-select {
+    appearance: revert;
+    -webkit-appearance: listbox;
+    width: fit-content !important;
+    padding: 0 1.5rem 0 1rem !important;
+    border-radius: 1rem !important;
+    border: 2px solid #ccc !important;
+}
+
+.sft-footer-events {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    flex-grow:1;
+}
+
+.sft-footer-nav {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    flex-grow:0;
+    padding: 0 1rem;
+    margin: 0;
+}
+
+.sft-footer-nav-label {
+    margin: auto 1rem auto 0;
+    user-select: none;
+}
+
+.sft-nav-chev {
+    margin: auto 0.5rem auto 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.sft-nav-chev-dissabled {
+    color: #ccc;
+    cursor: default;
+}
+
+.sft-nav-pg {
+    color: #033D58;
+    padding: 0 0.7rem;
+    font-size: 1rem;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    margin-right: 0.3rem;
+    user-select: none;
+}
+
+.sft-nav-pg-selected {
+    color: #fefefe;
+    background-color: #033D58;
+    font-weight: 600;
+}
+
+.sft-nav-pg:not(.sft-nav-pg-selected):hover {
+    border: 2px solid #033D58;
+    cursor: pointer;
+}
