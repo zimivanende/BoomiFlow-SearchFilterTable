@@ -230,6 +230,16 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
                         case eContentType.ContentString:
                             switch (true) {
+                                case this.isXML(col.value as string) === true:
+                                    result = (
+                                        <button
+                                            onClick={(e: any) => {this.showXML(col.developerName, col.value as string); }}
+                                        >
+                                            {'View XML'}
+                                        </button>
+                                    );
+                                    break;
+
                                 case this.isJSON(col.value as string) === true:
                                     result = (
                                         <button
@@ -471,12 +481,11 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const content = (
             <div
                 style={{
-                    maxHeight: '40vmax',
-                    maxWidth: '60vmax',
-                    overflow: 'auto',
+                    overflow: 'visible',
                 }}
             >
-                <div
+                <pre>
+                <code
                     style={{
                         overflow: 'visible',
                         whiteSpace: 'pre',
@@ -484,6 +493,42 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                     }}
                     dangerouslySetInnerHTML={{__html: value}}
                 />
+                </pre>
+            </div>
+
+        );
+        const root: SearchFilterTable = this.props.root;
+        root.messageBox.showDialog(
+            null,
+            title, 
+            content, 
+            [new FCMModalButton('Ok', root.messageBox.hideDialog)]);
+    }
+
+    isXML(value: string): boolean {
+        value+="";
+        if (value === 'null') { value = ''; }
+        if (value.startsWith("<?xml")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    showXML(title: string, value: string) {
+        value = value.replaceAll('\\n', '<br>');
+        value = value.replaceAll('<br><br>', '<br>');
+        const content = (
+            <div
+                style={{
+                    overflow: 'visible',
+                }}
+            >
+                <pre>
+                <code>
+                    {value}
+                </code>
+                </pre>
             </div>
 
         );
