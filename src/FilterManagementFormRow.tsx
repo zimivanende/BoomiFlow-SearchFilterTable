@@ -1,11 +1,11 @@
 import { eContentType, FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
-import FilterManagementForm from './FilterManagementForm';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {ColumnCriteria,  eColumnComparator } from './ColumnCriteria';
+import {ColumnFilter} from './ColumnFilter';
+import {FilterManagementForm} from './FilterManagementForm';
+import {SearchFilterTable} from './SearchFilterTable';
 
-export default class FilterManagementFormRow extends React.Component<any, any> {
+export class FilterManagementFormRow extends React.Component<any, any> {
 
     comparatorElement: HTMLSelectElement;
 

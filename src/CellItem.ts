@@ -1,6 +1,6 @@
 import { eContentType } from 'flow-component-model';
 
-export default class CellItem {
+export class CellItem {
     id: string;
     name: string;
     label: string;

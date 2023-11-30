@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import './MultiSelect.css';
 
-export default class MultiSelect extends React.Component <any, any> {
+export class MultiSelect extends React.Component <any, any> {
 
     expanded: boolean = false;
 

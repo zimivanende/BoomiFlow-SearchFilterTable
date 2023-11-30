@@ -1,12 +1,12 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData } from 'flow-component-model';
-import React, { Fragment } from 'react';
-import CellItem from './CellItem';
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
+import * as React from 'react';
+import {CellItem} from './CellItem';
+import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {ColumnFilter} from './ColumnFilter';
 import { ColumnRule } from './ColumnRule';
-import FilterConfigForm from './FilterConfigForm';
-import RowItem from './RowItem';
-import SearchFilterTable from './SearchFilterTable';
+import {FilterConfigForm} from './FilterConfigForm';
+import {RowItem} from './RowItem';
+import {SFT} from './SearchFilterTable';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 
 export enum eFilterEvent {
@@ -21,8 +21,8 @@ export enum eSortDirection {
     descending = -1,
 }
 
-export default class ColumnFilters {
-    parent: SearchFilterTable;
+export class ColumnFilters {
+    parent: SFT;
 
     dialog: any;
 
@@ -32,7 +32,7 @@ export default class ColumnFilters {
     quickChecks: Map<string, HTMLInputElement> = new Map();
     suppressNotify: boolean = false;
 
-    constructor(parent: SearchFilterTable) {
+    constructor(parent: SFT) {
         this.parent = parent;
 
         this.notify = this.notify.bind(this);
@@ -134,7 +134,7 @@ export default class ColumnFilters {
     // the filter button was pressed
     filterClicked(key: string) {
 
-        const root: SearchFilterTable = this.parent;
+        const root: SFT = this.parent;
         if (!this.items.has(key)) {
             this.items.set(key, new ColumnFilter(key, this));
         }
@@ -254,7 +254,7 @@ export default class ColumnFilters {
     getFilterIcon(key: string): any {
         if (this.items.has(key) && this.items.get(key).criteria?.length > 0) {
             return (
-                <Fragment>
+                <React.Fragment>
                     <span
                         className="sft-column-header-button sft-column-header-button-hot glyphicon glyphicon-search"
                         onClick={(e: any) => {this.filterClicked(key); }}
@@ -265,7 +265,7 @@ export default class ColumnFilters {
                         onClick={(e: any) => {this.filterClear(key); }}
                         title="Clear filter"
                     />
-                </Fragment>
+                </React.Fragment>
             );
         } else {
             return (
@@ -278,7 +278,7 @@ export default class ColumnFilters {
     }
 
     getQuickCheck(columnName: string): any {
-        if (this.parent.getAttribute('QuickCheck', 'false') === 'true' && this.parent.colMap.get(columnName)?.contentType === eContentType.ContentBoolean) {
+        if (this.parent.parent.getAttribute('QuickCheck', 'false') === 'true' && this.parent.colMap.get(columnName)?.contentType === eContentType.ContentBoolean) {
             const crit: ColumnCriteria = (this.items.get(columnName) as ColumnFilter)?.criteria[0];
             return (
                 <input

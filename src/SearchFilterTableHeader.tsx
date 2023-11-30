@@ -1,9 +1,9 @@
 import { FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
-import SearchFilterTable from './SearchFilterTable';
-import SearchFilterTableHeaders from './SearchFilterTableHeaders';
+import * as React from 'react';
+import {SearchFilterTableHeaders} from './SearchFilterTableHeaders';
+import { SFT } from './SearchFilterTable';
 
-export default class SearchFilterTableHeader extends React.Component<any, any> {
+export class SearchFilterTableHeader extends React.Component<any, any> {
 
     th: any;
     mask: any;
@@ -27,7 +27,7 @@ export default class SearchFilterTableHeader extends React.Component<any, any> {
     }
 
     render() {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         const parent: SearchFilterTableHeaders = this.props.parent;
         const col: FlowDisplayColumn = this.props.column;
         let filterIcon: any;

@@ -1,9 +1,9 @@
 import { FlowObjectData, FlowOutcome } from "flow-component-model";
-import React from "react";
+import * as React from "react";
 import "./SFTForms.css";
 declare var manywho: any;
 
-export default class SFTMessageBox extends React.Component<any,any> {
+export class SFTMessageBox extends React.Component<any,any> {
     
     content: any = (
         <img

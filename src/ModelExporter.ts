@@ -1,7 +1,7 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray } from 'flow-component-model';
-import RowItem from './RowItem';
+import {RowItem} from './RowItem';
 
-export default class ModelExporter {
+export class ModelExporter {
 
     static export(columns: Map<string, FlowDisplayColumn>, data: Map<string, RowItem>, fileName: string) {
         let file: string = '';

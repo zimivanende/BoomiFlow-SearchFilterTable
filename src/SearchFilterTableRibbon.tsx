@@ -1,9 +1,9 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
-import React, { CSSProperties } from 'react';
-import CommonFunctions from './CommonFunctions';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {CommonFunctions} from './CommonFunctions';
+import {SFT} from './SearchFilterTable';
 
-export default class SearchFilterTableRibbon extends React.Component<any, any> {
+export class SearchFilterTableRibbon extends React.Component<any, any> {
 
     leftButtons: any[];
     rightButtons: any[];
@@ -21,8 +21,8 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
         this.leftButtons = [];
         this.rightButtons = [];
 
-        const root: SearchFilterTable = this.props.root;
-        const canExport: boolean = (root.getAttribute('canExport', 'false').toLowerCase() === 'true');
+        const root: SFT = this.props.root;
+        const canExport: boolean = (root.parent.getAttribute('canExport', 'false').toLowerCase() === 'true');
 
         // ad export if allowed
         if (canExport === true) {
@@ -31,7 +31,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.rowMap); }}
                 >
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
                     <span
                         key={'exportAll'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
@@ -40,7 +40,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     /> :
                     null
                     }
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                         className="sft-ribbon-button-label"
                     >
@@ -58,7 +58,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.currentRowMap); }}
                 >
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
                     <span
                         key={'exportShown'}
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
@@ -67,7 +67,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     /> :
                     null
                     }
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-button-label"
                         >
@@ -79,7 +79,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             );
         }
 
-        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.outcomes));
+        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.parent.outcomes));
 
         for (let pos = 0 ; pos < arrOutcomes.length ; pos++) {
             const outcome: FlowOutcome = arrOutcomes[pos];
@@ -117,7 +117,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
             }
         }
 
-        if (root.model.content?.length > 0) {
+        if (root.parent.model.content?.length > 0) {
             this.rightButtons.push(
                 <div
                     className="sft-ribbon-search-button-wrapper"
@@ -126,10 +126,10 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.InfoIcon ? root.attributes.InfoIcon.value : 'question-sign')}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.parent.attributes?.InfoIcon ? root.parent.attributes.InfoIcon.value : 'question-sign')}
                         title={'Infornation'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -150,10 +150,10 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon sft-ribbon-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
+                        className={'glyphicon sft-ribbon-button-icon glyphicon-' + (root.parent.attributes?.ColumnsIcon ? root.parent.attributes.ColumnsIcon.value : 'option-vertical')}
                         title={'Select columns'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-button-label"
                         >
@@ -171,7 +171,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                     className="sft-ribbon-button-wrapper"
                     onClick={(e: any) => {e.stopPropagation(); root.doExport(root.selectedRowMap); }}
                 >
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('icon') >= 0 ?
                         <span
                             key={'exportSelected'}
                             className={'glyphicon glyphicon-floppy-save sft-ribbon-button-icon'}
@@ -180,7 +180,7 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
                         /> :
                         null
                     }
-                    {!root.attributes?.RibbonDisplay || root.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes?.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-button-label"
                         >
@@ -197,9 +197,9 @@ export default class SearchFilterTableRibbon extends React.Component<any, any> {
 
     render() {
 
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
 
-        const style: CSSProperties = {};
+        const style: React.CSSProperties = {};
         if (root.titleElement) {
             style.top = '2.5rem';
         }

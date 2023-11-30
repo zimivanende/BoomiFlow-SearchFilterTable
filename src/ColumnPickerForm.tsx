@@ -1,11 +1,8 @@
 import { FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
-import MultiSelect from './MultiSelect';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {SearchFilterTable} from './SearchFilterTable';
 
-export default class ColumnPickerForm extends React.Component<any, any> {
+export class ColumnPickerForm extends React.Component<any, any> {
 
     selectedColumns: string[] = [];
     constructor(props: any) {

@@ -1,10 +1,10 @@
 import { FlowObjectData } from "flow-component-model";
-import React, { CSSProperties } from "react";
-import SearchFilterTable from "../SearchFilterTable";
+import * as React from "react";
+import {SearchFilterTable} from "../SearchFilterTable";
 import "./SFTComplexColumn.css";
 declare var manywho: any;
 
-export default class SFTComplexColumn extends React.Component<any,any> {
+export class SFTComplexColumn extends React.Component<any,any> {
     
     content: any = (
         <img
@@ -38,7 +38,7 @@ const columnProps = {
         let sft: SearchFilterTable = this.props.sft;
         let valName: string = sft.getAttribute("ComplexColumnValue","Value");
         let objData: FlowObjectData = this.props.objectData;
-        let style: CSSProperties = {};
+        let style: React.CSSProperties = {};
         let res: number = objData.properties?.Result?.value as number;
         let msg: string = objData.properties?.Message?.value as string;
         let info: any;

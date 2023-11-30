@@ -1,5 +1,5 @@
 import { eContentType } from 'flow-component-model';
-import React from 'react';
+import * as React from 'react';
 
 export enum eColumnComparator {
     equalTo,
@@ -15,7 +15,7 @@ export enum eColumnComparator {
     notIn,
 }
 
-export default class ColumnCriteria {
+export class ColumnCriteria {
 
     static getDisplayValue(criteria: eColumnComparator): string {
         let typedCriteria;

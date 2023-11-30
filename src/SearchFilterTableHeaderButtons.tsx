@@ -1,8 +1,8 @@
 import { FlowDisplayColumn, FlowOutcome } from "flow-component-model";
-import React from "react";
-import SearchFilterTable from "./SearchFilterTable";
+import * as React from "react";
+import {SearchFilterTable} from "./SearchFilterTable";
 
-export default class SearchFilterTableHeaderButtons extends React.Component<any,any> {
+export class SearchFilterTableHeaderButtons extends React.Component<any,any> {
 
     componentDidMount() {
         this.forceUpdate();

@@ -1,10 +1,10 @@
 import { eContentType, FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
+import * as React from 'react';
 import ColumnCriteria from './ColumnCriteria';
 import ColumnFilter from './ColumnFilter';
 import FilterManagementForm from './FilterManagementForm';
 
-export default class FilterManagementFormAddRow extends React.Component<any, any> {
+export class FilterManagementFormAddRow extends React.Component<any, any> {
 
     fieldSelect: HTMLSelectElement;
 

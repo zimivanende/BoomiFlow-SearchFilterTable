@@ -1,18 +1,18 @@
 import { eContentType, FlowField, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
-import React, { CSSProperties } from 'react';
+import * as React from 'react';
 import { eColumnComparator } from './ColumnCriteria';
-import CommonFunctions from './CommonFunctions';
-import SearchFilterTable from './SearchFilterTable';
+import {CommonFunctions} from './CommonFunctions';
+import {SFT} from './SearchFilterTable';
 declare var manywho: any;
 
 export class ColumnRules {
-    static async parse(ruleStr: string, parent: SearchFilterTable): Promise<Map<string, ColumnRule>> {
+    static async parse(ruleStr: string, parent: SFT): Promise<Map<string, ColumnRule>> {
         let match: any;
         while (match = RegExp(/^{{([^}]*)}}/).exec(ruleStr)) {
             
             const fldElements: string[] = match[1].split('->');
             // element[0] is the flow field name
-            let val: FlowField = await parent.loadValue(fldElements[0]);            
+            let val: FlowField = await parent.parent.loadValue(fldElements[0]);            
             ruleStr = ruleStr.replace(match[0], val.value as string);
         }
 
@@ -35,7 +35,7 @@ export class ColumnRules {
 
 export class ColumnRule {
 
-    static parse(key: string, rule: any, parent: SearchFilterTable): ColumnRule {
+    static parse(key: string, rule: any, parent: SFT): ColumnRule {
         const colRule: ColumnRule = new ColumnRule();
         colRule.columnName = key;
         colRule.mode = rule.mode?.toLowerCase();
@@ -93,7 +93,7 @@ export class ColumnRule {
     url: string;
     label: string;
     cellClass: string;
-    parent: SearchFilterTable;
+    parent: SFT;
     dateFormat: string;
     whiteSpace: string;
     cssClass: string;
@@ -110,7 +110,7 @@ export class ColumnRule {
 
     getTextValue(property: FlowObjectDataProperty): string {
         let result: string = '';
-        const style: CSSProperties = {};
+        const style: React.CSSProperties = {};
         switch (property.contentType) {
             case eContentType.ContentBoolean:
                 if (property.value === true) {
@@ -129,8 +129,8 @@ export class ColumnRule {
         return result;
     }
 
-    generateColumnContent(value: FlowObjectDataProperty, row: FlowObjectData, sft?: SearchFilterTable): any {
-        const style: CSSProperties = {};
+    generateColumnContent(value: FlowObjectDataProperty, row: FlowObjectData, sft?: SFT): any {
+        const style: React.CSSProperties = {};
         let classes: string = 'sft-table-cell-text';
         if (this.whiteSpace) {
             style.whiteSpace =  this.whiteSpace as 'normal';
@@ -167,7 +167,7 @@ export class ColumnRule {
             switch (this.mode) {
                 case 'outcome':
                     label = this.label || value.value as string;
-                    let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.outcomes[this.outcomeName],row,sft);
+                    let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.parent.outcomes[this.outcomeName],row,sft);
                     
 
                     // use regex to find any {{}} tags in content and save them in matches
@@ -181,7 +181,7 @@ export class ColumnRule {
                         }
                     }
                     if(show) {
-                        let toolTip: string = sft.outcomes[this.outcomeName].label;
+                        let toolTip: string = sft.parent.outcomes[this.outcomeName].label;
                         content = (
                             <span
                                 className="sft-table-cell-href"
@@ -226,7 +226,7 @@ export class ColumnRule {
                         propertyId: value.typeElementPropertyId,
                         contentValue: value.value,
                         objectData: value.value,
-                        flowKey: this.parent.flowKey,
+                        flowKey: this.parent.parent.flowKey,
                         contentType: value.contentType,
                         contentFormat: value.contentFormat,
                         row,
@@ -308,7 +308,7 @@ export class ColumnRule {
                     break;
                 case "style":
                     content = (
-                        <span className={classes + " " + cellClass} style={style}>{value.value}</span>
+                        <span className={classes + " " + cellClass} style={style}>{value.value as string}</span>
                     );
                     break;
                 case "icon":
@@ -331,14 +331,14 @@ export class ColumnRule {
                     break;
                 default:
                     content = (
-                        <span className={classes} style={style}>{value.value}</span>
+                        <span className={classes} style={style}>{value.value as string}</span>
                     );
                     break;
             }
         }
         else {
             content = (
-                <span className={classes} style={style}>{value.value}</span>
+                <span className={classes} style={style}>{value.value as string}</span>
             );
         }
 

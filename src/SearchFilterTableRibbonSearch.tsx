@@ -1,9 +1,9 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
-import React, { CSSProperties } from 'react';
-import CommonFunctions from './CommonFunctions';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {CommonFunctions} from './CommonFunctions';
+import {SFT} from './SearchFilterTable';
 
-export default class SearchFilterTableRibbonSearch extends React.Component<any, any> {
+export class SearchFilterTableRibbonSearch extends React.Component<any, any> {
 
     searchInput: HTMLInputElement;
     previousFilter: string = '';
@@ -22,7 +22,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         this.filterKeyDown = this.filterKeyDown.bind(this);
         this.filterChanged = this.filterChanged.bind(this);
         this.filterCommitted = this.filterCommitted.bind(this);
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         this.currentFilter = root.filters.globalCriteria;
     }
 
@@ -37,10 +37,10 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
         else {
             this.deBounce = true;
         }
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         this.leftButtons = [];
         this.rightButtons = [];
-        const canExport: boolean = (root.getAttribute('canExport', 'true').toLowerCase() === 'true');
+        const canExport: boolean = (root.parent.getAttribute('canExport', 'true').toLowerCase() === 'true');
 
         // ad export if allowed
         if (canExport === true) {
@@ -55,7 +55,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         title={'Export All'}
 
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -78,7 +78,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
                         title={'Export Shown'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -90,7 +90,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             );
         }
 
-        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.outcomes));
+        const arrOutcomes: FlowOutcome[] = Array.from(Object.values(root.parent.outcomes));
 
         for (let pos = 0 ; pos < arrOutcomes.length ; pos++) {
 
@@ -99,7 +99,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
 
                 const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
-                if(root.getAttribute("greyDissabled","false").toLowerCase()==="true"){
+                if(root.parent.getAttribute("greyDissabled","false").toLowerCase()==="true"){
                     let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,!showOutcome);
                     this.rightButtons.push(
                         btn
@@ -116,7 +116,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
             }
         }
 
-        if (root.model.content?.length > 0) {
+        if (root.parent.model.content?.length > 0) {
             this.rightButtons.push(
                 <div
                     className="sft-ribbon-search-button-wrapper"
@@ -125,10 +125,10 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.InfoIcon ? root.attributes.InfoIcon.value : 'question-sign')}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.parent.attributes?.InfoIcon ? root.parent.attributes.InfoIcon.value : 'question-sign')}
                         title={'Infornation'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -149,10 +149,10 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
 
                     <span
                         key={'colpick'}
-                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.attributes?.ColumnsIcon ? root.attributes.ColumnsIcon.value : 'option-vertical')}
+                        className={'glyphicon sft-ribbon-search-button-icon glyphicon-' + (root.parent.attributes?.ColumnsIcon ? root.parent.attributes.ColumnsIcon.value : 'option-vertical')}
                         title={'Select columns'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -175,7 +175,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                         className={'glyphicon glyphicon-floppy-save sft-ribbon-search-button-icon'}
                         title={'Export Selected'}
                     />
-                    {!root.attributes?.RibbonDisplay || root.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
+                    {!root.parent.attributes?.RibbonDisplay || root.parent.attributes.RibbonDisplay?.value.indexOf('text') >= 0 ?
                         <span
                             className="sft-ribbon-search-button-label"
                         >
@@ -222,7 +222,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
     filterCommitted() {
         if (this.currentFilter !== this.previousFilter) {
             this.previousFilter = this.currentFilter;
-            const root: SearchFilterTable = this.props.root;
+            const root: SFT = this.props.root;
             root.globalFilterChanged(this.currentFilter);
         }
     }
@@ -245,7 +245,7 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
                 return false;
                 break;
 
-            case 'Escape':
+            case 'Delete':
                 e.preventDefault();
                 e.stopPropagation();
                 this.searchInput.value = '';
@@ -263,21 +263,21 @@ export default class SearchFilterTableRibbonSearch extends React.Component<any, 
     }
 
     showSearch(e: any) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.manageFilters();
     }
 
     async clearFilters(e: any) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.filters.clearAll();
         await root.buildRibbon();
     }
 
     render() {
 
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
 
-        const style: CSSProperties = {};
+        const style: React.CSSProperties = {};
         if (root.titleElement) {
             style.marginTop = '0.5rem';
         }

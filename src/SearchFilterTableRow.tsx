@@ -1,12 +1,12 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty } from 'flow-component-model';
-import React from 'react';
-import CommonFunctions from './CommonFunctions';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {CommonFunctions} from './CommonFunctions';
+import {SFT} from './SearchFilterTable';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 // declare const manywho: IManywho;
 declare const manywho: any;
 
-export default class SearchFilterTableRow extends React.Component<any, any> {
+export class SearchFilterTableRow extends React.Component<any, any> {
 
     rowElement: any;
     constructor(props: any) {
@@ -17,13 +17,13 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
     async componentDidMount(): Promise<void> {
         const enabledOutcomes: string[] = [];
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
-        const keys: string[] = Object.keys(root.outcomes);
+        const keys: string[] = Object.keys(root.parent.outcomes);
         for (let pos = 0 ; pos < keys.length ; pos++) {
-            if (root.outcomes[keys[pos]].isBulkAction === false) {
-                if(!root.supressedOutcomes.has(root.outcomes[keys[pos]].developerName)) {
-                    if (await CommonFunctions.assessRowOutcomeRule(root.outcomes[keys[pos]], objData, root) === true) {
+            if (root.parent.outcomes[keys[pos]].isBulkAction === false) {
+                if(!root.supressedOutcomes.has(root.parent.outcomes[keys[pos]].developerName)) {
+                    if (await CommonFunctions.assessRowOutcomeRule(root.parent.outcomes[keys[pos]], objData, root) === true) {
                         enabledOutcomes.push(keys[pos]);
                     }
                 }
@@ -39,14 +39,14 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     selectRow(e: any) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
         root.selectRow(objData);
     }
 
     render() {
 
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         const objData: FlowObjectData = root.rowMap.get(this.props.id)?.objectData;
         let rowClass: string="";
         if(root.selectedRow === objData.externalId) {
@@ -54,20 +54,20 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         }
         const buttons: any[] = [];
         let anyoutcomes: boolean = false;
-        for(let key of Object.keys(root.outcomes)){
+        for(let key of Object.keys(root.parent.outcomes)){
         //Object.keys(root.outcomes).forEach(async (key: string) => {
-            if (root.outcomes[key].isBulkAction === false) {
+            if (root.parent.outcomes[key].isBulkAction === false) {
                 
                 let showOutcome: boolean = this.state.enabledOutcomes.indexOf(key) >= 0;
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
-                    if(root.getAttribute("greyDissabled","false").toLowerCase()==="true"){
-                        let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData,!showOutcome);
+                    if(root.parent.getAttribute("greyDissabled","false").toLowerCase()==="true"){
+                        let btn: any = CommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,!showOutcome);
                         buttons.push(btn);
                     }
                     else {
                         if (showOutcome === true) {
-                            let btn: any = CommonFunctions.makeOutcomeButton(root,root.outcomes[key],root.iconSuffix,objData,false);
+                            let btn: any = CommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,false);
                             buttons.push(btn);
                         }
                     }
@@ -77,7 +77,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
 
         const cols: any[] = [];
 
-        if (root.model.multiSelect){
+        if (root.parent.model.multiSelect){
             cols.push(
                 <td
                     className="sft-table-cell sft-table-cell-check"
@@ -91,7 +91,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                 </td>,
             );
         } else {
-            if (root.getAttribute("showRadio","false").toLowerCase()==="true"){
+            if (root.parent.getAttribute("showRadio","false").toLowerCase()==="true"){
                 cols.push(
                     <td
                         className="sft-table-cell"
@@ -157,15 +157,15 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     // handles special contents like uris & dataUri
-    formatValue(componentType: string, contentType: eContentType,  root: SearchFilterTable, columnName: string, row: FlowObjectData): any {
+    formatValue(componentType: string, contentType: eContentType,  root: SFT, columnName: string, row: FlowObjectData): any {
         let result: any;
         let rowClass: string = "";
         let cellClass: string = "";
         let col: FlowObjectDataProperty;
-        if(root.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
-            let colsName: string = root.getAttribute("ComplexColumnsChildren","Columns");
-            let colName: string = root.getAttribute("ComplexColumnName","Name");
-            let colValue: string = root.getAttribute("ComplexColumnValue","Value");
+        if(root.parent.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
+            let colsName: string = root.parent.getAttribute("ComplexColumnsChildren","Columns");
+            let colName: string = root.parent.getAttribute("ComplexColumnName","Name");
+            let colValue: string = root.parent.getAttribute("ComplexColumnValue","Value");
             
             (row.properties[colsName].value as FlowObjectDataArray).items.forEach((c: FlowObjectData) => {
                 let cname: string = c.properties[colName].value as string;
@@ -192,7 +192,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                         propertyId: col.typeElementPropertyId,
                         contentValue: col.value,
                         objectData: col.value,
-                        flowKey: root.flowKey,
+                        flowKey: root.parent.flowKey,
                         contentType: col.contentType,
                         contentFormat: col.contentFormat,
                         row,
@@ -205,7 +205,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
                             let dt: Date = new Date(col.value as string);
                             if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
                                 let str: string = '';
-                                switch (root.getAttribute('DateFormat', 'LOCALE')) {
+                                switch (root.parent.getAttribute('DateFormat', 'LOCALE')) {
                                     case 'UTC':
                                         str = dt.toUTCString();
                                         break;
@@ -429,7 +429,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
     }
 
     showJSON(title: string, value: string) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         value = value.replaceAll('\\n ', '');
         value = value.replaceAll('\\n}', '}');
         value = value.replaceAll('\\', '"');
@@ -440,9 +440,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
         const content = (
             <div
                 style={{
-                    maxHeight: '40vmax',
-                    maxWidth: '60vmax',
-                    overflow: 'auto',
+                    overflow: 'visible'
                 }}
             >
                 <div
@@ -497,7 +495,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             </div>
 
         );
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.messageBox.showDialog(
             null,
             title, 
@@ -532,7 +530,7 @@ export default class SearchFilterTableRow extends React.Component<any, any> {
             </div>
 
         );
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.messageBox.showDialog(
             null,
             title, 

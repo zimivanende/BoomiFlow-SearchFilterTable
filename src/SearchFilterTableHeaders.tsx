@@ -1,9 +1,9 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
-import React from 'react';
-import SearchFilterTable from './SearchFilterTable';
-import SearchFilterTableHeader from './SearchFilterTableHeader';
+import * as React from 'react';
+import {SFT} from './SearchFilterTable';
+import {SearchFilterTableHeader} from './SearchFilterTableHeader';
 
-export default class SearchFilterTableHeaders extends React.Component<any, any> {
+export class SearchFilterTableHeaders extends React.Component<any, any> {
     headers: Map<string, SearchFilterTableHeader> = new Map();
     draggedFieldName: string;
 
@@ -72,7 +72,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
     }
 
     async onDrop(e: any) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         e.preventDefault();
         e.stopPropagation();
         const srcFieldName = e.dataTransfer.getData('column');
@@ -89,7 +89,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
     }
 
     async moveColumn(srcFieldName: string, tgtFieldName: string) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         console.log('move ' + srcFieldName + ' before ' + tgtFieldName);
 
         root.userColumns.splice(root.userColumns.indexOf(tgtFieldName), 0, root.userColumns.splice(root.userColumns.indexOf(srcFieldName), 1)[0]);
@@ -100,12 +100,12 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         this.headers = new Map();
         const headers: any[] = [];
 
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
 
         const buttons: any[] = [];
         let anyoutcomes: boolean = false;
-        Object.keys(root.outcomes).forEach((key: string) => {
-            if (root.outcomes[key].isBulkAction === false) {
+        Object.keys(root.parent.outcomes).forEach((key: string) => {
+            if (root.parent.outcomes[key].isBulkAction === false) {
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
                 }
@@ -114,7 +114,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
         });
 
         if (root.colMap.size > 0) {
-            if(root.model.multiSelect) {
+            if(root.parent.model.multiSelect) {
                 headers.push(
                     <th
                         key="checks"
@@ -133,7 +133,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                     </th>,
                 );
             } else {
-                if (root.getAttribute("showRadio","false").toLowerCase()==="true"){
+                if (root.parent.getAttribute("showRadio","false").toLowerCase()==="true"){
                     headers.push(
                         <th
                             key="checks"
@@ -148,7 +148,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                 }
             }
 
-            let fixedCols: number = parseInt(root.getAttribute("stickyColumns","0"));
+            let fixedCols: number = parseInt(root.parent.getAttribute("stickyColumns","0"));
             root.userColumns.forEach((collName: string) => {
 
                 if (collName === '#BUTTONS#') {
@@ -157,7 +157,7 @@ export default class SearchFilterTableHeaders extends React.Component<any, any> 
                             <SearchFilterTableHeader
                                 root={this.props.root}
                                 parent={this}
-                                column={{developerName: '#BUTTONS#', label: root.getAttribute('OutcomesLabel', 'Action')}}
+                                column={{developerName: '#BUTTONS#', label: root.parent.getAttribute('OutcomesLabel', 'Action')}}
                                 static={true}
                                 inlineSearch={this.props.inlineSearch}
                                 ref={(element: SearchFilterTableHeader) => {this.setHeader('#BUTTONS#', element); }}

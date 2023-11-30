@@ -1,8 +1,8 @@
 import { eContentType, FlowComponent, FlowDisplayColumn, FlowField, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
-import SearchFilterTable from './SearchFilterTable';
-import React from 'react';
+import {SearchFilterTable} from './SearchFilterTable';
+import * as React from 'react';
 
-export default class CommonFunctions {
+export class CommonFunctions {
 
     static async getFlowValue(): Promise<any> {
 

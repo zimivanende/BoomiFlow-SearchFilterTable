@@ -1,8 +1,8 @@
 import { FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
-import SearchFilterTable, { ePaginationMode } from './SearchFilterTable';
+import * as React from 'react';
+import {SFT,  ePaginationMode } from './SearchFilterTable';
 
-export default class SearchFilterTableFooter extends React.Component<any, any> {
+export class SearchFilterTableFooter extends React.Component<any, any> {
 
     maxPerPage: any;
 
@@ -12,12 +12,12 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
     }
 
     maxPerPageChanged(e: any) {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.maxPerPageChanged(parseInt(this.maxPerPage.options[this.maxPerPage.selectedIndex].value));
     }
 
     render() {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         let summary: string;
         let pag: string;
         switch(true) {
@@ -25,7 +25,7 @@ export default class SearchFilterTableFooter extends React.Component<any, any> {
                 summary="";
                 pag=root.externalPaginationPage.toString();
                 break;
-            case root.getAttribute("summaryMode","default").toLowerCase()==="simple" || root.model.multiSelect===false:
+            case root.parent.getAttribute("summaryMode","default").toLowerCase()==="simple" || root.parent.model.multiSelect===false:
                 summary = 'Showing ' + root.currentRowMap.size + ' items of ' + root.rowMap.size;
                 pag = 'page ' + (root.currentRowPage + 1) + ' of ' + root.currentRowPages.length;
                 break;

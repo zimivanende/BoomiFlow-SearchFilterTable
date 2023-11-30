@@ -1,14 +1,13 @@
 import { FlowDisplayColumn } from 'flow-component-model';
-import React from 'react';
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
-import ColumnFilters, { eSortDirection } from './ColumnFilters';
-import FilterManagementFormAddRow from './FilterFormManagementAddRow';
-import FilterManagementFormRow from './FilterManagementFormRow';
-import MultiSelect from './MultiSelect';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {ColumnFilter} from './ColumnFilter';
+import {ColumnFilters,  eSortDirection } from './ColumnFilters';
+import {FilterManagementFormAddRow} from './FilterFormManagementAddRow';
+import {FilterManagementFormRow} from './FilterManagementFormRow';
+import {SearchFilterTable} from './SearchFilterTable';
 
-export default class FilterManagementForm extends React.Component<any, any> {
+export class FilterManagementForm extends React.Component<any, any> {
     parent: SearchFilterTable;
     columns: Map<string, FlowDisplayColumn>;
     newFilters: ColumnFilters;

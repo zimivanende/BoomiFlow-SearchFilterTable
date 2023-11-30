@@ -1,7 +1,7 @@
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
+import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {ColumnFilters, eFilterEvent, eSortDirection } from './ColumnFilters';
 
-export default class ColumnFilter {
+export class ColumnFilter {
     key: string;
     sort: eSortDirection = eSortDirection.none;
     parent: ColumnFilters;

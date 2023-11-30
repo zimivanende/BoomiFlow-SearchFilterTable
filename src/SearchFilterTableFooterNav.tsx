@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
@@ -6,7 +6,7 @@ import { faAngleDoubleLeft } from "@fortawesome/free-solid-svg-icons/faAngleDoub
 import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons/faAngleDoubleRight";
 
 import "./SearchFilterTableFooterNav.css";
-import SearchFilterTable, { ePaginationMode } from "./SearchFilterTable";
+import {SFT, ePaginationMode } from "./SearchFilterTable";
 export class SearchFilterTableFooterNav extends React.Component<any,any> {
 
     constructor(props: any) {
@@ -23,42 +23,42 @@ export class SearchFilterTableFooterNav extends React.Component<any,any> {
     }
 
     setItemsPerPage(e: any){
-        let parent: SearchFilterTable = this.props.root;
+        let parent: SFT = this.props.root;
         let perPage: number = parseInt(e.currentTarget.options[e.currentTarget.selectedIndex].value);
         parent.maxPerPageChanged(perPage);
     }
 
     firstPage(e: any){
-        let parent: SearchFilterTable = this.props.root;            
+        let parent: SFT = this.props.root;            
         parent.gotoPage(1);
     }
 
     previousPage(e: any){
-        let parent: SearchFilterTable = this.props.root;
+        let parent: SFT = this.props.root;
         if(parent.currentRowPage > 0){
             parent.previousPage();
         }
     }
 
     nextPage(e: any){
-        let parent: SearchFilterTable = this.props.root;
+        let parent: SFT = this.props.root;
         if(parent.currentRowPage < (parent.currentRowPages.length -1)){
             parent.nextPage();
         }
     }
 
     lastPage(e: any){
-        let parent: SearchFilterTable = this.props.root;            
+        let parent: SFT = this.props.root;            
         parent.gotoPage((parent.currentRowPages.length));
     }
 
     gotoPage(pg: number){
-        let parent: SearchFilterTable = this.props.root;
+        let parent: SFT = this.props.root;
         parent.gotoPage(pg);
     }
 
     render() {
-        let parent: SearchFilterTable = this.props.root;
+        let parent: SFT = this.props.root;
                 
         let first: number = ((parent.currentRowPage) * parent.maxPageRows) + 1;
         if(isNaN(first)){first=0}
@@ -74,7 +74,7 @@ export class SearchFilterTableFooterNav extends React.Component<any,any> {
                 showing="";
                 pag=parent.externalPaginationPage.toString();
                 break;
-            case parent.getAttribute("summaryMode","default").toLowerCase()==="simple" || parent.model.multiSelect===false:
+            case parent.parent.getAttribute("summaryMode","default").toLowerCase()==="simple" || parent.parent.model.multiSelect===false:
                 showing = 'Showing ' + parent.currentRowMap.size + ' items of ' + parent.rowMap.size;
                 pag = 'page ' + (parent.currentRowPage + 1) + ' of ' + parent.currentRowPages.length;
                 break;

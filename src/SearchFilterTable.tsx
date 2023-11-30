@@ -1,25 +1,25 @@
-import React, { CSSProperties } from 'react';
+import * as React from 'react';
 
 import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowField,  FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
-import CellItem from './CellItem';
-import ColumnCriteria from './ColumnCriteria';
-import ColumnFilters, { eFilterEvent, eSortDirection } from './ColumnFilters';
-import ColumnPickerForm from './ColumnPickerForm';
+import {CellItem} from './CellItem';
+import {ColumnCriteria} from './ColumnCriteria';
+import {ColumnFilters,  eFilterEvent, eSortDirection } from './ColumnFilters';
+import {ColumnPickerForm} from './ColumnPickerForm';
 import { ColumnRule, ColumnRules } from './ColumnRule';
-import FilterManagementForm from './FilterManagementForm';
-import ModelExporter from './ModelExporter';
-import MultiSelect from './MultiSelect';
-import RowItem from './RowItem';
+import {FilterManagementForm} from './FilterManagementForm';
+import {ModelExporter} from './ModelExporter';
+import {MultiSelect} from './MultiSelect';
+import {RowItem} from './RowItem';
 import './SearchFilterTable.css';
-import SearchFilterTableFooter from './SearchFilterTableFooter';
-import SearchFilterTableHeader from './SearchFilterTableHeader';
-import SearchFilterTableHeaderButtons from './SearchFilterTableHeaderButtons';
-import SearchFilterTableHeaders from './SearchFilterTableHeaders';
-import SearchFilterTableRibbon from './SearchFilterTableRibbon';
-import SearchFilterTableRibbonSearch from './SearchFilterTableRibbonSearch';
-import SearchFilterTableRow from './SearchFilterTableRow';
-import CommonFunctions from './CommonFunctions';
-import { FCMContextMenu, FCMModal } from 'fcmkit';
+import {SearchFilterTableFooter} from './SearchFilterTableFooter';
+import {SearchFilterTableHeader} from './SearchFilterTableHeader';
+import {SearchFilterTableHeaders} from './SearchFilterTableHeaders';
+import {SearchFilterTableRibbon} from './SearchFilterTableRibbon';
+import {SearchFilterTableRibbonSearch} from './SearchFilterTableRibbonSearch';
+import {SearchFilterTableRow} from './SearchFilterTableRow';
+import {CommonFunctions} from './CommonFunctions';
+import { FCMContextMenu } from 'fcmkit/lib/ContextMenu/FCMContextMenu';
+import { FCMModal } from 'fcmkit/lib/ModalDialog/FCMModal';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 import { GenericDB } from './DB/GenericDB';
 import { SearchFilterTableFooterNav } from './SearchFilterTableFooterNav';
@@ -33,9 +33,11 @@ export enum ePaginationMode {
     external
 }
 
-export default class SearchFilterTable extends FlowComponent {
+export class SFT extends React.Component<any,any> {
     version: string = '1.0.0';
     context: any;
+
+    parent: FlowComponent;
 
     contextMenu: FCMContextMenu;
     messageBox: FCMModal;
@@ -150,7 +152,8 @@ export default class SearchFilterTable extends FlowComponent {
 
     constructor(props: any) {
         super(props);
-        this.handleMessage = this.handleMessage.bind(this);
+        this.parent = this.props.parent;
+        this.parent.handleMessage = this.parent.handleMessage.bind(this);
         this.flowMoved = this.flowMoved.bind(this);
         this.showContextMenu = this.showContextMenu.bind(this);
         this.hideContextMenu = this.hideContextMenu.bind(this);
@@ -198,7 +201,7 @@ export default class SearchFilterTable extends FlowComponent {
 
         this.loadModelData = this.loadModelData.bind(this);
 
-        let pmode: string = this.getAttribute('PaginationMode', "local").toLowerCase();
+        let pmode: string = this.parent.getAttribute('PaginationMode', "local").toLowerCase();
         switch(pmode) {
             case "none":
                 this.paginationMode = ePaginationMode.none;
@@ -208,22 +211,22 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
             case "external":
                 this.paginationMode = ePaginationMode.external;
-                this.previousPageOutcome = this.getAttribute('PreviousPageOutcome');
+                this.previousPageOutcome = this.parent.getAttribute('PreviousPageOutcome');
                 this.supressedOutcomes.set(this.previousPageOutcome,true);
-                this.nextPageOutcome = this.getAttribute('NextPageOutcome');
+                this.nextPageOutcome = this.parent.getAttribute('NextPageOutcome');
                 this.supressedOutcomes.set(this.nextPageOutcome,true);
-                this.externalPage = this.getAttribute('ExternalPaginationPage');
+                this.externalPage = this.parent.getAttribute('ExternalPaginationPage');
                 break;
         }
 
-        this.iconSuffix=this.getAttribute("iconSuffixValue","");
+        this.iconSuffix=this.parent.getAttribute("iconSuffixValue","");
 
-        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
-        localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId) || this.parent.getAttribute('PaginationSize', undefined) || '10');
+        localStorage.setItem('sft-max-' + this.parent.componentId, this.maxPageRows.toString());
 
-        this.rowRememberColumn = this.getAttribute("RetainRowColumn");
+        this.rowRememberColumn = this.parent.getAttribute("RetainRowColumn");
         if(this.rowRememberColumn){
-            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
+            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.parent.componentId);
         }
         
     }
@@ -231,7 +234,7 @@ export default class SearchFilterTable extends FlowComponent {
     async flowMoved(xhr: any, request: any) {
         const me: any = this;
         if (xhr.invokeType === 'FORWARD') {
-            if (this.loadingState !== eLoadingState.ready && this.retries < 20) {
+            if (this.parent.loadingState !== eLoadingState.ready && this.retries < 20) {
                 this.loaded=false;
                 this.retries ++;
                 console.log("retry " + this.retries + " after flow move");
@@ -239,9 +242,9 @@ export default class SearchFilterTable extends FlowComponent {
             } else {
                 this.retries = 0;
                 this.loaded = true;
-                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId) || this.getAttribute('PaginationSize', undefined) || '10');
-                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
-                let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
+                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId) || this.parent.getAttribute('PaginationSize', undefined) || '10');
+                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
+                let model: any = manywho.model.getComponent(this.parent.componentId, this.parent.flowKey);
                 if(model) {
                     await this.preLoad();
                     await this.buildCoreTable();
@@ -256,38 +259,38 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
     async componentDidMount() {
-        console.log(this.model.developerName + "=" + this.componentId);
+        console.log(this.parent.model.developerName + "=" + this.parent.componentId);
         // will get this from a component attribute
         this.loaded=false;
-        await super.componentDidMount();
-        (manywho as any).eventManager.addDoneListener(this.flowMoved, this.componentId);
+        (manywho as any).eventManager.addDoneListener(this.flowMoved, this.parent.componentId);
         // build tree
-        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.componentId || this.getAttribute('PaginationSize', undefined) || '10'));
-        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.componentId));
+        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId || this.parent.getAttribute('PaginationSize', undefined) || '10'));
+        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
 
         // calculate if we are in dynamic column mode
-        if (this.attributes.UserColumnsValue) {
+        if (this.parent.attributes.UserColumnsValue) {
             this.dynamicColumns = true;
         } // it will have defaulted to false
 
-        if (this.attributes.MaxColumnTextLength) {
-            this.maxColText = parseInt(this.attributes.MaxColumnTextLength.value);
+        if (this.parent.attributes.MaxColumnTextLength) {
+            this.maxColText = parseInt(this.parent.attributes.MaxColumnTextLength.value);
         } // it defaults to -1 which means dont apply this
-        this.columnRules = await ColumnRules.parse(this.getAttribute('ColumnRules', '{}'), this);
+        this.columnRules = await ColumnRules.parse(this.parent.getAttribute('ColumnRules', '{}'), this);
         await this.preLoad();
         await this.buildCoreTable();
         this.loaded = true;
     }
 
     async componentWillUnmount() {
-        await super.componentWillUnmount();
-        (manywho as any).eventManager.removeDoneListener(this.componentId);
+        let parent: FlowComponent = this.props.parent;
+        (manywho as any).eventManager.removeDoneListener(this.parent.componentId);
     }
 
     showInfo() {
+        let parent: FlowComponent = this.props.parent;
         const content = (
             <div
-                dangerouslySetInnerHTML={{__html: this.model.content}}
+                dangerouslySetInnerHTML={{__html: this.parent.model.content}}
             />
         );
         this.messageBox.showDialog(
@@ -352,7 +355,7 @@ export default class SearchFilterTable extends FlowComponent {
     filtersChanged(key: string, event: eFilterEvent) {
         // get the column header for key column if exists
         this.headers?.forceUpdate();
-        localStorage.setItem('sft-filters-' + this.componentId, this.filters.getForStorage());
+        localStorage.setItem('sft-filters-' + this.parent.componentId, this.filters.getForStorage());
         // this.buildRibbon();
         switch (event) {
             case eFilterEvent.sort:
@@ -367,14 +370,6 @@ export default class SearchFilterTable extends FlowComponent {
                 this.filterRows();
                 break;
         }
-        //this.sortRows();
-        //this.paginateRows();
-        //this.buildTableRows();
-        //this.forceUpdate(() => {
-            //if(event === eFilterEvent.sort) {
-            //    this.bringColumnIntoView(key)
-            //}
-        //});
     }
 
     bringColumnIntoView(col: any) {
@@ -417,7 +412,7 @@ export default class SearchFilterTable extends FlowComponent {
 
     maxPerPageChanged(max: number) {
         this.maxPageRows = max || 10;
-        localStorage.setItem('sft-max-' + this.componentId, this.maxPageRows.toString());
+        localStorage.setItem('sft-max-' + this.parent.componentId, this.maxPageRows.toString());
         this.paginateRows();
         this.buildTableRows();
         this.forceUpdate();
@@ -453,15 +448,14 @@ export default class SearchFilterTable extends FlowComponent {
 
     async loadUserColumns() {
         let userFieldsVal: string = '';
-
-        if (this.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
-            const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+        if (this.parent.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
+            const userFields: FlowField = await this.parent.loadValue(this.parent.attributes.UserColumnsValue.value);
             if (userFields && (userFields.value as string).length > 0) {
                 userFieldsVal = userFields.value as string;
 
             }
         } else {
-            userFieldsVal = localStorage.getItem('sft_' + this.componentId + '_cols') || '';
+            userFieldsVal = localStorage.getItem('sft_' + this.parent.componentId + '_cols') || '';
         }
         let cols: string[] = [];
         if (userFieldsVal && userFieldsVal.length > 0) {
@@ -486,12 +480,12 @@ export default class SearchFilterTable extends FlowComponent {
             }
         });
 
-        if (this.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
-            const userFields: FlowField = await this.loadValue(this.attributes.UserColumnsValue.value);
+        if (this.parent.attributes.UserColumnsValue.value !== 'LOCAL_STORAGE') {
+            const userFields: FlowField = await this.parent.loadValue(this.parent.attributes.UserColumnsValue.value);
             userFields.value = userCols;
-            await this.updateValues(userFields);
+            await this.parent.updateValues(userFields);
         } else {
-            localStorage.setItem('sft_' + this.componentId + '_cols', userCols);
+            localStorage.setItem('sft_' + this.parent.componentId + '_cols', userCols);
         }
     }
 
@@ -499,7 +493,7 @@ export default class SearchFilterTable extends FlowComponent {
         //preload any column rule values & inflate any props
         let flds: Map<string,FlowField> = new Map();
         let alreadyDone: string[] = [];
-        let outcomes: FlowOutcome[] = Array.from(Object.values(this.outcomes));
+        let outcomes: FlowOutcome[] = Array.from(Object.values(this.parent.outcomes));
         for(let pos = 0 ; pos < outcomes.length ; pos++) {
             let outcome: FlowOutcome = outcomes[pos];
             if (outcome.attributes.rule && outcome.attributes.rule.value.length > 0) {
@@ -519,32 +513,13 @@ export default class SearchFilterTable extends FlowComponent {
                                 // element[0] is the flow field name
                                 let val: FlowField;
                                 if (alreadyDone.indexOf(fldElements[0]) < 0) {
-                                    val = await this.loadValue(fldElements[0]);
+                                    val = await this.parent.loadValue(fldElements[0]);
                                     alreadyDone.push(fldElements[0]);
                                 }
                                 break;
                         }
                         fld = fld.replace(match[0], "done");
                     }
-                    /*
-                    fld = rule.value;
-                    while (match = RegExp(/{{([^}]*)}}/).exec(fld)) {
-                        switch (match[1]) {
-                            case 'TENANT_ID':
-                                break;
-    
-                            default:
-                                const fldElements: string[] = match[1].split('->');
-                                // element[0] is the flow field name
-                                let val: FlowField;
-                                if (alreadyDone.indexOf(fldElements[0]) < 0) {
-                                    val = await this.loadValue(fldElements[0]);
-                                    alreadyDone.push(fldElements[0]);
-                                }
-                                break;
-                        }
-                        fld = fld.replace(match[0], "done");
-                    }*/
                 }
                 catch (e) {
                     console.log('The rule on outcome ' + outcome.developerName + ' is invalid');
@@ -564,7 +539,7 @@ export default class SearchFilterTable extends FlowComponent {
                             // element[0] is the flow field name
                             let val: FlowField;
                             if (alreadyDone.indexOf(fldElements[0]) < 0) {
-                                val = await this.loadValue(fldElements[0]);
+                                val = await this.parent.loadValue(fldElements[0]);
                                 alreadyDone.push(fldElements[0]);
                             }
                             break;
@@ -585,11 +560,11 @@ export default class SearchFilterTable extends FlowComponent {
         
         //other inflations
         
-        this.iconSuffix = await CommonFunctions.inflateValue(this,this.iconSuffix,flds);
+        this.iconSuffix = await CommonFunctions.inflateValue(this.parent,this.iconSuffix,flds);
 
         if(this.paginationMode===ePaginationMode.external){
             if(this.externalPage) {
-                let pg: string = await CommonFunctions.inflateValue(this,this.externalPage,flds);
+                let pg: string = await CommonFunctions.inflateValue(this.parent,this.externalPage,flds);
                 this.externalPaginationPage = parseInt(pg);
                 if(isNaN(this.externalPaginationPage)){this.externalPaginationPage=1}
             }
@@ -611,8 +586,8 @@ export default class SearchFilterTable extends FlowComponent {
         // use the cols from the displayColumns if defined
         let cols: FlowDisplayColumn[];
         let colMap: Map<string,FlowDisplayColumn> = new Map();;
-        if (this.model.displayColumns && this.model.displayColumns.length > 0) {
-            cols = this.model.displayColumns?.sort((a: any, b: any) => {
+        if (this.parent.model.displayColumns && this.parent.model.displayColumns.length > 0) {
+            cols = this.parent.model.displayColumns?.sort((a: any, b: any) => {
                 switch (true) {
                     case a.DisplayOrder > b.DisplayOrder:
                         return 1;
@@ -627,11 +602,11 @@ export default class SearchFilterTable extends FlowComponent {
             });
         } else {
             // use whole model
-            if(this.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
-                let colsName: string = this.getAttribute("ComplexColumnsChildren","Columns");
-                let colName: string = this.getAttribute("ComplexColumnName","Name");
-                let colType: string = this.getAttribute("ComplexColumnType","Type");
-                this.model.dataSource.items?.forEach((item: FlowObjectData) => {
+            if(this.parent.getAttribute("ComplexColumns","false").toLowerCase() === "true"){
+                let colsName: string = this.parent.getAttribute("ComplexColumnsChildren","Columns");
+                let colName: string = this.parent.getAttribute("ComplexColumnName","Name");
+                let colType: string = this.parent.getAttribute("ComplexColumnType","Type");
+                this.parent.model.dataSource.items?.forEach((item: FlowObjectData) => {
                     (item.properties[colsName].value as FlowObjectDataArray).items.forEach((col: FlowObjectData) => {
                         let cname: string = col.properties[colName].value as string;
                         if(!colMap.has(cname)) {
@@ -673,7 +648,7 @@ export default class SearchFilterTable extends FlowComponent {
         // now allow for button re-location if not already defined
         if (this.userColumns.indexOf('#BUTTONS#') < 0) {
             let outcomesPos: number = 0;
-            switch (this.getAttribute('OutcomesPosition', '0').toLowerCase()) {
+            switch (this.parent.getAttribute('OutcomesPosition', '0').toLowerCase()) {
                 case 'first':
                 case 'start':
                 case '0':
@@ -685,7 +660,7 @@ export default class SearchFilterTable extends FlowComponent {
                     break;
                 default:
                     try {
-                        outcomesPos = parseInt(this.getAttribute('OutcomesPosition', '0'));
+                        outcomesPos = parseInt(this.parent.getAttribute('OutcomesPosition', '0'));
                         if (outcomesPos > this.userColumns.length) {
                             outcomesPos = this.userColumns.length;
                         }
@@ -704,7 +679,7 @@ export default class SearchFilterTable extends FlowComponent {
         }
 
         let inlineSearch: boolean = true;
-        switch (this.getAttribute('RibbonStyle', 'ribbon')) {
+        switch (this.parent.getAttribute('RibbonStyle', 'ribbon')) {
 
             case 'search':
                 this.ribbonElement = (
@@ -727,7 +702,7 @@ export default class SearchFilterTable extends FlowComponent {
                 break;
         }
 
-        if (this.model.label?.length > 0) {
+        if (this.parent.model.label?.length > 0) {
             this.titleElement = (
                 <div
                     className="sft-title"
@@ -735,7 +710,7 @@ export default class SearchFilterTable extends FlowComponent {
                     <span
                         className="sft-title-label"
                     >
-                        {this.model.label}
+                        {this.parent.model.label}
                     </span>
                 </div>
             );
@@ -749,7 +724,7 @@ export default class SearchFilterTable extends FlowComponent {
             />
         );
 
-        switch (this.getAttribute('FooterStyle', 'default')) {
+        switch (this.parent.getAttribute('FooterStyle', 'default')) {
             case "default":
                 this.footerElement = (
                     <SearchFilterTableFooter
@@ -771,7 +746,7 @@ export default class SearchFilterTable extends FlowComponent {
         
 
         if(this.rowRememberColumn){
-            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.componentId);
+            this.lastRememberedRow = sessionStorage.getItem('sft-lastrow-' + this.parent.componentId);
         }
 
         //await this.loadModelData();
@@ -791,25 +766,25 @@ export default class SearchFilterTable extends FlowComponent {
         // construct Item
         
         
-        let JSONStateName: string = this.getAttribute('JSONModelValue');
-        let modelTypeName: string = this.getAttribute('ModelTypeName',"GetOpportunities RESPONSE - Opportunity");
+        let JSONStateName: string = this.parent.getAttribute('JSONModelValue');
+        let modelTypeName: string = this.parent.getAttribute('ModelTypeName',"GetOpportunities RESPONSE - Opportunity");
         let model: FlowObjectDataArray;
         if(JSONStateName) {
-            let jsonField: FlowField = await this.loadValue(JSONStateName);
+            let jsonField: FlowField = await this.parent.loadValue(JSONStateName);
             let jsonString: string = jsonField.value as string;
             if(jsonString && jsonString.length > 0) {
-                model = FlowObjectDataArray.fromJSONString(jsonField.value as string, this.getAttribute('JSONModelPrimaryKey'), this.model.displayColumns, modelTypeName);
+                model = FlowObjectDataArray.fromJSONString(jsonField.value as string, this.parent.getAttribute('JSONModelPrimaryKey'), this.parent.model.displayColumns, modelTypeName);
             }
         }
         else {
-            model = this.model.dataSource;
+            model = this.parent.model.dataSource;
         }
 
         //this.db = await GenericDB.newInstance(this.componentId, this.colMap);
         //this.db.ingestObjectDataArray(model);
         if(model) {
             const stateSelectedItems: Map<string, any> = await this.loadSelected();
-            const isSelectedColumn: string = this.getAttribute('IsSelectedColumn');
+            const isSelectedColumn: string = this.parent.getAttribute('IsSelectedColumn');
             this.rowMap = new Map();
             this.selectedRowMap = new Map();
             this.rows = new Map();
@@ -853,7 +828,7 @@ export default class SearchFilterTable extends FlowComponent {
     async filterRows() {
         const start: Date = new Date();
         // list or service
-        let model: any = manywho.model.getComponent(this.componentId, this.flowKey);
+        let model: any = manywho.model.getComponent(this.parent.componentId, this.parent.flowKey);
         if(model) {
             if(model?.objectDataRequest){
                 //service - we need to send an objectDataRequst
@@ -871,11 +846,11 @@ export default class SearchFilterTable extends FlowComponent {
                 //odr.listFilter.search=this.filters.globalCriteria || "";
                 let sortColumn: any = this.filters?.getSortColumn();
                 let XHR = await manywho.engine.objectDataRequest(
-                    this.componentId,
+                    this.parent.componentId,
                     newOdr,
-                    this.flowKey
+                    this.parent.flowKey
                 );
-                this.loadModel();
+                this.parent.loadModel();
                 await this.loadModelData();
                 this.currentRowMap = new Map();
                 if (this.rowMap.size > 0) {
@@ -977,8 +952,8 @@ export default class SearchFilterTable extends FlowComponent {
                 this.forceUpdate();
                 break;
             case ePaginationMode.external:
-                if(this.previousPageOutcome && this.outcomes[this.previousPageOutcome]){
-                    this.triggerOutcome(this.previousPageOutcome);
+                if(this.previousPageOutcome && this.parent.outcomes[this.previousPageOutcome]){
+                    this.parent.triggerOutcome(this.previousPageOutcome);
                 }
                 break;
         }      
@@ -992,8 +967,8 @@ export default class SearchFilterTable extends FlowComponent {
                 this.forceUpdate();
                 break;
             case ePaginationMode.external:
-                if(this.nextPageOutcome && this.outcomes[this.nextPageOutcome]){
-                    this.triggerOutcome(this.nextPageOutcome);
+                if(this.nextPageOutcome && this.parent.outcomes[this.nextPageOutcome]){
+                    this.parent.triggerOutcome(this.nextPageOutcome);
                 }
                 break;
         }  
@@ -1073,13 +1048,13 @@ export default class SearchFilterTable extends FlowComponent {
             tItem.isSelected = true;
             selectedItems.addItem(tItem);
         });
-        await this.setStateValue(selectedItems);
+        await this.parent.setStateValue(selectedItems);
     }
 
     // load selected items from state
     async loadSelected(): Promise<Map<string, any>> {
         let stateSelected: Map<string, any>;
-        const selectedItems: FlowObjectDataArray = this.getStateValue() as FlowObjectDataArray;
+        const selectedItems: FlowObjectDataArray = this.parent.getStateValue() as FlowObjectDataArray;
         if (selectedItems && selectedItems.items) {
             stateSelected = new Map();
             for (let pos = 0 ; pos < selectedItems.items.length ; pos++) {
@@ -1092,8 +1067,8 @@ export default class SearchFilterTable extends FlowComponent {
     //gets the single selected item from rowlevelstate
     async loadSingleSelected(): Promise<any> {
         this.selectedRow = undefined;
-        if (this.getAttribute('RowLevelState', '').length > 0 && this.rowRememberColumn) {
-            const rls: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
+        if (this.parent.getAttribute('RowLevelState', '').length > 0 && this.rowRememberColumn) {
+            const rls: FlowField = await this.parent.loadValue(this.parent.getAttribute('RowLevelState'));
             if(rls.value){
                 for(let val of this.rowMap.values()) {
                     let objData: FlowObjectData = val?.objectData;
@@ -1130,12 +1105,13 @@ export default class SearchFilterTable extends FlowComponent {
             //there's no row or pages
             this.rowElements.push(
                 <tr
+                    key={"none"}
                     className="sft-table-row"
                 >
                     <td colSpan={1000}>
                         <div className="sft-table-row-noresults" >
-                            <span className="sft-table-row-noresults-title">{this.getAttribute("noResults","No Results Available")}</span>
-                            {this.filters.isFiltered() ? <span className="sft-table-row-noresults-subtitle">{this.getAttribute("noResultsFilter","( This may be due to the filters applied )")}</span> : null}
+                            <span className="sft-table-row-noresults-title">{this.parent.getAttribute("noResults","No Results Available")}</span>
+                            {this.filters.isFiltered() ? <span className="sft-table-row-noresults-subtitle">{this.parent.getAttribute("noResultsFilter","( This may be due to the filters applied )")}</span> : null}
                         </div>
                     </td>
                 </tr>
@@ -1172,8 +1148,8 @@ export default class SearchFilterTable extends FlowComponent {
         e.stopPropagation();
         const listItems: Map<string , any> = new Map();
         if (this.contextMenu) {
-            Object.keys(this.outcomes).forEach((key: string) => {
-                const outcome: FlowOutcome = this.outcomes[key];
+            Object.keys(this.parent.outcomes).forEach((key: string) => {
+                const outcome: FlowOutcome = this.parent.outcomes[key];
                 if (outcome.isBulkAction === true && outcome.developerName !== 'OnSelect' && outcome.developerName.toLowerCase().startsWith('cm')) {
                     if (! (outcome.attributes['RequiresSelected']?.value === 'true' && this.selectedRowMap.size < 1)) {
                         listItems.set(outcome.developerName, (
@@ -1195,7 +1171,7 @@ export default class SearchFilterTable extends FlowComponent {
                 }
             });
 
-            const canExport: boolean = (this.getAttribute('canExport', 'true').toLowerCase() === 'true');
+            const canExport: boolean = (this.parent.getAttribute('canExport', 'true').toLowerCase() === 'true');
             if(canExport) {
                 listItems.set('exportall', (
                     <li
@@ -1282,19 +1258,19 @@ export default class SearchFilterTable extends FlowComponent {
         }
         this.selectedRow = selectedItem?.externalId;
         // if there's a row level state then set it
-        if (this.getAttribute('RowLevelState', '').length > 0 && selectedItem) {
-            const val: FlowField = await this.loadValue(this.getAttribute('RowLevelState'));
+        if (this.parent.getAttribute('RowLevelState', '').length > 0 && selectedItem) {
+            const val: FlowField = await this.parent.loadValue(this.parent.getAttribute('RowLevelState'));
             if (val) {
                 val.value = selectedItem || new FlowObjectDataArray();
-                await this.updateValues(val);
+                await this.parent.updateValues(val);
             }
             // reload last selected row if any
             if(this.rowRememberColumn){
-                sessionStorage.setItem('sft-lastrow-' + this.componentId, selectedItem.properties[this.rowRememberColumn]?.value as string);
+                sessionStorage.setItem('sft-lastrow-' + this.parent.componentId, selectedItem.properties[this.rowRememberColumn]?.value as string);
             }
         }
-        if (this.outcomes[outcomeName]) {
-            const outcome: FlowOutcome = this.outcomes[outcomeName];
+        if (this.parent.outcomes[outcomeName]) {
+            const outcome: FlowOutcome = this.parent.outcomes[outcomeName];
             switch (true) {
                 // does it have a uri attribute ?
                 case outcome.attributes['uri']?.value.length > 0 :
@@ -1314,13 +1290,13 @@ export default class SearchFilterTable extends FlowComponent {
                             // is it a known static
                             switch (match[1]) {
                                 case 'TENANT_ID':
-                                    href = href.replace(match[0], this.tenantId);
+                                    href = href.replace(match[0], this.parent.tenantId);
                                     break;
 
                                 default:
                                     const fldElements: string[] = match[1].split('->');
                                     // element[0] is the flow field name
-                                    const val: FlowField = await this.loadValue(fldElements[0]);
+                                    const val: FlowField = await this.parent.loadValue(fldElements[0]);
                                     let value: any;
                                     if (val) {
                                         if (fldElements.length > 1) {
@@ -1339,7 +1315,7 @@ export default class SearchFilterTable extends FlowComponent {
                         }
                     }
 
-                    if (this.outcomes[outcomeName].attributes['target']?.value === '_self') {
+                    if (this.parent.outcomes[outcomeName].attributes['target']?.value === '_self') {
                         window.location.href = href;
                     } else {
                         const tab = window.open('');
@@ -1354,8 +1330,8 @@ export default class SearchFilterTable extends FlowComponent {
                 case outcome.attributes?.form?.value.length > 0 && ignoreRules !== true:
                     const form: any = JSON.parse(outcome.attributes.form.value);
                         const formProps = {
-                        id: this.componentId,
-                        flowKey: this.flowKey,
+                        id: this.parent.componentId,
+                        flowKey: this.parent.flowKey,
                         okOutcome: this.okOutcomeForm,
                         cancelOutcome: this.cancelOutcomeForm,
                         objData: selectedItem,
@@ -1376,17 +1352,17 @@ export default class SearchFilterTable extends FlowComponent {
                     break;
 
                 default:
-                    await this.triggerOutcome(outcomeName);
+                    await this.parent.triggerOutcome(outcomeName);
                     break;
             }
         } else {
             manywho.component.handleEvent(
                 this,
                 manywho.model.getComponent(
-                    this.componentId,
-                    this.flowKey,
+                    this.parent.componentId,
+                    this.parent.flowKey,
                 ),
-                this.flowKey,
+                this.parent.flowKey,
                 null,
             );
         }
@@ -1406,10 +1382,10 @@ export default class SearchFilterTable extends FlowComponent {
             const outcome: FlowOutcome = this.form.props.outcome;
             const form: any = this.form.props.form;
             if (form.state && objData) {
-                const state: FlowField = await this.loadValue(form.state);
+                const state: FlowField = await this.parent.loadValue(form.state);
                 if (state) {
                     state.value = objData;
-                    await this.updateValues(state);
+                    await this.parent.updateValues(state);
                 }
             }
             this.messageBox.hideDialog();
@@ -1426,7 +1402,7 @@ export default class SearchFilterTable extends FlowComponent {
         });
 
         let cols: Map<string,FlowDisplayColumn>;
-        if(this.getAttribute("exportUserColumns","false").toLowerCase() === 'true'){
+        if(this.parent.getAttribute("exportUserColumns","false").toLowerCase() === 'true'){
             cols = new Map();
             this.userColumns.forEach((cname: string) => {
                 if(this.colMap.has(cname)){
@@ -1438,8 +1414,8 @@ export default class SearchFilterTable extends FlowComponent {
             cols = this.colMap;
         }
         ModelExporter.export(cols, opdata, 'export.csv');
-        if (this.outcomes['OnExport']) {
-            this.triggerOutcome('OnExport');
+        if (this.parent.outcomes['OnExport']) {
+            this.parent.triggerOutcome('OnExport');
         }
     }
 
@@ -1480,34 +1456,34 @@ export default class SearchFilterTable extends FlowComponent {
     render() {
 
         // handle classes attribute and hidden and size
-        const classes: string = 'sft ' + this.getAttribute('classes', '');
-        const style: CSSProperties = {};
+        const classes: string = 'sft ' + this.parent.getAttribute('classes', '');
+        const style: React.CSSProperties = {};
         style.width = '-webkit-fill-available';
         style.height = '-webkit-fill-available';
 
-        if (this.model.visible === false) {
+        if (this.parent.model.visible === false) {
             style.display = 'none';
         }
 
-        if (this.model.width) {
-            style.width = this.model.width + 'px';
+        if (this.parent.model.width) {
+            style.width = this.parent.model.width + 'px';
         }
         else {
-            style.width = this.getAttribute("width",'-webkit-fill-available');
+            style.width = this.parent.getAttribute("width",'-webkit-fill-available');
         }
 
-        if (this.model.height > 0) {
-            style.height = this.model.height + 'px';
+        if (this.parent.model.height > 0) {
+            style.height = this.parent.model.height + 'px';
         } 
         else {
-            style.height = this.getAttribute("height",'auto');
+            style.height = this.parent.getAttribute("height",'auto');
         }
         
 
-        const title: string = this.model.label || '';
+        const title: string = this.parent.model.label || '';
 
         let body: any;
-        if (this.loaded===false  && this.loadingState !== eLoadingState.ready) {
+        if (this.loaded===false  && this.parent.loadingState !== eLoadingState.ready) {
             body = (
                 <div
                     className="sft-loading"
@@ -1516,7 +1492,7 @@ export default class SearchFilterTable extends FlowComponent {
                         className="sft-loading-inner"
                         style={{margin: 'auto', display: 'flex', flexDirection: 'column'}}
                     >
-                        {this.attributes.LoadingIcon ? <img className="sft-loading-image" src={this.attributes.LoadingIcon.value}/> : undefined}
+                        {this.parent.attributes.LoadingIcon ? <img className="sft-loading-image" src={this.parent.attributes.LoadingIcon.value}/> : undefined}
                         <span
                             className="sft-loading-label"
                         >
@@ -1580,5 +1556,3 @@ export default class SearchFilterTable extends FlowComponent {
     }
 
 }
-
-manywho.component.register('SearchFilterTable', SearchFilterTable);

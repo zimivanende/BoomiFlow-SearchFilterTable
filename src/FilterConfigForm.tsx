@@ -1,10 +1,8 @@
-import React from 'react';
-import ColumnCriteria, { eColumnComparator } from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
-import MultiSelect from './MultiSelect';
-import SearchFilterTable from './SearchFilterTable';
+import * as React from 'react';
+import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {ColumnFilter} from './ColumnFilter';
 
-export default class FilterConfigForm extends React.Component<any, any> {
+export class FilterConfigForm extends React.Component<any, any> {
 
     filter: ColumnFilter;
     newCriteria: ColumnCriteria[];
