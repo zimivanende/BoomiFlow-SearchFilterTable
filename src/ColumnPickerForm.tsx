@@ -1,6 +1,6 @@
 import { FlowDisplayColumn } from 'flow-component-model';
 import * as React from 'react';
-import {SearchFilterTable} from './SearchFilterTable';
+import {SFT} from './SearchFilterTable';
 
 export class ColumnPickerForm extends React.Component<any, any> {
 
@@ -8,7 +8,7 @@ export class ColumnPickerForm extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.toggleSelection = this.toggleSelection.bind(this);
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         root.userColumns.forEach((columnName: string) => {
             this.selectedColumns.push(columnName);
         });
@@ -26,7 +26,7 @@ export class ColumnPickerForm extends React.Component<any, any> {
     }
 
     render() {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
         const cols: any[] = [];
         let rows: any[] = [];
         let colArray: FlowDisplayColumn[] = Array.from(root.colMap.values());

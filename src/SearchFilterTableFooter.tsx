@@ -111,6 +111,7 @@ export class SearchFilterTableFooter extends React.Component<any, any> {
         options.forEach((a: number) => {
             opts.push(
                 <option
+                    key={a}
                     value={a}
                     selected={root.maxPageRows === a}
                 >

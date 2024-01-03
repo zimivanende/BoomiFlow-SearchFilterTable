@@ -1,5 +1,5 @@
 import { eContentType, FlowComponent, FlowDisplayColumn, FlowField, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
-import {SearchFilterTable} from './SearchFilterTable';
+import {SFT} from './SearchFilterTable';
 import * as React from 'react';
 
 export class CommonFunctions {
@@ -8,11 +8,11 @@ export class CommonFunctions {
 
     }
 
-    static async assessGlobalOutcomeRule(outcome: FlowOutcome, root: SearchFilterTable): Promise<boolean> {
+    static async assessGlobalOutcomeRule(outcome: FlowOutcome, root: SFT): Promise<boolean> {
         let result: boolean = true;
 
         if (outcome.attributes['RequiresSelected']?.value === 'true'){
-            if(root.model.multiSelect===true){
+            if(root.parent.model.multiSelect===true){
                 // must have 1 or more in selectedRowMap
                 if(root.selectedRowMap.size < 1){
                     result = false;
@@ -53,10 +53,10 @@ export class CommonFunctions {
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
                             let val: FlowField;
-                            if (root.fields[fldElements[0]]) {
-                                val = root.fields[fldElements[0]];
+                            if (root.parent.fields[fldElements[0]]) {
+                                val = root.parent.fields[fldElements[0]];
                             } else {
-                                val = await root.loadValue(fldElements[0]);
+                                val = await root.parent.loadValue(fldElements[0]);
                             }
 
                             if (val) {
@@ -94,10 +94,10 @@ export class CommonFunctions {
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
                             let val: FlowField;
-                            if (root.fields[fldElements[0]]) {
-                                val = root.fields[fldElements[0]];
+                            if (root.parent.fields[fldElements[0]]) {
+                                val = root.parent.fields[fldElements[0]];
                             } else {
-                                val = await root.loadValue(fldElements[0]);
+                                val = await root.parent.loadValue(fldElements[0]);
                             }
 
                             if (val) {
@@ -132,7 +132,7 @@ export class CommonFunctions {
         return result;
     }
 
-    static assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData, root: SearchFilterTable): boolean {
+    static assessRowOutcomeRule(outcome: FlowOutcome, row: FlowObjectData, root: SFT): boolean {
         let result: boolean = true;
         if(!outcome) {
             return false
@@ -159,7 +159,7 @@ export class CommonFunctions {
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
                             let val: FlowField;
-                            val = root.fields[fldElements[0]];
+                            val = root.parent.fields[fldElements[0]];
                             
                             if (val) {
                                 let od: FlowObjectData = val.value as FlowObjectData;
@@ -196,7 +196,7 @@ export class CommonFunctions {
                             const fldElements: string[] = match[1].split('->');
                             // element[0] is the flow field name
                             let val: FlowField;
-                            val = root.fields[fldElements[0]];
+                            val = root.parent.fields[fldElements[0]];
                             
                             if (val) {
                                 let od: FlowObjectData = val.value as FlowObjectData;
@@ -343,14 +343,14 @@ export class CommonFunctions {
 
     // this will make an outcome button (top or row) based on the outcome name, the suffix & icon
     // the values, if {{}} ere prepopulated in preLoad
-    static makeOutcomeButton(comp: SearchFilterTable, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData, dissabled: boolean) : Promise<any> {
+    static makeOutcomeButton(comp: SFT, outcome: FlowOutcome, suffix: string, objectData: FlowObjectData, dissabled: boolean) : Promise<any> {
         let icon: any;
         let show: boolean = false;
         if(outcome.attributes?.iconValue?.value?.length > 0){
             let flds: []
             let iconName: string
             let iconValue: string = outcome.attributes?.iconValue?.value;
-            iconValue = this.extractValue(comp, iconValue, new Map(Object.entries(comp.fields)));
+            iconValue = this.extractValue(comp.parent, iconValue, new Map(Object.entries(comp.parent.fields)));
             if(suffix && suffix.length>0){
                 let path = iconValue.substring(0,iconValue.lastIndexOf("."));
                 let ext: string = iconValue.substring(iconValue.lastIndexOf("."));

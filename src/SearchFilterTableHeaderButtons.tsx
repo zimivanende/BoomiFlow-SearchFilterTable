@@ -1,6 +1,6 @@
 import { FlowDisplayColumn, FlowOutcome } from "flow-component-model";
 import * as React from "react";
-import {SearchFilterTable} from "./SearchFilterTable";
+import {SFT} from "./SearchFilterTable";
 
 export class SearchFilterTableHeaderButtons extends React.Component<any,any> {
 
@@ -9,15 +9,15 @@ export class SearchFilterTableHeaderButtons extends React.Component<any,any> {
     }
 
     render() {
-        const root: SearchFilterTable = this.props.root;
+        const root: SFT = this.props.root;
 
         let headerButtons: any[] = [];
 
         let lastOrder: number = 0;
         let addedExpand: boolean = false;
         let addedContract: boolean = false;
-        Object.keys(root.outcomes).forEach((key: string) => {
-            const outcome: FlowOutcome = root.outcomes[key];
+        Object.keys(root.parent.outcomes).forEach((key: string) => {
+            const outcome: FlowOutcome = root.parent.outcomes[key];
             
             if (outcome.isBulkAction && outcome.developerName !== "OnSelect" && outcome.developerName !== "OnChange" && !outcome.developerName.toLowerCase().startsWith("cm")) {
                 if(! (outcome.attributes["RequiresSelected"]?.value === "true" && root.selectedRowMap.size < 1)) {

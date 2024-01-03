@@ -1,8 +1,7 @@
-import { eContentType, FlowDisplayColumn } from 'flow-component-model';
+import { FlowDisplayColumn } from 'flow-component-model';
 import * as React from 'react';
-import ColumnCriteria from './ColumnCriteria';
-import ColumnFilter from './ColumnFilter';
-import FilterManagementForm from './FilterManagementForm';
+import {ColumnCriteria} from './ColumnCriteria';
+import {FilterManagementForm} from './FilterManagementForm';
 
 export class FilterManagementFormAddRow extends React.Component<any, any> {
 
@@ -40,21 +39,7 @@ export class FilterManagementFormAddRow extends React.Component<any, any> {
                 {'Please Select ...'}
             </option>,
         );
-        // sort
-            /*
-        parent.columns.forEach((field: FlowDisplayColumn) => {
-            if (!parent.newFilters.isFilteredOn(field.developerName)) {
-                fieldOptions.push(
-                    <option
-                        className="sft-fmf-row-criteria-select-option"
-                        value={field.developerName}
-                    >
-                        {' ' + field.label + ' '}
-                    </option>,
-                );
-            }
-        });
-        */
+        
 
         const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 

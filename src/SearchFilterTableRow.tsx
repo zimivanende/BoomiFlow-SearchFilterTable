@@ -147,6 +147,7 @@ export class SearchFilterTableRow extends React.Component<any, any> {
         });
         return (
             <tr
+                key={this.props.id}
                 className={"sft-table-row " + rowClass}
                 ref={(element: any) => {this.rowElement = element}}
                 onClick={this.selectRow}
@@ -196,7 +197,7 @@ export class SearchFilterTableRow extends React.Component<any, any> {
                         contentType: col.contentType,
                         contentFormat: col.contentFormat,
                         row,
-                        sft: root,
+                        sft: root.parent,
                     };
                     result = React.createElement(manywho.component.getByName(componentType), columnProps);
                 } else {

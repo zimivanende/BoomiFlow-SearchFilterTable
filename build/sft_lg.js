@@ -2143,9 +2143,19 @@ var require_FlowObjectDataArray = __commonJS({
               switch (col.contentType) {
                 case FlowField_1.eContentType.ContentDateTime:
                   val = new Date(val);
+                  if (val && !isNaN(val.getTime())) {
+                    val = val.toISOString();
+                  } else {
+                    val = "";
+                  }
                   break;
                 case FlowField_1.eContentType.ContentNumber:
                   val = parseFloat("" + val);
+                  if (val && !isNaN(val)) {
+                    val = "" + val;
+                  } else {
+                    val = "";
+                  }
                   break;
                 case FlowField_1.eContentType.ContentBoolean:
                   val = new String(val).toLowerCase() === "true";
@@ -8969,7 +8979,7 @@ var CommonFunctions = class _CommonFunctions {
     var _a, _b, _c, _d;
     let result = true;
     if (((_a = outcome.attributes["RequiresSelected"]) == null ? void 0 : _a.value) === "true") {
-      if (root.model.multiSelect === true) {
+      if (root.parent.model.multiSelect === true) {
         if (root.selectedRowMap.size < 1) {
           result = false;
         }
@@ -9000,10 +9010,10 @@ var CommonFunctions = class _CommonFunctions {
             default:
               const fldElements = match[1].split("->");
               let val;
-              if (root.fields[fldElements[0]]) {
-                val = root.fields[fldElements[0]];
+              if (root.parent.fields[fldElements[0]]) {
+                val = root.parent.fields[fldElements[0]];
               } else {
-                val = await root.loadValue(fldElements[0]);
+                val = await root.parent.loadValue(fldElements[0]);
               }
               if (val) {
                 let od = val.value;
@@ -9036,10 +9046,10 @@ var CommonFunctions = class _CommonFunctions {
             default:
               const fldElements = match[1].split("->");
               let val;
-              if (root.fields[fldElements[0]]) {
-                val = root.fields[fldElements[0]];
+              if (root.parent.fields[fldElements[0]]) {
+                val = root.parent.fields[fldElements[0]];
               } else {
-                val = await root.loadValue(fldElements[0]);
+                val = await root.parent.loadValue(fldElements[0]);
               }
               if (val) {
                 let od = val.value;
@@ -9094,7 +9104,7 @@ var CommonFunctions = class _CommonFunctions {
             default:
               const fldElements = match[1].split("->");
               let val;
-              val = root.fields[fldElements[0]];
+              val = root.parent.fields[fldElements[0]];
               if (val) {
                 let od = val.value;
                 if (od) {
@@ -9126,7 +9136,7 @@ var CommonFunctions = class _CommonFunctions {
             default:
               const fldElements = match[1].split("->");
               let val;
-              val = root.fields[fldElements[0]];
+              val = root.parent.fields[fldElements[0]];
               if (val) {
                 let od = val.value;
                 if (od) {
@@ -9274,7 +9284,7 @@ var CommonFunctions = class _CommonFunctions {
       let flds;
       let iconName;
       let iconValue = (_e = (_d = outcome.attributes) == null ? void 0 : _d.iconValue) == null ? void 0 : _e.value;
-      iconValue = this.extractValue(comp, iconValue, new Map(Object.entries(comp.fields)));
+      iconValue = this.extractValue(comp.parent, iconValue, new Map(Object.entries(comp.parent.fields)));
       if (suffix && suffix.length > 0) {
         let path = iconValue.substring(0, iconValue.lastIndexOf("."));
         let ext = iconValue.substring(iconValue.lastIndexOf("."));
@@ -9595,7 +9605,7 @@ var ColumnRule = class _ColumnRule {
             contentType: value.contentType,
             contentFormat: value.contentFormat,
             row,
-            sft: this.parent
+            sft: this.parent.parent
           };
           content = React6.createElement(manywho.component.getByName(this.componentClass), columnProps);
           break;
@@ -10434,6 +10444,7 @@ var SearchFilterTableFooter = class extends React11.Component {
         /* @__PURE__ */ React11.createElement(
           "option",
           {
+            key: a,
             value: a,
             selected: root.maxPageRows === a
           },
@@ -10818,6 +10829,7 @@ var SearchFilterTableHeaders = class extends React13.Component {
               /* @__PURE__ */ React13.createElement(
                 SearchFilterTableHeader,
                 {
+                  key: "#BUTTONS#",
                   root: this.props.root,
                   parent: this,
                   column: { developerName: "#BUTTONS#", label: root.parent.getAttribute("OutcomesLabel", "Action") },
@@ -10838,6 +10850,7 @@ var SearchFilterTableHeaders = class extends React13.Component {
               /* @__PURE__ */ React13.createElement(
                 SearchFilterTableHeader,
                 {
+                  key: col.developerName,
                   root: this.props.root,
                   parent: this,
                   column: col,
@@ -11643,6 +11656,7 @@ var SearchFilterTableRow = class extends React16.Component {
     return /* @__PURE__ */ React16.createElement(
       "tr",
       {
+        key: this.props.id,
         className: "sft-table-row " + rowClass,
         ref: (element) => {
           this.rowElement = element;
@@ -11691,7 +11705,7 @@ var SearchFilterTableRow = class extends React16.Component {
             contentType: col.contentType,
             contentFormat: col.contentFormat,
             row,
-            sft: root
+            sft: root.parent
           };
           result = React16.createElement(manywho.component.getByName(componentType), columnProps);
         } else {
@@ -16516,7 +16530,7 @@ var SFT3 = class extends React21.Component {
             selectedItem,
             outcome,
             form,
-            sft: this
+            sft: this.parent
           };
           const comp = manywho.component.getByName(form.class);
           const content = React21.createElement(comp, formProps);

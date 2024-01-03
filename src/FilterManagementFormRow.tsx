@@ -3,7 +3,7 @@ import * as React from 'react';
 import {ColumnCriteria,  eColumnComparator } from './ColumnCriteria';
 import {ColumnFilter} from './ColumnFilter';
 import {FilterManagementForm} from './FilterManagementForm';
-import {SearchFilterTable} from './SearchFilterTable';
+import {SFT} from './SearchFilterTable';
 
 export class FilterManagementFormRow extends React.Component<any, any> {
 
@@ -99,7 +99,7 @@ export class FilterManagementFormRow extends React.Component<any, any> {
         let label1: string = "Value";
         let label2: any;
         if (criteria.comparator === eColumnComparator.in || criteria.comparator === eColumnComparator.notIn) {
-            input = (this.props.parent.props.parent as SearchFilterTable).getColumnUniques(fieldDef.developerName, criteria.value);
+            input = (this.props.parent.props.parent as SFT).getColumnUniques(fieldDef.developerName, criteria.value);
         } else {
             switch (fieldDef.contentType) {
                 case eContentType.ContentDateTime:

@@ -155,6 +155,7 @@ export class SearchFilterTableHeaders extends React.Component<any, any> {
                     if (anyoutcomes) {
                         headers.push(
                             <SearchFilterTableHeader
+                                key={"#BUTTONS#"}
                                 root={this.props.root}
                                 parent={this}
                                 column={{developerName: '#BUTTONS#', label: root.parent.getAttribute('OutcomesLabel', 'Action')}}
@@ -170,6 +171,7 @@ export class SearchFilterTableHeaders extends React.Component<any, any> {
                     if (col) {
                         headers.push(
                             <SearchFilterTableHeader
+                                key={col.developerName}
                                 root={this.props.root}
                                 parent={this}
                                 column={col}

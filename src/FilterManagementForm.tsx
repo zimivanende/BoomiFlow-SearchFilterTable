@@ -5,10 +5,10 @@ import {ColumnFilter} from './ColumnFilter';
 import {ColumnFilters,  eSortDirection } from './ColumnFilters';
 import {FilterManagementFormAddRow} from './FilterFormManagementAddRow';
 import {FilterManagementFormRow} from './FilterManagementFormRow';
-import {SearchFilterTable} from './SearchFilterTable';
+import {SFT} from './SearchFilterTable';
 
 export class FilterManagementForm extends React.Component<any, any> {
-    parent: SearchFilterTable;
+    parent: SFT;
     columns: Map<string, FlowDisplayColumn>;
     newFilters: ColumnFilters;
 
