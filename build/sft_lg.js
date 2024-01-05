@@ -16530,7 +16530,8 @@ var SFT3 = class extends React21.Component {
             selectedItem,
             outcome,
             form,
-            sft: this.parent
+            sft: this,
+            component: this.parent
           };
           const comp = manywho.component.getByName(form.class);
           const content = React21.createElement(comp, formProps);

@@ -1338,7 +1338,8 @@ export class SFT extends React.Component<any,any> {
                         selectedItem,
                         outcome,
                         form,
-                        sft: this.parent,
+                        sft: this,
+                        component: this.parent
                     };
                     const comp: any = manywho.component.getByName(form.class);
                     const content: any = React.createElement(comp, formProps);
