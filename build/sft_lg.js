@@ -7847,7 +7847,7 @@ var eColumnComparator = /* @__PURE__ */ ((eColumnComparator2) => {
   eColumnComparator2[eColumnComparator2["notIn"] = 10] = "notIn";
   return eColumnComparator2;
 })(eColumnComparator || {});
-var ColumnCriteria = class _ColumnCriteria {
+var SFTColumnCriteria = class _SFTColumnCriteria {
   static getDisplayValue(criteria) {
     let typedCriteria;
     switch (criteria) {
@@ -7906,7 +7906,7 @@ var ColumnCriteria = class _ColumnCriteria {
   static getOptions(currentValue, className = "", fieldType) {
     const options = [];
     Object.keys(eColumnComparator).filter((key) => !isNaN(Number(eColumnComparator[key]))).forEach((item) => {
-      if (_ColumnCriteria.isOptionApplicable(eColumnComparator[item], fieldType)) {
+      if (_SFTColumnCriteria.isOptionApplicable(eColumnComparator[item], fieldType)) {
         options.push(
           /* @__PURE__ */ React.createElement(
             "option",
@@ -7915,7 +7915,7 @@ var ColumnCriteria = class _ColumnCriteria {
               value: eColumnComparator[item],
               selected: eColumnComparator[item] === currentValue
             },
-            _ColumnCriteria.getDisplayValue(eColumnComparator[item])
+            _SFTColumnCriteria.getDisplayValue(eColumnComparator[item])
           )
         );
       }
@@ -7968,7 +7968,7 @@ var ColumnCriteria = class _ColumnCriteria {
 };
 
 // src/ColumnFilter.ts
-var ColumnFilter = class _ColumnFilter {
+var SFTColumnFilter = class _SFTColumnFilter {
   constructor(key, parent, sort = 0 /* none */, criteria = []) {
     this.sort = 0 /* none */;
     this.criteria = [];
@@ -7976,7 +7976,7 @@ var ColumnFilter = class _ColumnFilter {
     this.parent = parent;
     this.sort = sort || 0 /* none */;
     criteria.forEach((crit) => {
-      if (crit instanceof ColumnCriteria === false) {
+      if (crit instanceof SFTColumnCriteria === false) {
         crit = JSON.parse(crit);
       }
       if (crit.comparator === 9 /* in */ || crit.comparator === 10 /* notIn */) {
@@ -7990,12 +7990,12 @@ var ColumnFilter = class _ColumnFilter {
           crit.value = vmap;
         }
       }
-      this.criteria.push(new ColumnCriteria(crit.comparator, crit.value, crit.value2));
+      this.criteria.push(new SFTColumnCriteria(crit.comparator, crit.value, crit.value2));
     });
     this.notify = this.notify.bind(this);
   }
   clone() {
-    const clone = new _ColumnFilter(this.key, this.parent, this.sort, this.criteria);
+    const clone = new _SFTColumnFilter(this.key, this.parent, this.sort, this.criteria);
     return clone;
   }
   clearFilters() {
@@ -8076,7 +8076,7 @@ var FilterConfigForm = class extends React2.Component {
     this.addCriteria = this.addCriteria.bind(this);
   }
   addCriteria() {
-    this.newCriteria.push(new ColumnCriteria(0 /* equalTo */, ""));
+    this.newCriteria.push(new SFTColumnCriteria(0 /* equalTo */, ""));
     this.forceUpdate();
   }
   prepCriteriaValue(criteria) {
@@ -8112,7 +8112,7 @@ var FilterConfigForm = class extends React2.Component {
       );
     } else {
       this.newCriteria.forEach((criteria) => {
-        const options = ColumnCriteria.getOptions(criteria.comparator, "sft-fmf-row-criteria-select-option", this.props.contentType);
+        const options = SFTColumnCriteria.getOptions(criteria.comparator, "sft-fmf-row-criteria-select-option", this.props.contentType);
         let critBox;
         let critBox2;
         switch (criteria.comparator) {
@@ -8275,7 +8275,7 @@ var FCMModalButton = class {
 };
 
 // src/ColumnFilters.tsx
-var ColumnFilters2 = class _ColumnFilters {
+var SFTColumnFilters2 = class _SFTColumnFilters {
   constructor(parent) {
     this.items = /* @__PURE__ */ new Map();
     this.quickChecks = /* @__PURE__ */ new Map();
@@ -8293,7 +8293,7 @@ var ColumnFilters2 = class _ColumnFilters {
     this.matchesCriteria = this.matchesCriteria.bind(this);
   }
   clone() {
-    const clone = new _ColumnFilters(this.parent);
+    const clone = new _SFTColumnFilters(this.parent);
     clone.globalCriteria = this.globalCriteria;
     this.items.forEach((item, key) => {
       clone.items.set(key, item.clone());
@@ -8352,7 +8352,7 @@ var ColumnFilters2 = class _ColumnFilters {
   }
   sortClicked(key) {
     if (!this.items.has(key)) {
-      this.items.set(key, new ColumnFilter(key, this));
+      this.items.set(key, new SFTColumnFilter(key, this));
     }
     this.items.forEach((item) => {
       if (item.key !== key) {
@@ -8365,7 +8365,7 @@ var ColumnFilters2 = class _ColumnFilters {
   filterClicked(key) {
     const root = this.parent;
     if (!this.items.has(key)) {
-      this.items.set(key, new ColumnFilter(key, this));
+      this.items.set(key, new SFTColumnFilter(key, this));
     }
     const col = this.parent.colMap.get(key);
     this.parent.messageBox.showDialog(
@@ -8559,7 +8559,7 @@ var ColumnFilters2 = class _ColumnFilters {
   quickCheckClicked(key, e) {
     console.log("quick " + key);
     if (e.currentTarget.checked === true) {
-      this.items.set(key, new ColumnFilter(key, this, 0 /* none */, [new ColumnCriteria(0 /* equalTo */, true)]));
+      this.items.set(key, new SFTColumnFilter(key, this, 0 /* none */, [new SFTColumnCriteria(0 /* equalTo */, true)]));
     } else {
       this.items.get(key).clearFilters();
     }
@@ -8812,7 +8812,7 @@ var ColumnFilters2 = class _ColumnFilters {
       src.forEach((filter) => {
         filter = JSON.parse(filter);
         if (filter.key) {
-          this.items.set(filter.key, new ColumnFilter(filter.key, this, filter.sort, filter.criteria));
+          this.items.set(filter.key, new SFTColumnFilter(filter.key, this, filter.sort, filter.criteria));
         }
       });
     }
@@ -8972,7 +8972,7 @@ var React6 = __toESM(require_react());
 // src/CommonFunctions.tsx
 var import_flow_component_model3 = __toESM(require_FlowComponentModel());
 var React5 = __toESM(require_react());
-var CommonFunctions = class _CommonFunctions {
+var SFTCommonFunctions = class _SFTCommonFunctions {
   static async getFlowValue() {
   }
   static async assessGlobalOutcomeRule(outcome, root) {
@@ -9073,7 +9073,7 @@ var CommonFunctions = class _CommonFunctions {
           }
           fld2 = fld2.replace(match[0], value);
         }
-        result = result && _CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
+        result = result && _SFTCommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
       } catch (e) {
         console.log("The rule on top level outcome " + outcome.developerName + " is invalid");
       }
@@ -9161,9 +9161,9 @@ var CommonFunctions = class _CommonFunctions {
         }
         if (row.properties[fld]) {
           const property = row.properties[fld];
-          result = _CommonFunctions.assessRule(property.value, rule.comparator, compareTo, property.contentType);
+          result = _SFTCommonFunctions.assessRule(property.value, rule.comparator, compareTo, property.contentType);
         } else {
-          result = _CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
+          result = _SFTCommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
         }
       } catch (e) {
         console.log("The rule on row level outcome " + outcome.developerName + " is invalid");
@@ -9550,7 +9550,7 @@ var ColumnRule = class _ColumnRule {
       switch (this.mode) {
         case "outcome":
           label = this.label || value.value;
-          let show = CommonFunctions.assessRowOutcomeRule(sft.parent.outcomes[this.outcomeName], row, sft);
+          let show = SFTCommonFunctions.assessRowOutcomeRule(sft.parent.outcomes[this.outcomeName], row, sft);
           while (match = RegExp(/{{([^}]*)}}/).exec(label)) {
             const prop = row.properties[match[1].replace("&amp;", "&")];
             if (prop) {
@@ -9901,7 +9901,7 @@ var FilterManagementFormRow = class extends React8.Component {
         fieldOptions
       );
     }
-    const criteriaOptions = ColumnCriteria.getOptions(criteria.comparator, "sft-fmf-row-criteria-select-option", fieldDef.contentType);
+    const criteriaOptions = SFTColumnCriteria.getOptions(criteria.comparator, "sft-fmf-row-criteria-select-option", fieldDef.contentType);
     let input;
     let input2;
     let label1 = "Value";
@@ -10106,7 +10106,7 @@ var FilterManagementForm = class extends React9.Component {
     this.newFilters = this.parent.filters.clone();
   }
   addCriteria(fieldName) {
-    this.newFilters.items.set(fieldName, new ColumnFilter(fieldName, this.newFilters, 0 /* none */, [new ColumnCriteria(0 /* equalTo */, "", "")]));
+    this.newFilters.items.set(fieldName, new SFTColumnFilter(fieldName, this.newFilters, 0 /* none */, [new SFTColumnCriteria(0 /* equalTo */, "", "")]));
     this.forceUpdate();
   }
   removeCriteria(key) {
@@ -10959,7 +10959,7 @@ var SearchFilterTableRibbon = class extends React14.Component {
     for (let pos = 0; pos < arrOutcomes.length; pos++) {
       const outcome = arrOutcomes[pos];
       if (outcome.isBulkAction && outcome.developerName !== "OnSelect" && outcome.developerName !== "OnChange" && !outcome.developerName.toLowerCase().startsWith("cm")) {
-        const showOutcome = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+        const showOutcome = await SFTCommonFunctions.assessGlobalOutcomeRule(outcome, root);
         if (showOutcome === true) {
           this.rightButtons.push(
             /* @__PURE__ */ React14.createElement(
@@ -11238,15 +11238,15 @@ var SearchFilterTableRibbonSearch = class extends React15.Component {
     for (let pos = 0; pos < arrOutcomes.length; pos++) {
       const outcome = arrOutcomes[pos];
       if (outcome.isBulkAction && outcome.developerName !== "OnSelect" && outcome.developerName !== "OnChange" && !outcome.developerName.toLowerCase().startsWith("cm")) {
-        const showOutcome = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+        const showOutcome = await SFTCommonFunctions.assessGlobalOutcomeRule(outcome, root);
         if (root.parent.getAttribute("greyDissabled", "false").toLowerCase() === "true") {
-          let btn = CommonFunctions.makeOutcomeButton(root, outcome, root.iconSuffix, void 0, !showOutcome);
+          let btn = SFTCommonFunctions.makeOutcomeButton(root, outcome, root.iconSuffix, void 0, !showOutcome);
           this.rightButtons.push(
             btn
           );
         } else {
           if (showOutcome === true) {
-            let btn = CommonFunctions.makeOutcomeButton(root, outcome, root.iconSuffix, void 0, false);
+            let btn = SFTCommonFunctions.makeOutcomeButton(root, outcome, root.iconSuffix, void 0, false);
             this.rightButtons.push(
               btn
             );
@@ -11522,7 +11522,7 @@ var SearchFilterTableRow = class extends React16.Component {
     for (let pos = 0; pos < keys.length; pos++) {
       if (root.parent.outcomes[keys[pos]].isBulkAction === false) {
         if (!root.supressedOutcomes.has(root.parent.outcomes[keys[pos]].developerName)) {
-          if (await CommonFunctions.assessRowOutcomeRule(root.parent.outcomes[keys[pos]], objData, root) === true) {
+          if (await SFTCommonFunctions.assessRowOutcomeRule(root.parent.outcomes[keys[pos]], objData, root) === true) {
             enabledOutcomes.push(keys[pos]);
           }
         }
@@ -11558,11 +11558,11 @@ var SearchFilterTableRow = class extends React16.Component {
         if (!root.supressedOutcomes.has(key)) {
           anyoutcomes = true;
           if (root.parent.getAttribute("greyDissabled", "false").toLowerCase() === "true") {
-            let btn = CommonFunctions.makeOutcomeButton(root, root.parent.outcomes[key], root.iconSuffix, objData, !showOutcome);
+            let btn = SFTCommonFunctions.makeOutcomeButton(root, root.parent.outcomes[key], root.iconSuffix, objData, !showOutcome);
             buttons.push(btn);
           } else {
             if (showOutcome === true) {
-              let btn = CommonFunctions.makeOutcomeButton(root, root.parent.outcomes[key], root.iconSuffix, objData, false);
+              let btn = SFTCommonFunctions.makeOutcomeButton(root, root.parent.outcomes[key], root.iconSuffix, objData, false);
               buttons.push(btn);
             }
           }
@@ -15044,7 +15044,7 @@ var FCMModal = class extends React19.Component {
   componentDidMount() {
     this.forceUpdate();
   }
-  showDialog(icon3, title, content, buttons, onClose) {
+  showDialog(icon3, title, content, buttons, onClose, clientStyle) {
     return __awaiter(this, void 0, void 0, function* () {
       this.dialogVisible = true;
       this.dialogIcon = icon3;
@@ -15052,6 +15052,7 @@ var FCMModal = class extends React19.Component {
       this.dialogContent = content;
       this.dialogOnClose = onClose || this.hideDialog;
       this.dialogButtons = buttons;
+      this.clientStyle = clientStyle;
       this.forceUpdate();
     });
   }
@@ -15099,6 +15100,36 @@ var FCMModal = class extends React19.Component {
           button.handler();
         } }, button.label));
       }
+      let buttonBar;
+      if (buttons.length > 0) {
+        buttonBar = React19.createElement("div", { className: "fcmmod-dialog-button-bar" }, buttons);
+      }
+      let header;
+      let bodyMouseDown;
+      if (this.dialogIcon || this.dialogTitle) {
+        header = React19.createElement(
+          "div",
+          { className: "fcmmod-dialog-header", onMouseDown: (e) => {
+            this.onMouseDown(e);
+          } },
+          React19.createElement("span", { className: "fcmmod-dialog-header-icon" }, this.dialogIcon),
+          React19.createElement("span", { className: "fcmmod-dialog-header-title" }, this.dialogTitle),
+          React19.createElement(
+            "div",
+            { style: { display: "flex", flexDirection: "row", marginLeft: "auto", flexGrow: 0 } },
+            React19.createElement(
+              "span",
+              { style: { cursor: "pointer", marginRight: "5px", display: "flex" }, title: "Close", onMouseDown: (e) => {
+                this.stopEventBubble(e);
+                this.dialogOnClose();
+              } },
+              React19.createElement(FontAwesomeIcon, { icon: import_faCircleXmark.faCircleXmark, className: "fcmmod-icon" })
+            )
+          )
+        );
+      } else {
+        bodyMouseDown = this.onMouseDown;
+      }
       content = React19.createElement(
         "div",
         { className: "fcmmod-redaction", onMouseMove: (e) => {
@@ -15119,33 +15150,14 @@ var FCMModal = class extends React19.Component {
           { className: "fcmmod-content", ref: (element) => this.setDialog(element) },
           React19.createElement(
             "div",
-            { className: "fcmmod-dialog" },
+            { className: "fcmmod-dialog", style: this.clientStyle },
+            header,
             React19.createElement(
               "div",
-              { className: "fcmmod-dialog-header", onMouseDown: (e) => {
-                this.onMouseDown(e);
-              } },
-              React19.createElement("span", { className: "fcmmod-dialog-header-icon" }, this.dialogIcon),
-              React19.createElement("span", { className: "fcmmod-dialog-header-title" }, this.dialogTitle),
-              React19.createElement(
-                "div",
-                { style: { display: "flex", flexDirection: "row", marginLeft: "auto", flexGrow: 0 } },
-                React19.createElement(
-                  "span",
-                  { style: { cursor: "pointer", marginRight: "5px", display: "flex" }, title: "Close", onMouseDown: (e) => {
-                    this.stopEventBubble(e);
-                    this.dialogOnClose();
-                  } },
-                  React19.createElement(FontAwesomeIcon, { icon: import_faCircleXmark.faCircleXmark, className: "fcmmod-icon" })
-                )
-              )
+              { className: "fcmmod-dialog-body", onMouseDown: bodyMouseDown },
+              React19.createElement("div", { className: "fcmmod-dialog-body-client", style: this.clientStyle }, this.dialogContent)
             ),
-            React19.createElement(
-              "div",
-              { className: "fcmmod-dialog-body" },
-              React19.createElement("div", { className: "fcmmod-dialog-body-client" }, this.dialogContent)
-            ),
-            React19.createElement("div", { className: "fcmmod-dialog-button-bar" }, buttons)
+            buttonBar
           )
         )
       );
@@ -15453,7 +15465,7 @@ var SFT3 = class extends React21.Component {
     // content holder to avoid blank pages during moves
     this.lastContent = /* @__PURE__ */ React21.createElement("div", null);
     // these are the filter & sort controllers
-    this.filters = new ColumnFilters2(this);
+    this.filters = new SFTColumnFilters2(this);
     // dynamic columns flag
     this.dynamicColumns = false;
     // max col text size before converting to button
@@ -15813,10 +15825,10 @@ var SFT3 = class extends React21.Component {
       });
     }
     this.supressedOutcomes.set("OnSelect", true);
-    this.iconSuffix = await CommonFunctions.inflateValue(this.parent, this.iconSuffix, flds);
+    this.iconSuffix = await SFTCommonFunctions.inflateValue(this.parent, this.iconSuffix, flds);
     if (this.paginationMode === 2 /* external */) {
       if (this.externalPage) {
-        let pg = await CommonFunctions.inflateValue(this.parent, this.externalPage, flds);
+        let pg = await SFTCommonFunctions.inflateValue(this.parent, this.externalPage, flds);
         this.externalPaginationPage = parseInt(pg);
         if (isNaN(this.externalPaginationPage)) {
           this.externalPaginationPage = 1;

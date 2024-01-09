@@ -1,6 +1,6 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
 import * as React from 'react';
-import {CommonFunctions} from './CommonFunctions';
+import {SFTCommonFunctions} from './CommonFunctions';
 import {SFT} from './SearchFilterTable';
 
 export class SearchFilterTableRibbonSearch extends React.Component<any, any> {
@@ -98,16 +98,16 @@ export class SearchFilterTableRibbonSearch extends React.Component<any, any> {
 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
 
-                const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+                const showOutcome: boolean = await SFTCommonFunctions.assessGlobalOutcomeRule(outcome, root);
                 if(root.parent.getAttribute("greyDissabled","false").toLowerCase()==="true"){
-                    let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,!showOutcome);
+                    let btn: any = SFTCommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,!showOutcome);
                     this.rightButtons.push(
                         btn
                     );
                 }
                 else {
                     if (showOutcome === true) {
-                        let btn: any = CommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,false);
+                        let btn: any = SFTCommonFunctions.makeOutcomeButton(root,outcome,root.iconSuffix,undefined,false);
                         this.rightButtons.push(
                             btn
                         );

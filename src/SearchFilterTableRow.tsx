@@ -1,6 +1,6 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty } from 'flow-component-model';
 import * as React from 'react';
-import {CommonFunctions} from './CommonFunctions';
+import {SFTCommonFunctions} from './CommonFunctions';
 import {SFT} from './SearchFilterTable';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
 // declare const manywho: IManywho;
@@ -23,7 +23,7 @@ export class SearchFilterTableRow extends React.Component<any, any> {
         for (let pos = 0 ; pos < keys.length ; pos++) {
             if (root.parent.outcomes[keys[pos]].isBulkAction === false) {
                 if(!root.supressedOutcomes.has(root.parent.outcomes[keys[pos]].developerName)) {
-                    if (await CommonFunctions.assessRowOutcomeRule(root.parent.outcomes[keys[pos]], objData, root) === true) {
+                    if (await SFTCommonFunctions.assessRowOutcomeRule(root.parent.outcomes[keys[pos]], objData, root) === true) {
                         enabledOutcomes.push(keys[pos]);
                     }
                 }
@@ -62,12 +62,12 @@ export class SearchFilterTableRow extends React.Component<any, any> {
                 if(!root.supressedOutcomes.has(key)) {
                     anyoutcomes=true;
                     if(root.parent.getAttribute("greyDissabled","false").toLowerCase()==="true"){
-                        let btn: any = CommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,!showOutcome);
+                        let btn: any = SFTCommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,!showOutcome);
                         buttons.push(btn);
                     }
                     else {
                         if (showOutcome === true) {
-                            let btn: any = CommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,false);
+                            let btn: any = SFTCommonFunctions.makeOutcomeButton(root,root.parent.outcomes[key],root.iconSuffix,objData,false);
                             buttons.push(btn);
                         }
                     }

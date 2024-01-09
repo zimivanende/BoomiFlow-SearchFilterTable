@@ -1,7 +1,7 @@
 import { eContentType, FlowDisplayColumn } from 'flow-component-model';
 import * as React from 'react';
-import {ColumnCriteria,  eColumnComparator } from './ColumnCriteria';
-import {ColumnFilter} from './ColumnFilter';
+import {SFTColumnCriteria,  eColumnComparator } from './ColumnCriteria';
+import {SFTColumnFilter} from './ColumnFilter';
 import {FilterManagementForm} from './FilterManagementForm';
 import {SFT} from './SearchFilterTable';
 
@@ -59,9 +59,9 @@ export class FilterManagementFormRow extends React.Component<any, any> {
 
     render() {
         const parent: FilterManagementForm = this.props.parent;
-        const filter: ColumnFilter = parent.newFilters.get(this.props.filterId);
+        const filter: SFTColumnFilter = parent.newFilters.get(this.props.filterId);
         const fieldDef: FlowDisplayColumn = parent.columns.get(filter.key);
-        const criteria: ColumnCriteria = this.props.criteria;
+        const criteria: SFTColumnCriteria = this.props.criteria;
 
         let fieldInput: any;
         if (fieldDef) {
@@ -92,7 +92,7 @@ export class FilterManagementFormRow extends React.Component<any, any> {
             );
         }
 
-        const criteriaOptions: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', fieldDef.contentType);
+        const criteriaOptions: any[] = SFTColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', fieldDef.contentType);
 
         let input: any;
         let input2: any;

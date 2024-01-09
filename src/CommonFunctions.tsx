@@ -2,7 +2,7 @@ import { eContentType, FlowComponent, FlowDisplayColumn, FlowField, FlowObjectDa
 import {SFT} from './SearchFilterTable';
 import * as React from 'react';
 
-export class CommonFunctions {
+export class SFTCommonFunctions {
 
     static async getFlowValue(): Promise<any> {
 
@@ -123,7 +123,7 @@ export class CommonFunctions {
                     fld2 = fld2.replace(match[0], value);
                 }
 
-                result = result && CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
+                result = result && SFTCommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
             } catch (e) {
                 console.log('The rule on top level outcome ' + outcome.developerName + ' is invalid');
             }
@@ -223,9 +223,9 @@ export class CommonFunctions {
 
                 if (row.properties[fld]) {
                     const property: FlowObjectDataProperty = row.properties[fld];
-                    result = CommonFunctions.assessRule(property.value, rule.comparator, compareTo, property.contentType);
+                    result = SFTCommonFunctions.assessRule(property.value, rule.comparator, compareTo, property.contentType);
                 } else {
-                    result = CommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
+                    result = SFTCommonFunctions.assessRule(value, rule.comparator, compareTo, contentType);
                 }
 
             } catch (e) {

@@ -1,28 +1,28 @@
 import * as React from 'react';
-import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
-import {ColumnFilter} from './ColumnFilter';
+import {SFTColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {SFTColumnFilter} from './ColumnFilter';
 
 export class FilterConfigForm extends React.Component<any, any> {
 
-    filter: ColumnFilter;
-    newCriteria: ColumnCriteria[];
+    filter: SFTColumnFilter;
+    newCriteria: SFTColumnCriteria[];
 
     constructor(props: any) {
         super(props);
         this.filter = this.props.filter;
         this.newCriteria = [];
-        this.filter.criteria.forEach((criteria: ColumnCriteria) => {
+        this.filter.criteria.forEach((criteria: SFTColumnCriteria) => {
             this.newCriteria.push(criteria);
         });
         this.addCriteria = this.addCriteria.bind(this);
     }
 
     addCriteria() {
-        this.newCriteria.push(new ColumnCriteria(eColumnComparator.equalTo, ''));
+        this.newCriteria.push(new SFTColumnCriteria(eColumnComparator.equalTo, ''));
         this.forceUpdate();
     }
 
-    prepCriteriaValue(criteria: ColumnCriteria) {
+    prepCriteriaValue(criteria: SFTColumnCriteria) {
         switch (criteria.comparator) {
             case eColumnComparator.in:
             case eColumnComparator.notIn:
@@ -52,8 +52,8 @@ export class FilterConfigForm extends React.Component<any, any> {
                 </div>,
             );
         } else {
-            this.newCriteria.forEach((criteria: ColumnCriteria) => {
-                const options: any[] = ColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', this.props.contentType);
+            this.newCriteria.forEach((criteria: SFTColumnCriteria) => {
+                const options: any[] = SFTColumnCriteria.getOptions(criteria.comparator, 'sft-fmf-row-criteria-select-option', this.props.contentType);
                 let critBox: any;
                 let critBox2: any;
                 switch (criteria.comparator) {

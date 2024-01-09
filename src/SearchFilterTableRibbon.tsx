@@ -1,6 +1,6 @@
 import { FlowDisplayColumn, FlowOutcome } from 'flow-component-model';
 import * as React from 'react';
-import {CommonFunctions} from './CommonFunctions';
+import {SFTCommonFunctions} from './CommonFunctions';
 import {SFT} from './SearchFilterTable';
 
 export class SearchFilterTableRibbon extends React.Component<any, any> {
@@ -86,7 +86,7 @@ export class SearchFilterTableRibbon extends React.Component<any, any> {
 
             if (outcome.isBulkAction && outcome.developerName !== 'OnSelect' && outcome.developerName !== 'OnChange' && !outcome.developerName.toLowerCase().startsWith('cm')) {
 
-                const showOutcome: boolean = await CommonFunctions.assessGlobalOutcomeRule(outcome, root);
+                const showOutcome: boolean = await SFTCommonFunctions.assessGlobalOutcomeRule(outcome, root);
 
                 if (showOutcome === true) {
                     this.rightButtons.push(

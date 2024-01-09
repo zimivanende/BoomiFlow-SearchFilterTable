@@ -1,7 +1,7 @@
 import { eContentType, FlowField, FlowObjectData, FlowObjectDataProperty } from 'flow-component-model';
 import * as React from 'react';
 import { eColumnComparator } from './ColumnCriteria';
-import {CommonFunctions} from './CommonFunctions';
+import {SFTCommonFunctions} from './CommonFunctions';
 import {SFT} from './SearchFilterTable';
 declare var manywho: any;
 
@@ -167,7 +167,7 @@ export class ColumnRule {
             switch (this.mode) {
                 case 'outcome':
                     label = this.label || value.value as string;
-                    let show: boolean = CommonFunctions.assessRowOutcomeRule(sft.parent.outcomes[this.outcomeName],row,sft);
+                    let show: boolean = SFTCommonFunctions.assessRowOutcomeRule(sft.parent.outcomes[this.outcomeName],row,sft);
                     
 
                     // use regex to find any {{}} tags in content and save them in matches

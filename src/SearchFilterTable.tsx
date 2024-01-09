@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { eContentType, eLoadingState, FlowComponent, FlowDisplayColumn, FlowField,  FlowObjectData, FlowObjectDataArray, FlowObjectDataProperty, FlowOutcome } from 'flow-component-model';
 import {CellItem} from './CellItem';
-import {ColumnCriteria} from './ColumnCriteria';
-import {ColumnFilters,  eFilterEvent, eSortDirection } from './ColumnFilters';
+import {SFTColumnCriteria} from './ColumnCriteria';
+import {SFTColumnFilters,  eFilterEvent, eSortDirection } from './ColumnFilters';
 import {ColumnPickerForm} from './ColumnPickerForm';
 import { ColumnRule, ColumnRules } from './ColumnRule';
 import {FilterManagementForm} from './FilterManagementForm';
@@ -17,7 +17,7 @@ import {SearchFilterTableHeaders} from './SearchFilterTableHeaders';
 import {SearchFilterTableRibbon} from './SearchFilterTableRibbon';
 import {SearchFilterTableRibbonSearch} from './SearchFilterTableRibbonSearch';
 import {SearchFilterTableRow} from './SearchFilterTableRow';
-import {CommonFunctions} from './CommonFunctions';
+import {SFTCommonFunctions} from './CommonFunctions';
 import { FCMContextMenu } from 'fcmkit/lib/ContextMenu/FCMContextMenu';
 import { FCMModal } from 'fcmkit/lib/ModalDialog/FCMModal';
 import { FCMModalButton } from 'fcmkit/lib/ModalDialog/FCMModalButton';
@@ -108,7 +108,7 @@ export class SFT extends React.Component<any,any> {
     lastContent: any = (<div/>);
 
     // these are the filter & sort controllers
-    filters: ColumnFilters = new ColumnFilters(this);
+    filters: SFTColumnFilters = new SFTColumnFilters(this);
 
     // the scrolling element
     scroller: HTMLDivElement;
@@ -342,7 +342,7 @@ export class SFT extends React.Component<any,any> {
         // this.forceUpdate();
     }
 
-    getColumnUniques(name: string, criteria: ColumnCriteria): any {
+    getColumnUniques(name: string, criteria: SFTColumnCriteria): any {
         return (
            <MultiSelect
                 id={name}
@@ -560,11 +560,11 @@ export class SFT extends React.Component<any,any> {
         
         //other inflations
         
-        this.iconSuffix = await CommonFunctions.inflateValue(this.parent,this.iconSuffix,flds);
+        this.iconSuffix = await SFTCommonFunctions.inflateValue(this.parent,this.iconSuffix,flds);
 
         if(this.paginationMode===ePaginationMode.external){
             if(this.externalPage) {
-                let pg: string = await CommonFunctions.inflateValue(this.parent,this.externalPage,flds);
+                let pg: string = await SFTCommonFunctions.inflateValue(this.parent,this.externalPage,flds);
                 this.externalPaginationPage = parseInt(pg);
                 if(isNaN(this.externalPaginationPage)){this.externalPaginationPage=1}
             }

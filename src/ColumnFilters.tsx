@@ -1,8 +1,8 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData } from 'flow-component-model';
 import * as React from 'react';
 import {CellItem} from './CellItem';
-import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
-import {ColumnFilter} from './ColumnFilter';
+import {SFTColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {SFTColumnFilter} from './ColumnFilter';
 import { ColumnRule } from './ColumnRule';
 import {FilterConfigForm} from './FilterConfigForm';
 import {RowItem} from './RowItem';
@@ -21,12 +21,12 @@ export enum eSortDirection {
     descending = -1,
 }
 
-export class ColumnFilters {
+export class SFTColumnFilters {
     parent: SFT;
 
     dialog: any;
 
-    items: Map<string, ColumnFilter> = new Map();
+    items: Map<string, SFTColumnFilter> = new Map();
     globalCriteria: string;
 
     quickChecks: Map<string, HTMLInputElement> = new Map();
@@ -50,10 +50,10 @@ export class ColumnFilters {
         this.matchesCriteria = this.matchesCriteria.bind(this);
     }
 
-    clone(): ColumnFilters {
-        const clone = new ColumnFilters(this.parent);
+    clone(): SFTColumnFilters {
+        const clone = new SFTColumnFilters(this.parent);
         clone.globalCriteria = this.globalCriteria;
-        this.items.forEach((item: ColumnFilter, key: string) => {
+        this.items.forEach((item: SFTColumnFilter, key: string) => {
             clone.items.set(key, item.clone());
         });
         return clone;
@@ -71,7 +71,7 @@ export class ColumnFilters {
         }
     }
 
-    get(key: string): ColumnFilter {
+    get(key: string): SFTColumnFilter {
         if (this.items.has(key)) {
             return this.items.get(key);
         } else {
@@ -90,7 +90,7 @@ export class ColumnFilters {
     isFiltered(): boolean {
         let filtered: boolean = false;
 
-        this.items.forEach((item: ColumnFilter) => {
+        this.items.forEach((item: SFTColumnFilter) => {
             if (item.criteria.length > 0) {
                 filtered = true;
             }
@@ -111,7 +111,7 @@ export class ColumnFilters {
 
     clearAll() {
         this.suppressNotify = true;
-        this.items.forEach((item: ColumnFilter) => {
+        this.items.forEach((item: SFTColumnFilter) => {
             item.clearFilters();
         });
         this.suppressNotify = false;
@@ -120,9 +120,9 @@ export class ColumnFilters {
 
     sortClicked(key: string) {
         if (!this.items.has(key)) {
-            this.items.set(key, new ColumnFilter(key, this));
+            this.items.set(key, new SFTColumnFilter(key, this));
         }
-        this.items.forEach((item: ColumnFilter) => {
+        this.items.forEach((item: SFTColumnFilter) => {
             // exclude current
             if (item.key !== key) {
                 item.sortNone();
@@ -136,7 +136,7 @@ export class ColumnFilters {
 
         const root: SFT = this.parent;
         if (!this.items.has(key)) {
-            this.items.set(key, new ColumnFilter(key, this));
+            this.items.set(key, new SFTColumnFilter(key, this));
         }
 
         const col: FlowDisplayColumn = this.parent.colMap.get(key);
@@ -279,7 +279,7 @@ export class ColumnFilters {
 
     getQuickCheck(columnName: string): any {
         if (this.parent.parent.getAttribute('QuickCheck', 'false') === 'true' && this.parent.colMap.get(columnName)?.contentType === eContentType.ContentBoolean) {
-            const crit: ColumnCriteria = (this.items.get(columnName) as ColumnFilter)?.criteria[0];
+            const crit: SFTColumnCriteria = (this.items.get(columnName) as SFTColumnFilter)?.criteria[0];
             return (
                 <input
                     className="sft-checkbox sft-quick-check"
@@ -297,7 +297,7 @@ export class ColumnFilters {
     quickCheckClicked(key: string, e: any) {
         console.log('quick ' + key);
         if (e.currentTarget.checked === true) {
-            this.items.set(key, new ColumnFilter(key, this, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, true)]));
+            this.items.set(key, new SFTColumnFilter(key, this, eSortDirection.none, [new SFTColumnCriteria(eColumnComparator.equalTo, true)]));
         } else {
             this.items.get(key).clearFilters();
         }
@@ -334,9 +334,9 @@ export class ColumnFilters {
             });
         }
         // each item represents a column
-        this.items.forEach((item: ColumnFilter) => {
+        this.items.forEach((item: SFTColumnFilter) => {
 
-            item.criteria.forEach((criteria: ColumnCriteria) => {
+            item.criteria.forEach((criteria: SFTColumnCriteria) => {
                 let val: any;
                 let crit: any;
                 let crit2: any;
@@ -464,9 +464,9 @@ export class ColumnFilters {
         }
     }
 
-    getSortColumn(): ColumnFilter {
-        let sortColumn: ColumnFilter;
-        this.items.forEach((col: ColumnFilter) => {
+    getSortColumn(): SFTColumnFilter {
+        let sortColumn: SFTColumnFilter;
+        this.items.forEach((col: SFTColumnFilter) => {
             if (col.sort !== eSortDirection.none) {
                 sortColumn = col;
             }
@@ -483,7 +483,7 @@ export class ColumnFilters {
             }
         }));
 
-        const sortColumn: ColumnFilter = this.getSortColumn();
+        const sortColumn: SFTColumnFilter = this.getSortColumn();
         if(sortColumn) {
             let sorted: any;
             let sortPropertyName: string = sortColumn.key;
@@ -547,7 +547,7 @@ export class ColumnFilters {
 
     getForStorage(): string {
         const filters: any[] = [];
-        this.items.forEach((item: ColumnFilter) => {
+        this.items.forEach((item: SFTColumnFilter) => {
             filters.push(item.getForStorage());
         });
         return JSON.stringify(filters);
@@ -560,7 +560,7 @@ export class ColumnFilters {
             src.forEach((filter: any) => {
                 filter = JSON.parse(filter);
                 if (filter.key) {
-                    this.items.set(filter.key, new ColumnFilter(filter.key, this, filter.sort, filter.criteria));
+                    this.items.set(filter.key, new SFTColumnFilter(filter.key, this, filter.sort, filter.criteria));
                 }
             });
         }
@@ -588,7 +588,7 @@ export class ColumnFilters {
                     }
                 );
             }
-            this.items.forEach((item: ColumnFilter) => {
+            this.items.forEach((item: SFTColumnFilter) => {
                 filters.filters.push(item.getForFSS());
             });
         }

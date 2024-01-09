@@ -15,7 +15,7 @@ export enum eColumnComparator {
     notIn,
 }
 
-export class ColumnCriteria {
+export class SFTColumnCriteria {
 
     static getDisplayValue(criteria: eColumnComparator): string {
         let typedCriteria;
@@ -70,14 +70,14 @@ export class ColumnCriteria {
     static getOptions(currentValue: eColumnComparator, className: string = '', fieldType: eContentType): any[] {
         const options: any[] = [];
         Object.keys(eColumnComparator).filter((key: any) => !isNaN(Number(eColumnComparator[key]))).forEach((item: any) => {
-            if (ColumnCriteria.isOptionApplicable(eColumnComparator[item as keyof typeof eColumnComparator ], fieldType)) {
+            if (SFTColumnCriteria.isOptionApplicable(eColumnComparator[item as keyof typeof eColumnComparator ], fieldType)) {
                 options.push(
                     <option
                         className={className}
                         value={eColumnComparator[item]}
                         selected={eColumnComparator[item as keyof typeof eColumnComparator ] === currentValue}
                     >
-                        {ColumnCriteria.getDisplayValue(eColumnComparator[item as keyof typeof eColumnComparator ])}
+                        {SFTColumnCriteria.getDisplayValue(eColumnComparator[item as keyof typeof eColumnComparator ])}
                     </option>,
                 );
             }

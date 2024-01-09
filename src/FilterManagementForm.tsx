@@ -1,8 +1,8 @@
 import { FlowDisplayColumn } from 'flow-component-model';
 import * as React from 'react';
-import {ColumnCriteria, eColumnComparator } from './ColumnCriteria';
-import {ColumnFilter} from './ColumnFilter';
-import {ColumnFilters,  eSortDirection } from './ColumnFilters';
+import {SFTColumnCriteria, eColumnComparator } from './ColumnCriteria';
+import {SFTColumnFilter} from './ColumnFilter';
+import {SFTColumnFilters,  eSortDirection } from './ColumnFilters';
 import {FilterManagementFormAddRow} from './FilterFormManagementAddRow';
 import {FilterManagementFormRow} from './FilterManagementFormRow';
 import {SFT} from './SearchFilterTable';
@@ -10,7 +10,7 @@ import {SFT} from './SearchFilterTable';
 export class FilterManagementForm extends React.Component<any, any> {
     parent: SFT;
     columns: Map<string, FlowDisplayColumn>;
-    newFilters: ColumnFilters;
+    newFilters: SFTColumnFilters;
 
     constructor(props: any) {
         super(props);
@@ -22,7 +22,7 @@ export class FilterManagementForm extends React.Component<any, any> {
     }
 
     addCriteria(fieldName: string) {
-        this.newFilters.items.set(fieldName, new ColumnFilter(fieldName, this.newFilters, eSortDirection.none, [new ColumnCriteria(eColumnComparator.equalTo, '', '')]));
+        this.newFilters.items.set(fieldName, new SFTColumnFilter(fieldName, this.newFilters, eSortDirection.none, [new SFTColumnCriteria(eColumnComparator.equalTo, '', '')]));
         this.forceUpdate();
     }
 
@@ -35,8 +35,8 @@ export class FilterManagementForm extends React.Component<any, any> {
 
         const rows: any[] = [];
 
-        this.newFilters.items.forEach((filter: ColumnFilter, key: string) => {
-            filter.criteria.forEach((criteria: ColumnCriteria) => {
+        this.newFilters.items.forEach((filter: SFTColumnFilter, key: string) => {
+            filter.criteria.forEach((criteria: SFTColumnCriteria) => {
                 rows.push(
                     <FilterManagementFormRow
                         parent={this}
