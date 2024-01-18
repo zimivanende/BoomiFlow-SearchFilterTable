@@ -15577,9 +15577,6 @@ var SFT3 = class extends React21.Component {
       this.currentMapElementId = request.currentMapElementId;
     }
   }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("ping");
-  }
   async componentDidMount() {
     console.log(this.parent.model.developerName + "=" + this.parent.componentId);
     this.loaded = false;

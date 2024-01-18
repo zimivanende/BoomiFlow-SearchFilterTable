@@ -5,6 +5,7 @@
   "scripts": {
     "start": "esbuild ./src/SFTLegacy.tsx --outfile=./build/sft_lg.js --sourcemap=both --serve=8080 --servedir=build --bundle --format=esm --watch",
     "build": "esbuild ./src/SFTLegacy.tsx --outfile=./build/sft_lg.js --bundle  --format=esm --target=chrome58,firefox57,safari11,edge16",
+    "buildDebug": "esbuild ./src/SFTLegacy.tsx --outfile=./build/sft_lg_db.js --bundle  --format=esm --target=chrome58,firefox57,safari11,edge16",
     "debug": "react-scripts start",
     "buildxx": "react-scripts build",
     "test": "react-scripts test",

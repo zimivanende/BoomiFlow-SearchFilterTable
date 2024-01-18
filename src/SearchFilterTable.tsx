@@ -36,6 +36,7 @@ export enum ePaginationMode {
 export class SFT extends React.Component<any,any> {
     version: string = '1.0.0';
     context: any;
+    currentMapElementId: string;
 
     parent: FlowComponent;
 
@@ -155,6 +156,7 @@ export class SFT extends React.Component<any,any> {
         this.parent = this.props.parent;
         this.parent.handleMessage = this.parent.handleMessage.bind(this);
         this.flowMoved = this.flowMoved.bind(this);
+        this.flowMoving = this.flowMoving.bind(this);
         this.showContextMenu = this.showContextMenu.bind(this);
         this.hideContextMenu = this.hideContextMenu.bind(this);
 
@@ -240,22 +242,42 @@ export class SFT extends React.Component<any,any> {
                 console.log("retry " + this.retries + " after flow move");
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
-                this.retries = 0;
-                this.loaded = true;
-                this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId) || this.parent.getAttribute('PaginationSize', undefined) || '10');
-                this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
-                let model: any = manywho.model.getComponent(this.parent.componentId, this.parent.flowKey);
-                if(model) {
-                    await this.preLoad();
-                    await this.buildCoreTable();
+                // this is trying to see if we are leaving
+                // as in no model=don't draw
+                //if these 2 differ then we're leaving the currnet page
+                if(!me.currentMapElementId || xhr.currentMapElementId === me.currentMapElementId){
+                    let model: any = manywho.model.getComponent(me.parent.componentId, me.parent.flowKey);
+                    if(model) {
+                        this.retries = 0;
+                        this.loaded = true;
+                        this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId) || this.parent.getAttribute('PaginationSize', undefined) || '10');
+                        this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
+                        await this.preLoad();
+                        await this.buildCoreTable();
+                    }
+                    else{
+                        this.loaded=false;
+                        this.retries ++;
+                        console.log("retry " + this.retries + " no model yet");
+                        window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
+                        //this.buildTableRows();
+                    }
                 }
                 else{
+                    //we're going somewhere else
+                    //me.currentMapElementId = undefined;
                     this.buildTableRows();
-                }
-                
+                }               
             }
         }
 
+    }
+    async flowMoving(xhr: any, request: any) {
+        const me: any = this;
+        //only store it on initial page leave
+        if(!this.currentMapElementId) {
+            this.currentMapElementId = request.currentMapElementId;
+        }
     }
 
     async componentDidMount() {
@@ -263,6 +285,7 @@ export class SFT extends React.Component<any,any> {
         // will get this from a component attribute
         this.loaded=false;
         (manywho as any).eventManager.addDoneListener(this.flowMoved, this.parent.componentId);
+        (manywho as any).eventManager.addBeforeSendListener(this.flowMoving, this.parent.componentId);
         // build tree
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId || this.parent.getAttribute('PaginationSize', undefined) || '10'));
         this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
