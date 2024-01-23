@@ -10781,6 +10781,7 @@ var SearchFilterTableHeaders = class extends React13.Component {
                 this.setHeader("checks", element);
               }
             },
+            /* @__PURE__ */ React13.createElement("span", { style: { display: "none" } }, "Toggle Selection"),
             /* @__PURE__ */ React13.createElement(
               "div",
               {
@@ -10793,7 +10794,8 @@ var SearchFilterTableHeaders = class extends React13.Component {
                   type: "checkbox",
                   onClick: (event) => {
                     root.toggleSelectAll(event);
-                  }
+                  },
+                  title: "Toggle Selection"
                 }
               )
             )
@@ -10811,6 +10813,7 @@ var SearchFilterTableHeaders = class extends React13.Component {
                   this.setHeader("checks", element);
                 }
               },
+              /* @__PURE__ */ React13.createElement("span", { style: { display: "none" } }, "Toggle Selection"),
               /* @__PURE__ */ React13.createElement(
                 "div",
                 {
@@ -11457,7 +11460,8 @@ var SearchFilterTableRibbonSearch = class extends React15.Component {
               },
               onChange: this.filterChanged,
               value: this.currentFilter,
-              placeholder: "Search table"
+              placeholder: "Search table",
+              title: "Search Criteria"
             }
           ),
           /* @__PURE__ */ React15.createElement(
@@ -11586,7 +11590,8 @@ var SearchFilterTableRow = class extends React16.Component {
               onClick: (event) => {
                 root.toggleSelect(event, this.props.id);
               },
-              checked: root.selectedRowMap.has(this.props.id)
+              checked: root.selectedRowMap.has(this.props.id),
+              title: "Select Row"
             }
           )
         )
@@ -11604,7 +11609,8 @@ var SearchFilterTableRow = class extends React16.Component {
               {
                 className: "sft-radio",
                 type: "radio",
-                checked: root.selectedRow === objData.externalId
+                checked: root.selectedRow === objData.externalId,
+                title: "Select Row"
               }
             )
           )
@@ -15576,9 +15582,6 @@ var SFT3 = class extends React21.Component {
     if (!this.currentMapElementId) {
       this.currentMapElementId = request.currentMapElementId;
     }
-  }
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("ping");
   }
   async componentDidMount() {
     console.log(this.parent.model.developerName + "=" + this.parent.componentId);

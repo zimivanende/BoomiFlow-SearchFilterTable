@@ -87,6 +87,7 @@ export class SearchFilterTableRow extends React.Component<any, any> {
                         type="checkbox"
                         onClick={(event: any) => {root.toggleSelect(event, this.props.id); }}
                         checked={root.selectedRowMap.has(this.props.id)}
+                        title={"Select Row"}
                     />
                 </td>,
             );
@@ -100,6 +101,7 @@ export class SearchFilterTableRow extends React.Component<any, any> {
                             className="sft-radio"
                             type="radio"
                             checked={root.selectedRow===objData.externalId}
+                            title={"Select Row"}
                         />
                     </td>,
                 );

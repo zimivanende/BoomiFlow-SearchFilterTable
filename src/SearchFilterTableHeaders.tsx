@@ -121,6 +121,7 @@ export class SearchFilterTableHeaders extends React.Component<any, any> {
                         className="sft-check-header"
                         ref={(element: any) => {this.setHeader('checks', element); }}
                     >
+                        <span style={{display: "none"}}>Toggle Selection</span>
                         <div
                             className="sft-thcontainer"
                         >
@@ -128,6 +129,7 @@ export class SearchFilterTableHeaders extends React.Component<any, any> {
                                     className="sft-checkbox"
                                     type="checkbox"
                                     onClick={(event: any) => {root.toggleSelectAll(event); }}
+                                    title="Toggle Selection"
                                 />
                         </div>
                     </th>,
@@ -140,6 +142,7 @@ export class SearchFilterTableHeaders extends React.Component<any, any> {
                             className="sft-column-header"
                             ref={(element: any) => {this.setHeader('checks', element); }}
                         >
+                            <span style={{display: "none"}}>Toggle Selection</span>
                             <div
                                 className="sft-thcontainer"
                             />

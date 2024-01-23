@@ -305,6 +305,7 @@ export class SearchFilterTableRibbonSearch extends React.Component<any, any> {
                             onChange={this.filterChanged}
                             value={this.currentFilter}
                             placeholder='Search table'
+                            title="Search Criteria"
                         />
                         <span
                             className="glyphicon glyphicon-remove sft-ribbon-search-icon sft-ribbon-search-icon-clear"
