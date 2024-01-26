@@ -199,7 +199,8 @@ export class SearchFilterTableRow extends React.Component<any, any> {
                         contentType: col.contentType,
                         contentFormat: col.contentFormat,
                         row,
-                        sft: root.parent,
+                        sft: root,
+                        component: root.parent
                     };
                     result = React.createElement(manywho.component.getByName(componentType), columnProps);
                 } else {

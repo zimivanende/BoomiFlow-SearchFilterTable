@@ -9605,7 +9605,8 @@ var ColumnRule = class _ColumnRule {
             contentType: value.contentType,
             contentFormat: value.contentFormat,
             row,
-            sft: this.parent.parent
+            sft: this.parent,
+            component: this.parent.parent
           };
           content = React6.createElement(manywho.component.getByName(this.componentClass), columnProps);
           break;
@@ -11711,7 +11712,8 @@ var SearchFilterTableRow = class extends React16.Component {
             contentType: col.contentType,
             contentFormat: col.contentFormat,
             row,
-            sft: root.parent
+            sft: root,
+            component: root.parent
           };
           result = React16.createElement(manywho.component.getByName(componentType), columnProps);
         } else {
@@ -15566,10 +15568,14 @@ var SFT3 = class extends React21.Component {
           } else {
             this.loaded = false;
             this.retries++;
-            console.log("retry " + this.retries + " no model yet");
-            window.setTimeout(function() {
-              me.flowMoved(xhr, request);
-            }, 500);
+            if (this.retries > 10) {
+              console.log("retry " + this.retries + " giving up");
+            } else {
+              console.log("retry " + this.retries + " no model yet");
+              window.setTimeout(function() {
+                me.flowMoved(xhr, request);
+              }, 500);
+            }
           }
         } else {
           this.buildTableRows();

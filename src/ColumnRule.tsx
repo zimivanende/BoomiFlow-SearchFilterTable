@@ -230,7 +230,8 @@ export class ColumnRule {
                         contentType: value.contentType,
                         contentFormat: value.contentFormat,
                         row,
-                        sft: this.parent.parent,
+                        sft: this.parent,
+                        component: this.parent.parent,
                     };
                     content = React.createElement(manywho.component.getByName(this.componentClass), columnProps);
                     break;

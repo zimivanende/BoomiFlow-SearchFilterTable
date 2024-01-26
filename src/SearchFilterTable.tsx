@@ -258,8 +258,13 @@ export class SFT extends React.Component<any,any> {
                     else{
                         this.loaded=false;
                         this.retries ++;
-                        console.log("retry " + this.retries + " no model yet");
-                        window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
+                        if(this.retries > 10) {
+                            console.log("retry " + this.retries + " giving up");
+                        }
+                        else {
+                            console.log("retry " + this.retries + " no model yet");
+                            window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
+                        }
                         //this.buildTableRows();
                     }
                 }
