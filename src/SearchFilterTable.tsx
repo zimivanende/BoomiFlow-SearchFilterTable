@@ -104,10 +104,7 @@ export class SFT extends React.Component<any,any> {
 
     // these are the html column header child elements used in render.  Built from colMap
     colElements: any[];
-
-    // content holder to avoid blank pages during moves
-    lastContent: any = (<div/>);
-
+    
     // these are the filter & sort controllers
     filters: SFTColumnFilters = new SFTColumnFilters(this);
 
@@ -235,6 +232,7 @@ export class SFT extends React.Component<any,any> {
 
     async flowMoved(xhr: any, request: any) {
         const me: any = this;
+        
         if (xhr.invokeType === 'FORWARD') {
             if (this.parent.loadingState !== eLoadingState.ready && this.retries < 20) {
                 this.loaded=false;
@@ -243,9 +241,10 @@ export class SFT extends React.Component<any,any> {
                 window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
             } else {
                 // this is trying to see if we are leaving
-                // as in no model=don't draw
-                //if these 2 differ then we're leaving the currnet page
-                if(!me.currentMapElementId || xhr.currentMapElementId === me.currentMapElementId){
+ 
+                //if these are the same we need to redraw
+                if(xhr.currentMapElementId === me.currentMapElementId){
+                    //manywho.model.parseEngineResponse(xhr, me.parent.flowKey);
                     let model: any = manywho.model.getComponent(me.parent.componentId, me.parent.flowKey);
                     if(model) {
                         this.retries = 0;
@@ -265,22 +264,21 @@ export class SFT extends React.Component<any,any> {
                             console.log("retry " + this.retries + " no model yet");
                             window.setTimeout(function() {me.flowMoved(xhr, request); }, 500);
                         }
-                        //this.buildTableRows();
                     }
                 }
                 else{
                     //we're going somewhere else
                     //me.currentMapElementId = undefined;
+                    this.currentMapElementId = xhr.currentMapElementId
                     this.buildTableRows();
                 }               
             }
         }
-
     }
     async flowMoving(xhr: any, request: any) {
         const me: any = this;
         //only store it on initial page leave
-        if(!this.currentMapElementId) {
+        if(this.currentMapElementId != request.currentMapElementId) {
             this.currentMapElementId = request.currentMapElementId;
         }
     }
@@ -289,8 +287,8 @@ export class SFT extends React.Component<any,any> {
         console.log(this.parent.model.developerName + "=" + this.parent.componentId);
         // will get this from a component attribute
         this.loaded=false;
-        (manywho as any).eventManager.addDoneListener(this.flowMoved, this.parent.componentId);
-        (manywho as any).eventManager.addBeforeSendListener(this.flowMoving, this.parent.componentId);
+        (manywho as any).eventManager.addDoneListener(this.flowMoved, "sft!_" + this.parent.componentId);
+        (manywho as any).eventManager.addBeforeSendListener(this.flowMoving, "sft!_" + this.parent.componentId);
         // build tree
         this.maxPageRows = parseInt(localStorage.getItem('sft-max-' + this.parent.componentId || this.parent.getAttribute('PaginationSize', undefined) || '10'));
         this.filters.loadFromStorage(localStorage.getItem('sft-filters-' + this.parent.componentId));
@@ -311,7 +309,8 @@ export class SFT extends React.Component<any,any> {
 
     async componentWillUnmount() {
         let parent: FlowComponent = this.props.parent;
-        (manywho as any).eventManager.removeDoneListener(this.parent.componentId);
+        (manywho as any).eventManager.removeDoneListener("sft!_" + this.parent.componentId);
+        //(manywho as any).eventManager.removeBeforeSendListener("sft!_" + this.parent.componentId);
     }
 
     showInfo() {
@@ -1552,8 +1551,10 @@ export class SFT extends React.Component<any,any> {
                 </div>
             );
         }
-        this.lastContent = (
+
+        return  (
             <div
+                id={this.parent.componentId}
                 className={classes}
                 style={style}
                 onContextMenu={this.showContextMenu}
@@ -1581,7 +1582,6 @@ export class SFT extends React.Component<any,any> {
                 {this.footerElement}
             </div>
         );
-        return this.lastContent;
     }
 
 }

@@ -3455,16 +3455,10 @@ var require_FlowBaseComponent = __commonJS({
           _this.Attributes = {};
           _this.Outcomes = {};
           _this.sendCollaborationMessage = throttle(_this._sendCollaborationMessage, 100, null);
-          _this.Fields = {};
-          _this.LoadingState = eLoadingState2.inititializing;
           _this.loadAllValues = _this.loadAllValues.bind(_this);
           _this.dontLoadAllValues = _this.dontLoadAllValues.bind(_this);
           _this.updateValues = _this.updateValues.bind(_this);
           _this.triggerOutcome = _this.triggerOutcome.bind(_this);
-          _this.ComponentId = _this.props.id;
-          _this.ParentId = _this.props.parentId;
-          _this.FlowKey = _this.props.flowKey;
-          _this.Attributes = {};
           _this.loadModel = _this.loadModel.bind(_this);
           _this.loadAttributes = _this.loadAttributes.bind(_this);
           _this.loadOutcomes = _this.loadOutcomes.bind(_this);
@@ -3476,23 +3470,9 @@ var require_FlowBaseComponent = __commonJS({
           _this.onBeforeSend = _this.onBeforeSend.bind(_this);
           _this.onDone = _this.onDone.bind(_this);
           _this.calculateValue = _this.calculateValue.bind(_this);
+          _this.loadProps = _this.loadProps.bind(_this);
           window.addEventListener("message", _this.receiveMessage, false);
-          _this.loadModel();
-          _this.loadAttributes();
-          _this.loadOutcomes();
-          var baseUrl = "";
-          if (!manywho.settings.global("platform.uri") && manywho.settings.global("platform.uri").length <= 0) {
-            baseUrl = window.location.origin || "https://flow.manywho.com";
-          } else {
-            baseUrl = manywho.settings.global("platform.uri");
-          }
-          _this.StateId = manywho.utils.extractStateId(_this.props.flowKey);
-          _this.TenantId = manywho.utils.extractTenantId(_this.props.flowKey);
-          _this.invokeurl = "".concat(baseUrl, "/api/run/1/state/").concat(_this.StateId);
-          _this.url = "".concat(baseUrl, "/api/run/1/state/").concat(_this.StateId, "/values");
-          _this.userurl = "".concat(baseUrl, "/api/run/1/state/").concat(_this.StateId, "/values/03dc41dd-1c6b-4b33-bf61-cbd1d0778fff");
-          _this.valueurl = "".concat(baseUrl, "/api/run/1/state/").concat(_this.StateId, "/values/name");
-          _this.LoadingState = eLoadingState2.inititialized;
+          _this.loadProps(props);
           return _this;
         }
         Object.defineProperty(FlowBaseComponent2.prototype, "tenantId", {
@@ -3611,6 +3591,59 @@ var require_FlowBaseComponent = __commonJS({
             return defaultValue || "";
           }
         };
+        FlowBaseComponent2.prototype.loadProps = function(props, oldProps) {
+          if (oldProps === void 0) {
+            oldProps = void 0;
+          }
+          return __awaiter2(this, void 0, void 0, function() {
+            var baseUrl;
+            return __generator(this, function(_a) {
+              switch (_a.label) {
+                case 0:
+                  if (oldProps) {
+                    manywho.eventManager.removeBeforeSendListener(oldProps.id + "_core");
+                    manywho.eventManager.removeDoneListener(oldProps.id + "_core");
+                  }
+                  this.Fields = {};
+                  this.LoadingState = eLoadingState2.inititializing;
+                  this.ComponentId = this.props.id;
+                  this.ParentId = this.props.parentId;
+                  this.FlowKey = this.props.flowKey;
+                  this.Attributes = {};
+                  this.loadModel();
+                  this.loadAttributes();
+                  this.loadOutcomes();
+                  baseUrl = "";
+                  if (!manywho.settings.global("platform.uri") && manywho.settings.global("platform.uri").length <= 0) {
+                    baseUrl = window.location.origin || "https://flow.manywho.com";
+                  } else {
+                    baseUrl = manywho.settings.global("platform.uri");
+                  }
+                  this.StateId = manywho.utils.extractStateId(this.props.flowKey);
+                  this.TenantId = manywho.utils.extractTenantId(this.props.flowKey);
+                  this.invokeurl = "".concat(baseUrl, "/api/run/1/state/").concat(this.StateId);
+                  this.url = "".concat(baseUrl, "/api/run/1/state/").concat(this.StateId, "/values");
+                  this.userurl = "".concat(baseUrl, "/api/run/1/state/").concat(this.StateId, "/values/03dc41dd-1c6b-4b33-bf61-cbd1d0778fff");
+                  this.valueurl = "".concat(baseUrl, "/api/run/1/state/").concat(this.StateId, "/values/name");
+                  this.LoadingState = eLoadingState2.inititialized;
+                  manywho.eventManager.addDoneListener(this.onDone, this.componentId + "_core");
+                  manywho.eventManager.addBeforeSendListener(this.onBeforeSend, this.componentId + "_core");
+                  return [4, this.preserveState()];
+                case 1:
+                  _a.sent();
+                  return [
+                    2
+                    /*return*/
+                  ];
+              }
+            });
+          });
+        };
+        FlowBaseComponent2.prototype.componentWillReceiveProps = function(nextProps, nextContext) {
+          if ((nextProps === null || nextProps === void 0 ? void 0 : nextProps.id) !== this.componentId) {
+            this.loadProps(nextProps, this.props);
+          }
+        };
         FlowBaseComponent2.prototype.onBeforeSend = function(xhr, request) {
           if (request) {
             var oc = this.getOutcomeById(request.mapElementInvokeRequest.selectedOutcomeId);
@@ -3683,6 +3716,7 @@ var require_FlowBaseComponent = __commonJS({
                   return [4, this.preserveState()];
                 case 1:
                   _a.sent();
+                  this.redraw();
                   _a.label = 2;
                 case 2:
                   if (manywho.eventManager.outcomeBeingTriggered && manywho.eventManager.outcomeBeingTriggered.attributes) {
@@ -3770,18 +3804,10 @@ var require_FlowBaseComponent = __commonJS({
           }
           return __awaiter2(this, void 0, void 0, function() {
             return __generator(this, function(_a) {
-              switch (_a.label) {
-                case 0:
-                  this.LoadingState = eLoadingState2.mounting;
-                  manywho.eventManager.addDoneListener(this.onDone, this.componentId + "_core");
-                  manywho.eventManager.addBeforeSendListener(this.onBeforeSend, this.componentId + "_core");
-                  return [4, this.preserveState()];
-                case 1:
-                  _a.sent();
-                  this.LoadingState = eLoadingState2.mounted;
-                  manywho.utils.removeLoadingIndicator("loader");
-                  return [2, Promise.resolve()];
-              }
+              this.LoadingState = eLoadingState2.mounting;
+              this.LoadingState = eLoadingState2.mounted;
+              manywho.utils.removeLoadingIndicator("loader");
+              return [2, Promise.resolve()];
             });
           });
         };
@@ -4604,6 +4630,9 @@ var require_FlowComponent = __commonJS({
         function FlowComponent5(props) {
           return _super.call(this, props) || this;
         }
+        FlowComponent5.prototype.redraw = function() {
+          throw new Error("Method not implemented.");
+        };
         FlowComponent5.prototype.componentDidMount = function() {
           return __awaiter2(this, void 0, void 0, function() {
             return __generator(this, function(_a) {
@@ -4765,6 +4794,9 @@ var require_FlowPage = __commonJS({
         function FlowPage2(props) {
           return _super.call(this, props) || this;
         }
+        FlowPage2.prototype.redraw = function() {
+          throw new Error("Method not implemented.");
+        };
         FlowPage2.prototype.componentDidMount = function() {
           return __awaiter2(this, void 0, void 0, function() {
             return __generator(this, function(_a) {
@@ -5309,6 +5341,9 @@ var require_FlowChart = __commonJS({
           _this.apiKey = _this.getAttribute("APIKey", "");
           return _this;
         }
+        FlowChart2.prototype.redraw = function() {
+          throw new Error("Method not implemented.");
+        };
         FlowChart2.prototype.componentDidMount = function() {
           return __awaiter2(this, void 0, void 0, function() {
             return __generator(this, function(_a) {
@@ -15470,8 +15505,6 @@ var SFT3 = class extends React21.Component {
     this.userColumns = [];
     // these are the child column React objects, it doesn't change unless data reloaded
     this.cols = /* @__PURE__ */ new Map();
-    // content holder to avoid blank pages during moves
-    this.lastContent = /* @__PURE__ */ React21.createElement("div", null);
     // these are the filter & sort controllers
     this.filters = new SFTColumnFilters2(this);
     // dynamic columns flag
@@ -15556,7 +15589,7 @@ var SFT3 = class extends React21.Component {
           me.flowMoved(xhr, request);
         }, 500);
       } else {
-        if (!me.currentMapElementId || xhr.currentMapElementId === me.currentMapElementId) {
+        if (xhr.currentMapElementId === me.currentMapElementId) {
           let model = manywho.model.getComponent(me.parent.componentId, me.parent.flowKey);
           if (model) {
             this.retries = 0;
@@ -15578,6 +15611,7 @@ var SFT3 = class extends React21.Component {
             }
           }
         } else {
+          this.currentMapElementId = xhr.currentMapElementId;
           this.buildTableRows();
         }
       }
@@ -15585,15 +15619,15 @@ var SFT3 = class extends React21.Component {
   }
   async flowMoving(xhr, request) {
     const me = this;
-    if (!this.currentMapElementId) {
+    if (this.currentMapElementId != request.currentMapElementId) {
       this.currentMapElementId = request.currentMapElementId;
     }
   }
   async componentDidMount() {
     console.log(this.parent.model.developerName + "=" + this.parent.componentId);
     this.loaded = false;
-    manywho.eventManager.addDoneListener(this.flowMoved, this.parent.componentId);
-    manywho.eventManager.addBeforeSendListener(this.flowMoving, this.parent.componentId);
+    manywho.eventManager.addDoneListener(this.flowMoved, "sft!_" + this.parent.componentId);
+    manywho.eventManager.addBeforeSendListener(this.flowMoving, "sft!_" + this.parent.componentId);
     this.maxPageRows = parseInt(localStorage.getItem("sft-max-" + this.parent.componentId || this.parent.getAttribute("PaginationSize", void 0) || "10"));
     this.filters.loadFromStorage(localStorage.getItem("sft-filters-" + this.parent.componentId));
     if (this.parent.attributes.UserColumnsValue) {
@@ -15609,7 +15643,7 @@ var SFT3 = class extends React21.Component {
   }
   async componentWillUnmount() {
     let parent = this.props.parent;
-    manywho.eventManager.removeDoneListener(this.parent.componentId);
+    manywho.eventManager.removeDoneListener("sft!_" + this.parent.componentId);
   }
   showInfo() {
     let parent = this.props.parent;
@@ -16741,9 +16775,10 @@ var SFT3 = class extends React21.Component {
         )
       );
     }
-    this.lastContent = /* @__PURE__ */ React21.createElement(
+    return /* @__PURE__ */ React21.createElement(
       "div",
       {
+        id: this.parent.componentId,
         className: classes,
         style,
         onContextMenu: this.showContextMenu
@@ -16786,7 +16821,6 @@ var SFT3 = class extends React21.Component {
       ),
       this.footerElement
     );
-    return this.lastContent;
   }
 };
 
@@ -16794,6 +16828,10 @@ var SFT3 = class extends React21.Component {
 var SearchFilterTable = class extends import_flow_component_model9.FlowComponent {
   constructor(props) {
     super(props);
+    this.setcomponent = this.setcomponent.bind(this);
+  }
+  setcomponent(element, key) {
+    this.sft = element;
   }
   async componentDidMount() {
     await super.componentDidMount();
@@ -16802,11 +16840,20 @@ var SearchFilterTable = class extends import_flow_component_model9.FlowComponent
   async componentWillUnmount() {
     await super.componentWillUnmount();
   }
+  redraw() {
+    var _a;
+    (_a = this.sft) == null ? void 0 : _a.componentDidMount();
+  }
   render() {
     return /* @__PURE__ */ React22.createElement(
       SFT3,
       {
-        parent: this
+        id: this.componentId,
+        key: this.componentId,
+        parent: this,
+        ref: (element) => {
+          this.setcomponent(element, this.componentId);
+        }
       }
     );
   }

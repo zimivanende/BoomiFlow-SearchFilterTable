@@ -5,8 +5,15 @@ declare const manywho: any;
 
 class SearchFilterTable extends FlowComponent {
 
+    sft: SFT;
+
     constructor(props: any) {
         super(props);
+        this.setcomponent = this.setcomponent.bind(this);
+    }
+
+    setcomponent(element: any, key: string) {
+        this.sft = element;
     }
 
     async componentDidMount() {
@@ -18,10 +25,17 @@ class SearchFilterTable extends FlowComponent {
         await super.componentWillUnmount();
     }
 
+    redraw(): void {
+        this.sft?.componentDidMount();
+    }
+
     render() {
         return(
             <SFT
+                id={this.componentId}
+                key={this.componentId}
                 parent={this}
+                ref={(element: SFT) => {this.setcomponent(element, this.componentId)}}
             />
         );
     }

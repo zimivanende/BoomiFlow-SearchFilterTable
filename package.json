@@ -20,7 +20,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "esbuild": "^0.19.8",
     "fcmkit": "^1.0.15",
-    "flow-component-model": "^1.9.17",
+    "flow-component-model": "^1.9.19",
     "react": "18.2.0"
   },
   "devDependencies": {
