@@ -1,5 +1,5 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray } from 'flow-component-model';
-import {RowItem} from './RowItem';
+import { RowItem } from './RowItem';
 
 export class ModelExporter {
 
@@ -10,7 +10,6 @@ export class ModelExporter {
         let row: string = '';
 
         data.forEach((item: RowItem) => {
-
             if (headers.length === 0) {
                 headers = this.buildHeaders(columns, item.objectData);
             }
@@ -22,46 +21,41 @@ export class ModelExporter {
         file = BOM + headers + body;
         
         const blob = new Blob([file], { type: 'text/csv;charset=utf-8' });
-        // if (navigator.msSaveBlob) { // IE 10+
-        //    navigator.msSaveBlob(blob, fileName);
-        // } else {
         const link = document.createElement('a');
         if (link.download !== undefined) { // feature detection
-                // Browsers that support HTML5 download attribute
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', fileName);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        // }
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
 
     static buildHeaders(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
         let headers: string = '';
+        let isFirst = true; // Track the first column to avoid leading semicolon
         cols.forEach((col: FlowDisplayColumn) => {
+            if (!isFirst) {
+                headers += ';'; // Use semicolon as delimiter
+            } else {
+                isFirst = false;
+            }
             switch (col.contentType) {
                 case eContentType.ContentList:
                     const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
-                    children.items.forEach((item: FlowObjectData) => {
-                        if (headers.length > 0) {
-                            headers += ',';
+                    children.items.forEach((item: FlowObjectData, index) => {
+                        if (index > 0) {
+                            headers += ';'; // Use semicolon for subsequent items
                         }
-                        headers += '"' + item.properties['ATTRIBUTE_DISPLAY_NAME'].value + '"';
+                        headers += item.properties['ATTRIBUTE_DISPLAY_NAME'].value;
                     });
-
                     break;
-
                 default:
-                    if (headers.length > 0) {
-                        headers += ',';
-                    }
-                    headers += '"' + col.label + '"';
+                    headers += col.label;
                     break;
             }
-
         });
         headers += '\r\n';
         return headers;
@@ -69,27 +63,27 @@ export class ModelExporter {
 
     static buildRow(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
         let row: string = '';
+        let isFirst = true; // Track the first column to avoid leading semicolon
         cols.forEach((col: FlowDisplayColumn) => {
+            if (!isFirst) {
+                row += ';'; // Use semicolon as delimiter
+            } else {
+                isFirst = false;
+            }
             switch (col.contentType) {
                 case eContentType.ContentList:
                     const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
-                    children.items.forEach((item: FlowObjectData) => {
-                        if (row.length > 0) {
-                            row += ',';
+                    children.items.forEach((item: FlowObjectData, index) => {
+                        if (index > 0) {
+                            row += ';'; // Use semicolon for subsequent items
                         }
-                        row += '"' + item.properties['ATTRIBUTE_VALUE'].value + '"';
+                        row += item.properties['ATTRIBUTE_VALUE'].value;
                     });
-
                     break;
-
                 default:
-                    if (row.length > 0) {
-                        row += ',';
-                    }
-                    row += '"' + values.properties[col.developerName].value + '"';
+                    row += values.properties[col.developerName].value;
                     break;
             }
-
         });
         row += '\r\n';
         return row;
