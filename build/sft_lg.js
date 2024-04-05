@@ -2052,24 +2052,24 @@ var require_FlowObjectDataArray = __commonJS({
       eSortOrder2[eSortOrder2["ascending"] = 0] = "ascending";
       eSortOrder2[eSortOrder2["descending"] = 1] = "descending";
     })(eSortOrder = exports.eSortOrder || (exports.eSortOrder = {}));
-    var FlowObjectDataArray5 = (
+    var FlowObjectDataArray4 = (
       /** @class */
       function() {
-        function FlowObjectDataArray6(array) {
+        function FlowObjectDataArray5(array) {
           this.Items = [];
           for (var _i = 0, _a = array || []; _i < _a.length; _i++) {
             var item = _a[_i];
             this.Items.push(new FlowObjectData_1.FlowObjectData([item]));
           }
         }
-        Object.defineProperty(FlowObjectDataArray6.prototype, "items", {
+        Object.defineProperty(FlowObjectDataArray5.prototype, "items", {
           get: function() {
             return this.Items;
           },
           enumerable: false,
           configurable: true
         });
-        FlowObjectDataArray6.prototype.sort = function(order, fieldName) {
+        FlowObjectDataArray5.prototype.sort = function(order, fieldName) {
           if (order === eSortOrder.ascending) {
             if (fieldName) {
               return this.Items.sort(function(a, b) {
@@ -2130,8 +2130,8 @@ var require_FlowObjectDataArray = __commonJS({
             }
           }
         };
-        FlowObjectDataArray6.fromJSONString = function(json, primaryKey, columns, flowTypeName) {
-          var objDataArray = new FlowObjectDataArray6();
+        FlowObjectDataArray5.fromJSONString = function(json, primaryKey, columns, flowTypeName) {
+          var objDataArray = new FlowObjectDataArray5();
           var model = JSON.parse(json);
           model.forEach(function(item) {
             var objData = FlowObjectData_1.FlowObjectData.newInstance(flowTypeName);
@@ -2168,20 +2168,20 @@ var require_FlowObjectDataArray = __commonJS({
           });
           return objDataArray;
         };
-        FlowObjectDataArray6.prototype.addItem = function(item) {
+        FlowObjectDataArray5.prototype.addItem = function(item) {
           this.Items.push(item);
         };
-        FlowObjectDataArray6.prototype.clearItems = function() {
+        FlowObjectDataArray5.prototype.clearItems = function() {
           this.Items = [];
         };
-        FlowObjectDataArray6.prototype.clone = function() {
-          var clone = new FlowObjectDataArray6();
+        FlowObjectDataArray5.prototype.clone = function() {
+          var clone = new FlowObjectDataArray5();
           this.items.forEach(function(obj) {
             clone.addItem(obj.clone());
           });
           return clone;
         };
-        FlowObjectDataArray6.prototype.iFlowObjectDataArray = function(selected) {
+        FlowObjectDataArray5.prototype.iFlowObjectDataArray = function(selected) {
           var output = [];
           for (var _i = 0, _a = this.Items; _i < _a.length; _i++) {
             var od = _a[_i];
@@ -2189,7 +2189,7 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return output;
         };
-        FlowObjectDataArray6.prototype.getItemWithPropertyName = function(findProperty, withValue, returnProperty) {
+        FlowObjectDataArray5.prototype.getItemWithPropertyName = function(findProperty, withValue, returnProperty) {
           for (var _i = 0, _a = this.Items; _i < _a.length; _i++) {
             var item = _a[_i];
             if (item.properties[findProperty] && item.properties[findProperty].value != void 0) {
@@ -2218,8 +2218,8 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return null;
         };
-        FlowObjectDataArray6.prototype.getSelectedItems = function() {
-          var results = new FlowObjectDataArray6();
+        FlowObjectDataArray5.prototype.getSelectedItems = function() {
+          var results = new FlowObjectDataArray5();
           for (var _i = 0, _a = this.Items; _i < _a.length; _i++) {
             var item = _a[_i];
             if (item.isSelected === true) {
@@ -2228,7 +2228,7 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return results;
         };
-        FlowObjectDataArray6.prototype.getItemWithPropertyValue = function(findProperty, withValue) {
+        FlowObjectDataArray5.prototype.getItemWithPropertyValue = function(findProperty, withValue) {
           for (var _i = 0, _a = this.Items; _i < _a.length; _i++) {
             var item = _a[_i];
             if (item.properties[findProperty] && item.properties[findProperty].value != void 0) {
@@ -2256,7 +2256,7 @@ var require_FlowObjectDataArray = __commonJS({
             }
           }
         };
-        FlowObjectDataArray6.prototype.getIndexOfItemWithPropertyValue = function(findProperty, withValue) {
+        FlowObjectDataArray5.prototype.getIndexOfItemWithPropertyValue = function(findProperty, withValue) {
           for (var pos = 0; pos < this.items.length; pos++) {
             var item = this.items[pos];
             if (item.properties[findProperty] && item.properties[findProperty].value != void 0) {
@@ -2285,7 +2285,7 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return -1;
         };
-        FlowObjectDataArray6.prototype.removeItemWithPropertyValue = function(findProperty, withValue) {
+        FlowObjectDataArray5.prototype.removeItemWithPropertyValue = function(findProperty, withValue) {
           var modifiedCount = 0;
           for (var pos = 0; pos < this.items.length; pos++) {
             var item = this.items[pos];
@@ -2316,7 +2316,7 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return modifiedCount;
         };
-        FlowObjectDataArray6.prototype.removeItemAtIndex = function(index) {
+        FlowObjectDataArray5.prototype.removeItemAtIndex = function(index) {
           var modifiedCount = 0;
           if (this.items[index]) {
             this.items.splice(index, 1);
@@ -2324,10 +2324,10 @@ var require_FlowObjectDataArray = __commonJS({
           }
           return modifiedCount;
         };
-        return FlowObjectDataArray6;
+        return FlowObjectDataArray5;
       }()
     );
-    exports.FlowObjectDataArray = FlowObjectDataArray5;
+    exports.FlowObjectDataArray = FlowObjectDataArray4;
   }
 });
 
@@ -2604,10 +2604,10 @@ var require_FlowObjectData = __commonJS({
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FlowObjectData = void 0;
     var FlowObjectDataProperty_1 = require_FlowObjectDataProperty();
-    var FlowObjectData7 = (
+    var FlowObjectData6 = (
       /** @class */
       function() {
-        function FlowObjectData8(data) {
+        function FlowObjectData7(data) {
           this.DeveloperName = "";
           this.ExternalId = "";
           this.InternalId = "";
@@ -2633,7 +2633,7 @@ var require_FlowObjectData = __commonJS({
             console.log("null data");
           }
         }
-        Object.defineProperty(FlowObjectData8.prototype, "developerName", {
+        Object.defineProperty(FlowObjectData7.prototype, "developerName", {
           get: function() {
             return this.DeveloperName;
           },
@@ -2643,7 +2643,7 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "externalId", {
+        Object.defineProperty(FlowObjectData7.prototype, "externalId", {
           get: function() {
             return this.ExternalId;
           },
@@ -2653,7 +2653,7 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "internalId", {
+        Object.defineProperty(FlowObjectData7.prototype, "internalId", {
           get: function() {
             return this.InternalId;
           },
@@ -2663,7 +2663,7 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "isSelected", {
+        Object.defineProperty(FlowObjectData7.prototype, "isSelected", {
           get: function() {
             return this.IsSelected;
           },
@@ -2673,7 +2673,7 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "order", {
+        Object.defineProperty(FlowObjectData7.prototype, "order", {
           get: function() {
             return this.Order;
           },
@@ -2683,7 +2683,7 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "typeElementId", {
+        Object.defineProperty(FlowObjectData7.prototype, "typeElementId", {
           get: function() {
             return this.TypeElementId;
           },
@@ -2693,14 +2693,14 @@ var require_FlowObjectData = __commonJS({
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowObjectData8.prototype, "properties", {
+        Object.defineProperty(FlowObjectData7.prototype, "properties", {
           get: function() {
             return this.Properties;
           },
           enumerable: false,
           configurable: true
         });
-        FlowObjectData8.newInstance = function(developerName) {
+        FlowObjectData7.newInstance = function(developerName) {
           var data = {
             developerName,
             externalId: "",
@@ -2712,22 +2712,22 @@ var require_FlowObjectData = __commonJS({
           };
           return new this([data]);
         };
-        FlowObjectData8.prototype.addProperty = function(newProperty) {
+        FlowObjectData7.prototype.addProperty = function(newProperty) {
           this.Properties[newProperty.developerName] = newProperty;
         };
-        FlowObjectData8.prototype.removeProperty = function(key) {
+        FlowObjectData7.prototype.removeProperty = function(key) {
           delete this.Properties[key];
         };
-        FlowObjectData8.prototype.clone = function(newTypeName) {
+        FlowObjectData7.prototype.clone = function(newTypeName) {
           var _this = this;
-          var clone = FlowObjectData8.newInstance(newTypeName || this.DeveloperName);
+          var clone = FlowObjectData7.newInstance(newTypeName || this.DeveloperName);
           Object.keys(this.properties).forEach(function(key) {
             var newProp = _this.properties[key].clone();
             clone.properties[key] = newProp;
           });
           return clone;
         };
-        FlowObjectData8.prototype.iObjectData = function(selected) {
+        FlowObjectData7.prototype.iObjectData = function(selected) {
           var props = [];
           for (var _i = 0, _a = Object.keys(this.properties); _i < _a.length; _i++) {
             var key = _a[_i];
@@ -2744,15 +2744,15 @@ var require_FlowObjectData = __commonJS({
           };
           return objectData;
         };
-        FlowObjectData8.prototype.iFlowObjectDataArray = function(selected) {
+        FlowObjectData7.prototype.iFlowObjectDataArray = function(selected) {
           var output = [];
           output.push(this.iObjectData(selected));
           return output;
         };
-        return FlowObjectData8;
+        return FlowObjectData7;
       }()
     );
-    exports.FlowObjectData = FlowObjectData7;
+    exports.FlowObjectData = FlowObjectData6;
   }
 });
 
@@ -2764,24 +2764,24 @@ var require_FlowField = __commonJS({
     exports.FlowField = exports.eContentType = void 0;
     var FlowObjectData_1 = require_FlowObjectData();
     var FlowObjectDataArray_1 = require_FlowObjectDataArray();
-    var eContentType9;
-    (function(eContentType10) {
-      eContentType10[eContentType10["unknown"] = 0] = "unknown";
-      eContentType10[eContentType10["ContentString"] = 1] = "ContentString";
-      eContentType10[eContentType10["ContentNumber"] = 2] = "ContentNumber";
-      eContentType10[eContentType10["ContentObject"] = 3] = "ContentObject";
-      eContentType10[eContentType10["ContentBoolean"] = 4] = "ContentBoolean";
-      eContentType10[eContentType10["ContentList"] = 5] = "ContentList";
-      eContentType10[eContentType10["ContentPassword"] = 6] = "ContentPassword";
-      eContentType10[eContentType10["ContentContent"] = 7] = "ContentContent";
-      eContentType10[eContentType10["ContentDateTime"] = 8] = "ContentDateTime";
-      eContentType10[eContentType10["ContentEncrypted"] = 9] = "ContentEncrypted";
-    })(eContentType9 = exports.eContentType || (exports.eContentType = {}));
+    var eContentType8;
+    (function(eContentType9) {
+      eContentType9[eContentType9["unknown"] = 0] = "unknown";
+      eContentType9[eContentType9["ContentString"] = 1] = "ContentString";
+      eContentType9[eContentType9["ContentNumber"] = 2] = "ContentNumber";
+      eContentType9[eContentType9["ContentObject"] = 3] = "ContentObject";
+      eContentType9[eContentType9["ContentBoolean"] = 4] = "ContentBoolean";
+      eContentType9[eContentType9["ContentList"] = 5] = "ContentList";
+      eContentType9[eContentType9["ContentPassword"] = 6] = "ContentPassword";
+      eContentType9[eContentType9["ContentContent"] = 7] = "ContentContent";
+      eContentType9[eContentType9["ContentDateTime"] = 8] = "ContentDateTime";
+      eContentType9[eContentType9["ContentEncrypted"] = 9] = "ContentEncrypted";
+    })(eContentType8 = exports.eContentType || (exports.eContentType = {}));
     var FlowField4 = (
       /** @class */
       function() {
         function FlowField5(field) {
-          this.ContentType = eContentType9.unknown;
+          this.ContentType = eContentType8.unknown;
           this.DeveloperName = "";
           this.TypeElementDeveloperName = "";
           this.TypeElementId = "";
@@ -2789,7 +2789,7 @@ var require_FlowField = __commonJS({
           this.TypeElementPropertyId = "";
           this.ValueElementId = "";
           if (field) {
-            this.ContentType = eContentType9[field.contentType];
+            this.ContentType = eContentType8[field.contentType];
             this.DeveloperName = field.developerName;
             this.TypeElementDeveloperName = field.typeElementDeveloperName;
             this.TypeElementId = field.typeElementId;
@@ -2797,10 +2797,10 @@ var require_FlowField = __commonJS({
             this.TypeElementPropertyId = field.typeElementPropertyId;
             this.ValueElementId = field.valueElementId;
             switch (this.ContentType) {
-              case eContentType9.ContentObject:
+              case eContentType8.ContentObject:
                 this.Value = field.objectData ? new FlowObjectData_1.FlowObjectData(field.objectData) : void 0;
                 break;
-              case eContentType9.ContentList:
+              case eContentType8.ContentList:
                 this.Value = field.objectData && field.objectData[0] ? new FlowObjectDataArray_1.FlowObjectDataArray(field.objectData) : new FlowObjectDataArray_1.FlowObjectDataArray([]);
                 break;
               default:
@@ -2872,11 +2872,11 @@ var require_FlowField = __commonJS({
           var contentValue = "";
           var objectData = [];
           switch (this.ContentType) {
-            case eContentType9.ContentObject:
+            case eContentType8.ContentObject:
               var od = this.Value;
               objectData.push(od.iObjectData());
               break;
-            case eContentType9.ContentList:
+            case eContentType8.ContentList:
               var oda = this.Value;
               objectData = oda.iFlowObjectDataArray();
               break;
@@ -2885,7 +2885,7 @@ var require_FlowField = __commonJS({
               break;
           }
           var output = {
-            contentType: eContentType9[this.ContentType],
+            contentType: eContentType8[this.ContentType],
             contentValue,
             developerName: this.DeveloperName,
             objectData,
@@ -2911,10 +2911,10 @@ var require_FlowDisplayColumn = __commonJS({
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FlowDisplayColumn = void 0;
     var FlowField_1 = require_FlowField();
-    var FlowDisplayColumn7 = (
+    var FlowDisplayColumn6 = (
       /** @class */
       function() {
-        function FlowDisplayColumn8(column) {
+        function FlowDisplayColumn7(column) {
           this.Column = column;
           this.ComponentType = column.componentType;
           this.ContentFormat = column.contentFormat;
@@ -2927,83 +2927,83 @@ var require_FlowDisplayColumn = __commonJS({
           this.TypeElementPropertyId = column.typeElementPropertyId;
           this.Visible = column.isDisplayValue;
         }
-        Object.defineProperty(FlowDisplayColumn8.prototype, "componentType", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "componentType", {
           get: function() {
             return this.ComponentType;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "contentFormat", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "contentFormat", {
           get: function() {
             return this.ContentFormat;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "contentType", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "contentType", {
           get: function() {
             return this.ContentType;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "developerName", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "developerName", {
           get: function() {
             return this.DeveloperName;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "visible", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "visible", {
           get: function() {
             return this.Visible;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "readOnly", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "readOnly", {
           get: function() {
             return this.ReadOnly;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "label", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "label", {
           get: function() {
             return this.Label;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "displayOrder", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "displayOrder", {
           get: function() {
             return this.DisplayOrder;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "typeElementPropertyId", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "typeElementPropertyId", {
           get: function() {
             return this.TypeElementPropertyId;
           },
           enumerable: false,
           configurable: true
         });
-        Object.defineProperty(FlowDisplayColumn8.prototype, "typeElememtPropertyToDisplayId", {
+        Object.defineProperty(FlowDisplayColumn7.prototype, "typeElememtPropertyToDisplayId", {
           get: function() {
             return this.TypeElememtPropertyToDisplayId;
           },
           enumerable: false,
           configurable: true
         });
-        FlowDisplayColumn8.prototype.iFlowDisplayColumn = function() {
+        FlowDisplayColumn7.prototype.iFlowDisplayColumn = function() {
           return this.Column;
         };
-        return FlowDisplayColumn8;
+        return FlowDisplayColumn7;
       }()
     );
-    exports.FlowDisplayColumn = FlowDisplayColumn7;
+    exports.FlowDisplayColumn = FlowDisplayColumn6;
   }
 });
 
@@ -7845,12 +7845,12 @@ var require_faAngleDoubleRight = __commonJS({
 });
 
 // src/SFTLegacy.tsx
-var import_flow_component_model9 = __toESM(require_FlowComponentModel());
+var import_flow_component_model8 = __toESM(require_FlowComponentModel());
 var React22 = __toESM(require_react());
 
 // src/SearchFilterTable.tsx
 var React21 = __toESM(require_react());
-var import_flow_component_model8 = __toESM(require_FlowComponentModel());
+var import_flow_component_model7 = __toESM(require_FlowComponentModel());
 
 // src/CellItem.ts
 var CellItem = class {
@@ -10185,7 +10185,6 @@ var FilterManagementForm = class extends React9.Component {
 };
 
 // src/ModelExporter.ts
-var import_flow_component_model6 = __toESM(require_FlowComponentModel());
 var ModelExporter = class {
   static export(columns, data, fileName) {
     let file = "";
@@ -10201,6 +10200,7 @@ var ModelExporter = class {
     });
     let BOM = "\uFEFF";
     file = BOM + headers + body;
+    file = file.replace(/"/g, "");
     const blob = new Blob([file], { type: "text/csv;charset=utf-8" });
     const link = document.createElement("a");
     if (link.download !== void 0) {
@@ -10216,23 +10216,10 @@ var ModelExporter = class {
   static buildHeaders(cols, values) {
     let headers = "";
     cols.forEach((col) => {
-      switch (col.contentType) {
-        case import_flow_component_model6.eContentType.ContentList:
-          const children = values.properties[col.developerName].value;
-          children.items.forEach((item) => {
-            if (headers.length > 0) {
-              headers += ",";
-            }
-            headers += '"' + item.properties["ATTRIBUTE_DISPLAY_NAME"].value + '"';
-          });
-          break;
-        default:
-          if (headers.length > 0) {
-            headers += ",";
-          }
-          headers += '"' + col.label + '"';
-          break;
+      if (headers.length > 0) {
+        headers += ";";
       }
+      headers += col.label;
     });
     headers += "\r\n";
     return headers;
@@ -10240,23 +10227,10 @@ var ModelExporter = class {
   static buildRow(cols, values) {
     let row = "";
     cols.forEach((col) => {
-      switch (col.contentType) {
-        case import_flow_component_model6.eContentType.ContentList:
-          const children = values.properties[col.developerName].value;
-          children.items.forEach((item) => {
-            if (row.length > 0) {
-              row += ",";
-            }
-            row += '"' + item.properties["ATTRIBUTE_VALUE"].value + '"';
-          });
-          break;
-        default:
-          if (row.length > 0) {
-            row += ",";
-          }
-          row += '"' + values.properties[col.developerName].value + '"';
-          break;
+      if (row.length > 0) {
+        row += ";";
       }
+      row += values.properties[col.developerName].value;
     });
     row += "\r\n";
     return row;
@@ -11545,7 +11519,7 @@ var SearchFilterTableRibbonSearch = class extends React15.Component {
 };
 
 // src/SearchFilterTableRow.tsx
-var import_flow_component_model7 = __toESM(require_FlowComponentModel());
+var import_flow_component_model6 = __toESM(require_FlowComponentModel());
 var React16 = __toESM(require_react());
 var SearchFilterTableRow = class extends React16.Component {
   constructor(props) {
@@ -11724,7 +11698,7 @@ var SearchFilterTableRow = class extends React16.Component {
         if (cname === columnName) {
           let val = c.properties[colValue].value;
           let colType = root.colMap.get(columnName).contentType;
-          col = import_flow_component_model7.FlowObjectDataProperty.newInstance(cname, colType, c);
+          col = import_flow_component_model6.FlowObjectDataProperty.newInstance(cname, colType, c);
         }
       });
     } else {
@@ -11753,7 +11727,7 @@ var SearchFilterTableRow = class extends React16.Component {
           result = React16.createElement(manywho.component.getByName(componentType), columnProps);
         } else {
           switch (contentType) {
-            case import_flow_component_model7.eContentType.ContentDateTime:
+            case import_flow_component_model6.eContentType.ContentDateTime:
               let dt = new Date(col.value);
               if ((dt instanceof Date && !isNaN(dt.getTime())) === true) {
                 let str = "";
@@ -11779,7 +11753,7 @@ var SearchFilterTableRow = class extends React16.Component {
                 /* @__PURE__ */ React16.createElement("span", { className: "sft-table-cell-text" });
               }
               break;
-            case import_flow_component_model7.eContentType.ContentString:
+            case import_flow_component_model6.eContentType.ContentString:
               switch (true) {
                 case this.isXML(col.value) === true:
                   result = /* @__PURE__ */ React16.createElement(
@@ -11892,7 +11866,7 @@ var SearchFilterTableRow = class extends React16.Component {
                   break;
               }
               break;
-            case import_flow_component_model7.eContentType.ContentNumber:
+            case import_flow_component_model6.eContentType.ContentNumber:
               if (col.value === "") {
                 result = /* @__PURE__ */ React16.createElement(
                   "span",
@@ -11910,7 +11884,7 @@ var SearchFilterTableRow = class extends React16.Component {
                 );
               }
               break;
-            case import_flow_component_model7.eContentType.ContentBoolean:
+            case import_flow_component_model6.eContentType.ContentBoolean:
               if (((_a = col.value + "") == null ? void 0 : _a.toLowerCase()) === "true") {
                 result = /* @__PURE__ */ React16.createElement(
                   "span",
@@ -15581,7 +15555,7 @@ var SFT3 = class extends React21.Component {
   async flowMoved(xhr, request) {
     const me = this;
     if (xhr.invokeType === "FORWARD") {
-      if (this.parent.loadingState !== import_flow_component_model8.eLoadingState.ready && this.retries < 20) {
+      if (this.parent.loadingState !== import_flow_component_model7.eLoadingState.ready && this.retries < 20) {
         this.loaded = false;
         this.retries++;
         console.log("retry " + this.retries + " after flow move");
@@ -15937,7 +15911,7 @@ var SFT3 = class extends React21.Component {
               let cdef = {
                 developerName: cname,
                 label: cname,
-                contentType: import_flow_component_model8.eContentType.ContentObject
+                contentType: import_flow_component_model7.eContentType.ContentObject
               };
               colMap.set(cname, cdef);
             }
@@ -16080,7 +16054,7 @@ var SFT3 = class extends React21.Component {
       let jsonField = await this.parent.loadValue(JSONStateName);
       let jsonString = jsonField.value;
       if (jsonString && jsonString.length > 0) {
-        model = import_flow_component_model8.FlowObjectDataArray.fromJSONString(jsonField.value, this.parent.getAttribute("JSONModelPrimaryKey"), this.parent.model.displayColumns, modelTypeName);
+        model = import_flow_component_model7.FlowObjectDataArray.fromJSONString(jsonField.value, this.parent.getAttribute("JSONModelPrimaryKey"), this.parent.model.displayColumns, modelTypeName);
       }
     } else {
       model = this.parent.model.dataSource;
@@ -16301,7 +16275,7 @@ var SFT3 = class extends React21.Component {
   }
   // store the selected items to state
   async saveSelected() {
-    const selectedItems = new import_flow_component_model8.FlowObjectDataArray();
+    const selectedItems = new import_flow_component_model7.FlowObjectDataArray();
     this.selectedRowMap.forEach((item, key) => {
       const tItem = this.rowMap.get(key).objectData;
       tItem.isSelected = true;
@@ -16522,13 +16496,13 @@ var SFT3 = class extends React21.Component {
   }
   getTextValue(property) {
     switch (property.contentType) {
-      case import_flow_component_model8.eContentType.ContentBoolean:
+      case import_flow_component_model7.eContentType.ContentBoolean:
         if (property.value === true) {
           return "True";
         } else {
           return "False";
         }
-      case import_flow_component_model8.eContentType.ContentNumber:
+      case import_flow_component_model7.eContentType.ContentNumber:
         return property.value.toString();
       default:
         return property.value;
@@ -16543,7 +16517,7 @@ var SFT3 = class extends React21.Component {
     if (this.parent.getAttribute("RowLevelState", "").length > 0 && selectedItem) {
       const val = await this.parent.loadValue(this.parent.getAttribute("RowLevelState"));
       if (val) {
-        val.value = selectedItem || new import_flow_component_model8.FlowObjectDataArray();
+        val.value = selectedItem || new import_flow_component_model7.FlowObjectDataArray();
         await this.parent.updateValues(val);
       }
       if (this.rowRememberColumn) {
@@ -16733,7 +16707,7 @@ var SFT3 = class extends React21.Component {
     }
     const title = this.parent.model.label || "";
     let body;
-    if (this.loaded === false && this.parent.loadingState !== import_flow_component_model8.eLoadingState.ready) {
+    if (this.loaded === false && this.parent.loadingState !== import_flow_component_model7.eLoadingState.ready) {
       body = /* @__PURE__ */ React21.createElement(
         "div",
         {
@@ -16825,7 +16799,7 @@ var SFT3 = class extends React21.Component {
 };
 
 // src/SFTLegacy.tsx
-var SearchFilterTable = class extends import_flow_component_model9.FlowComponent {
+var SearchFilterTable = class extends import_flow_component_model8.FlowComponent {
   constructor(props) {
     super(props);
     this.setcomponent = this.setcomponent.bind(this);

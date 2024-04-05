@@ -1,5 +1,5 @@
 import { eContentType, FlowDisplayColumn, FlowObjectData, FlowObjectDataArray } from 'flow-component-model';
-import {RowItem} from './RowItem';
+import { RowItem } from './RowItem';
 
 export class ModelExporter {
 
@@ -20,48 +20,30 @@ export class ModelExporter {
 
         let BOM = "\uFEFF";
         file = BOM + headers + body;
+        // Remove double quotes from the CSV content
+        file = file.replace(/"/g, "");
         
         const blob = new Blob([file], { type: 'text/csv;charset=utf-8' });
-        // if (navigator.msSaveBlob) { // IE 10+
-        //    navigator.msSaveBlob(blob, fileName);
-        // } else {
         const link = document.createElement('a');
         if (link.download !== undefined) { // feature detection
-                // Browsers that support HTML5 download attribute
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', fileName);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        // }
+            // Browsers that support HTML5 download attribute
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     }
 
     static buildHeaders(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
         let headers: string = '';
         cols.forEach((col: FlowDisplayColumn) => {
-            switch (col.contentType) {
-                case eContentType.ContentList:
-                    const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
-                    children.items.forEach((item: FlowObjectData) => {
-                        if (headers.length > 0) {
-                            headers += ',';
-                        }
-                        headers += '"' + item.properties['ATTRIBUTE_DISPLAY_NAME'].value + '"';
-                    });
-
-                    break;
-
-                default:
-                    if (headers.length > 0) {
-                        headers += ',';
-                    }
-                    headers += '"' + col.label + '"';
-                    break;
+            if (headers.length > 0) {
+                headers += ';'; // Change delimiter to semicolon
             }
-
+            headers += col.label;
         });
         headers += '\r\n';
         return headers;
@@ -70,26 +52,10 @@ export class ModelExporter {
     static buildRow(cols: Map<string, FlowDisplayColumn>, values: FlowObjectData): string {
         let row: string = '';
         cols.forEach((col: FlowDisplayColumn) => {
-            switch (col.contentType) {
-                case eContentType.ContentList:
-                    const children: FlowObjectDataArray = values.properties[col.developerName].value as FlowObjectDataArray;
-                    children.items.forEach((item: FlowObjectData) => {
-                        if (row.length > 0) {
-                            row += ',';
-                        }
-                        row += '"' + item.properties['ATTRIBUTE_VALUE'].value + '"';
-                    });
-
-                    break;
-
-                default:
-                    if (row.length > 0) {
-                        row += ',';
-                    }
-                    row += '"' + values.properties[col.developerName].value + '"';
-                    break;
+            if (row.length > 0) {
+                row += ';'; // Change delimiter to semicolon
             }
-
+            row += values.properties[col.developerName].value;
         });
         row += '\r\n';
         return row;
